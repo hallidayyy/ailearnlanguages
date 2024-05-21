@@ -78,6 +78,9 @@ export async function POST(req: Request) {
         `covers/${img_uuid}.png`
       );
       img_url = s3_img.Location;
+      if (process.env.AWS_CDN_DOMAIN) {
+        img_url = `${process.env.AWS_CDN_DOMAIN}/${s3_img.Key}`;
+      }
       console.log("upload to aws s3", img_url);
     }
 

@@ -3,12 +3,13 @@ import { Readable } from "stream";
 import axios from "axios";
 import fs from "fs";
 
-AWS.config.update({
+const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_AK,
   secretAccessKey: process.env.AWS_SK,
+  endpoint: process.env.AWS_ENDPOINT,
+  s3ForcePathStyle: true,
+  signatureVersion: "v4",
 });
-
-const s3 = new AWS.S3();
 
 export async function downloadAndUploadImage(
   imageUrl: string,
