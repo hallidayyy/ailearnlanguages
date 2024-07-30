@@ -1,91 +1,125 @@
-import { QueryResult, QueryResultRow } from "pg";
-
 import { Cover } from "@/types/cover";
-import { getDb } from "./db";
+import { getDb } from "./db"; // 确保 getDb 返回的是 Supabase 客户端实例
 
 export async function insertCover(cover: Cover) {
-  const db = getDb();
-  const res = await db.query(
-    `INSERT INTO covers 
-        (user_email, img_description, img_size, img_url, llm_name, llm_params, created_at, uuid, status) 
-        VALUES 
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    `,
-    [
-      cover.user_email,
-      cover.img_description,
-      cover.img_size,
-      cover.img_url,
-      cover.llm_name,
-      cover.llm_params,
-      cover.created_at,
-      cover.uuid,
-      cover.status,
-    ]
-  );
+  const supabase: SupabaseClient = await getDb();
 
-  return res;
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  const { data, error } = await supabase
+    .from("covers")
+    .insert([
+      {
+        user_email: cover.user_email,
+        img_description: cover.img_description,
+        img_size: cover.img_size,
+        img_url: cover.img_url,
+        llm_name: cover.llm_name,
+        llm_params: cover.llm_params,
+        created_at: cover.created_at,
+        uuid: cover.uuid,
+        status: cover.status,
+      },
+    ]);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
 }
 
 export async function getCoversCount(): Promise<number> {
-  const db = getDb();
-  const res = await db.query(`SELECT count(1) as count FROM covers`);
-  if (res.rowCount === 0) {
-    return 0;
+  const supabase: SupabaseClient = await getDb();
+
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  const { count, error } = await supabase
+    .from("covers")
+    .select("*", { count: "exact", head: true });
+
+  if (error) {
+    throw error;
   }
 
-  const { rows } = res;
-  const row = rows[0];
-
-  return row.count;
+  return count;
 }
 
 export async function getUserCoversCount(user_email: string): Promise<number> {
-  const db = getDb();
-  const res = await db.query(
-    `SELECT count(1) as count FROM covers WHERE user_email = $1`,
-    [user_email]
-  );
-  if (res.rowCount === 0) {
-    return 0;
+  const supabase: SupabaseClient = await getDb();
+
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  const { count, error } = await supabase
+    .from("covers")
+    .select("*", { count: "exact", head: true })
+    .eq("user_email", user_email);
+
+  if (error) {
+    throw error;
   }
 
-  const { rows } = res;
-  const row = rows[0];
-
-  return row.count;
+  return count;
 }
 
 export async function findCoverById(id: number): Promise<Cover | undefined> {
-  const db = getDb();
-  const res = await db.query(
-    `select w.*, u.uuid as user_uuid, u.email as user_email, u.nickname as user_name, u.avatar_url as user_avatar from covers as w left join users as u on w.user_email = u.email where w.id = $1`,
-    [id]
-  );
-  if (res.rowCount === 0) {
+  const supabase: SupabaseClient = await getDb();
+
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  const { data, error } = await supabase
+    .from("covers")
+    .select(
+      "id, user_email, img_description, img_size, img_url, llm_name, llm_params, created_at, uuid, status, users!inner(uuid, email, nickname, avatar_url)"
+    )
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
     return;
   }
 
-  const cover = formatCover(res.rows[0]);
-
-  return cover;
+  return formatCover(data);
 }
 
 export async function findCoverByUuid(
   uuid: string
 ): Promise<Cover | undefined> {
-  const db = getDb();
-  const res = await db.query(
-    `select w.*, u.uuid as user_uuid, u.email as user_email, u.nickname as user_name, u.avatar_url as user_avatar from covers as w left join users as u on w.user_email = u.email where w.uuid = $1`,
-    [uuid]
-  );
-  if (res.rowCount === 0) {
+  const supabase: SupabaseClient = await getDb();
+
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  const { data, error } = await supabase
+    .from("covers")
+    .select(
+      "id, user_email, img_description, img_size, img_url, llm_name, llm_params, created_at, uuid, status, users!inner(uuid, email, nickname, avatar_url)"
+    )
+    .eq("uuid", uuid)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
     return;
   }
 
-  const cover = formatCover(res.rows[0]);
-
-  return cover;
+  return formatCover(data);
 }
 
 export async function getRandCovers(
@@ -100,19 +134,21 @@ export async function getRandCovers(
   }
   const offset = (page - 1) * limit;
 
-  const db = getDb();
-  const res = await db.query(
-    `select w.*, u.uuid as user_uuid, u.email as user_email, u.nickname as user_name, u.avatar_url as user_avatar from covers as w left join users as u on w.user_email = u.email where w.status = 1 order by random() limit $1 offset $2`,
-    [limit, offset]
-  );
+  const supabase = getDb();
+  const { data, error } = await supabase
+    .from("covers")
+    .select(
+      "id, user_email, img_description, img_size, img_url, llm_name, llm_params, created_at, uuid, status, users!inner(uuid, email, nickname, avatar_url)"
+    )
+    .eq("status", 1)
+    .order("random()")
+    .range(offset, offset + limit - 1);
 
-  if (res.rowCount === 0) {
-    return [];
+  if (error) {
+    throw error;
   }
 
-  const covers = getCoversFromSqlResult(res);
-
-  return covers;
+  return getCoversFromSqlResult(data);
 }
 
 export async function getCovers(page: number, limit: number): Promise<Cover[]> {
@@ -124,30 +160,35 @@ export async function getCovers(page: number, limit: number): Promise<Cover[]> {
   }
   const offset = (page - 1) * limit;
 
-  const db = getDb();
-  const res = await db.query(
-    `select w.*, u.uuid as user_uuid, u.email as user_email, u.nickname as user_name, u.avatar_url as user_avatar from covers as w left join users as u on w.user_email = u.email where w.status = 1 order by w.created_at desc limit $1 offset $2`,
-    [limit, offset]
-  );
-  if (res.rowCount === 0) {
-    return [];
+  const supabase: SupabaseClient = await getDb();
+
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  const { data, error } = await supabase
+    .from("covers")
+    .select(
+      "id, user_email, img_description, img_size, img_url, llm_name, llm_params, created_at, uuid, status, users!inner(uuid, email, nickname, avatar_url)"
+    )
+    .eq("status", 1)
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) {
+    throw error;
   }
 
-  const covers = getCoversFromSqlResult(res);
-
-  return covers;
+  return getCoversFromSqlResult(data);
 }
 
-export function getCoversFromSqlResult(
-  res: QueryResult<QueryResultRow>
-): Cover[] {
-  if (!res.rowCount || res.rowCount === 0) {
+export function getCoversFromSqlResult(data: any[]): Cover[] {
+  if (!data || data.length === 0) {
     return [];
   }
 
   const covers: Cover[] = [];
-  const { rows } = res;
-  rows.forEach((row) => {
+  data.forEach((row) => {
     const cover = formatCover(row);
     if (cover) {
       covers.push(cover);
@@ -157,7 +198,7 @@ export function getCoversFromSqlResult(
   return covers;
 }
 
-export function formatCover(row: QueryResultRow): Cover | undefined {
+export function formatCover(row: any): Cover | undefined {
   let cover: Cover = {
     id: row.id,
     user_email: row.user_email,
@@ -171,12 +212,12 @@ export function formatCover(row: QueryResultRow): Cover | undefined {
     status: row.status,
   };
 
-  if (row.user_name || row.user_avatar) {
+  if (row.users) {
     cover.created_user = {
-      email: row.user_email,
-      nickname: row.user_name,
-      avatar_url: row.user_avatar,
-      uuid: row.user_uuid,
+      email: row.users.email,
+      nickname: row.users.nickname,
+      avatar_url: row.users.avatar_url,
+      uuid: row.users.uuid,
     };
   }
 

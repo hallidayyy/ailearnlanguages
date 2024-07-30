@@ -1,63 +1,98 @@
 import { User } from "@/types/user";
-import { getDb } from "@/models/db";
+import { getDb } from "@/models/db"; // 确保 getDb 返回的是 Supabase 客户端实例
 
 export async function insertUser(user: User) {
   const createdAt: string = new Date().toISOString();
+  const supabase: SupabaseClient = await getDb();
 
-  const db = await getDb();
-  const res = await db.query(
-    `INSERT INTO users 
-      (email, nickname, avatar_url, created_at, uuid) 
-      VALUES 
-      ($1, $2, $3, $4, $5)
-  `,
-    [user.email, user.nickname, user.avatar_url, createdAt, user.uuid]
-  );
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  console.error("call insert here");
+  const { data, error } = await supabase
+    .from("users")
+    .insert([
+      {
+        email: user.email,
+        nickname: user.nickname,
+        avatar_url: user.avatar_url,
+        created_at: createdAt,
+        uuid: user.uuid,
+      },
+    ]).select();
 
-  return res;
+  if (error) {
+    console.error("Failed to insert user", error);
+    throw error;
+  }
+
+  console.log("User inserted successfully", data);
+  return data;
 }
-
 export async function findUserByEmail(
   email: string
 ): Promise<User | undefined> {
-  const db = getDb();
-  const res = await db.query(`SELECT * FROM users WHERE email = $1 LIMIT 1`, [
-    email,
-  ]);
-  if (res.rowCount === 0) {
+  const supabase = await getDb();
+
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email);
+
+  if (error) {
+    console.error("Error querying user:", error);
+    throw error;
+  }
+
+  if (!data || data.length === 0) {
+    console.log("No user found with email:", email);
     return undefined;
   }
 
-  const { rows } = res;
-  const row = rows[0];
+  // 假设查询结果只有一条记录
   const user: User = {
-    email: row.email,
-    nickname: row.nickname,
-    avatar_url: row.avatar_url,
-    created_at: row.created_at,
-    uuid: row.uuid,
+    email: data[0].email,
+    nickname: data[0].nickname,
+    avatar_url: data[0].avatar_url,
+    created_at: data[0].created_at,
+    uuid: data[0].uuid,
   };
 
   return user;
 }
 
 export async function findUserByUuid(uuid: string): Promise<User | undefined> {
-  const db = getDb();
-  const res = await db.query(`SELECT * FROM users WHERE uuid = $1 LIMIT 1`, [
-    uuid,
-  ]);
-  if (res.rowCount === 0) {
+  const supabase: SupabaseClient = await getDb();
+
+  // 验证supabase对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uuid", uuid)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
     return undefined;
   }
 
-  const { rows } = res;
-  const row = rows[0];
   const user: User = {
-    email: row.email,
-    nickname: row.nickname,
-    avatar_url: row.avatar_url,
-    created_at: row.created_at,
-    uuid: row.uuid,
+    email: data.email,
+    nickname: data.nickname,
+    avatar_url: data.avatar_url,
+    created_at: data.created_at,
+    uuid: data.uuid,
   };
 
   return user;
