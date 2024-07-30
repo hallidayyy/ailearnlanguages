@@ -89,7 +89,7 @@ export default function () {
       <input
         type="text"
         className="mb-1 h-9 w-full rounded-md border border-solid border-primary px-3 py-6 text-sm text-[#333333] focus:border-primary"
-        placeholder="输入要生成的红包封面描述"
+        placeholder="Input Prompt"
         ref={inputRef}
         value={description}
         onChange={(e) => setDiscription(e.target.value)}
@@ -100,14 +100,14 @@ export default function () {
           className="relative right-0 top-[5px] w-full cursor-pointer rounded-md bg-primary px-6 py-2 text-center font-semibold text-white sm:absolute sm:right-[5px] sm:w-auto"
           disabled
         >
-          生成中...
+          generating...
         </button>
       ) : (
         <button
           className="relative right-0 top-[5px] w-full cursor-pointer rounded-md bg-primary border-primary px-6 py-2 text-center font-semibold text-white sm:absolute sm:right-[5px] sm:w-auto"
           onClick={handleSubmit}
         >
-          生成封面
+          Generating
         </button>
       )}
     </div>

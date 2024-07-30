@@ -45,7 +45,7 @@ export default function () {
     <section>
       <div className="mx-auto max-w-7xl px-5 my-16">
         <div className="mx-auto w-full max-w-3xl text-center">
-          <h2 className="text-3xl font-normal md:text-2xl ">全部红包封面</h2>
+          <h2 className="text-3xl font-normal md:text-2xl ">AI Scaffolding</h2>
           <div className="mx-auto mb-8 mt-4 max-w-[528px] md:mb-12 lg:mb-16">
             <p className="text-[#636262]"></p>
           </div>

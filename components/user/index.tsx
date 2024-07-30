@@ -43,7 +43,7 @@ export default function ({ user }: Props) {
         <DropdownMenuSeparator className="md:hidden" />
 
         <DropdownMenuCheckboxItem className="md:hidden">
-          <a href="/pricing">价格</a>
+          <a href="/pricing">Pricing</a>
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator className="md:hidden" />
 

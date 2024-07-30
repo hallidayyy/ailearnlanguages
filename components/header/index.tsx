@@ -4,15 +4,16 @@ import { Nav } from "@/types/nav";
 import Social from "@/components/social";
 import User from "@/components/user";
 import { useContext } from "react";
+import { LangSwitcher } from "@/components/header/LangSwitcher";
 
 export default function () {
   const { user } = useContext(AppContext);
 
   const navigations: Nav[] = [
-    { name: "pricing", title: "价格", url: "/pricing", target: "_self" },
+    { name: "pricing", title: "Pricing", url: "/pricing", target: "_self" },
     {
       name: "doc",
-      title: "定制微信红包封面",
+      title: "AI Scaffolding",
       url: "https://cover.weixin.qq.com/cgi-bin/mmcover-bin/readtemplate?t=page/index#/doc?page=design&index=-1",
       target: "_blank",
     },
@@ -30,7 +31,7 @@ export default function () {
                 alt="logo"
               />
               <span className="font-bold text-primary text-2xl">
-                AI 红包封面
+                AI Scaffolding
               </span>
             </a>
 
@@ -63,7 +64,7 @@ export default function () {
                           href="/pricing"
                           className="hidden md:block mr-8 font-normal text-gray-800 cursor-pointer"
                         >
-                          额度:{" "}
+                          Credit:{" "}
                           <span className="text-primary">
                             {user.credits.left_credits}
                           </span>
@@ -74,14 +75,19 @@ export default function () {
                     </>
                   ) : (
                     <a className="cursor-pointer" href="/sign-in">
-                      <Button>登录</Button>
+                      <Button>Login</Button>
                     </a>
+
                   )}
+
                 </>
               )}
+              {/* <LangSwitcher /> */}
             </div>
+
             <a href="#" className="absolute right-5 lg:hidden"></a>
           </div>
+   
         </nav>
       </div>
     </header>

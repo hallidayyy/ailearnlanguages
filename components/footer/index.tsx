@@ -6,52 +6,52 @@ export default function () {
       <div className="w-screen flex-col px-6 py-20 lg:flex lg:px-10 xl:px-24">
         <div className="lg:flex lg:flex-row lg:justify-between">
           <div>
-            <p>AI Cover</p>
+            <p>AI Scaffolding</p>
             <p className="font-inter mt-4 max-w-[350px] text-base font-light text-gray-500">
-              AI 红包封面生成器
+              AI Scaffolding
             </p>
             <div className="mb-8 mt-6">{/* <Social /> */}</div>
           </div>
           <div className="flex grow flex-row flex-wrap lg:mx-10 lg:flex-nowrap lg:justify-center">
             <div className="my-5 mr-8 flex max-w-[200px] grow basis-[100px] flex-col space-y-5 lg:mx-10 lg:mt-0">
-              <p className="font-inter font-medium text-black">其他作品</p>
+              <p className="font-inter font-medium text-black">Other products</p>
               <a
-                href="https://gpts.works"
+                href="https://aiapp.icu"
                 target="_blank"
                 className="font-inter font-light text-gray-500"
               >
-                GPTs Works
+                AI app: I SEE YOU
               </a>
               <a
-                href="https://gptalk.one"
+                href="https://aiapp.icu"
                 target="_blank"
                 className="font-inter font-light text-gray-500"
               >
-                GPTalk
+                AI app: I SEE YOU
               </a>
               <a
-                href="https://readknown.cn"
+                href="https://aiapp.icu"
                 target="_blank"
                 className="font-inter font-light text-gray-500"
               >
-                知了 zKnown
+                AI app: I SEE YOU
               </a>
             </div>
             <div className="my-5 mr-8 flex max-w-[200px] grow basis-[100px] flex-col space-y-5 lg:mx-10 lg:mt-0">
-              <p className="font-inter font-medium text-black">友情链接</p>
+              <p className="font-inter font-medium text-black">Links</p>
               <a
-                href="https://aiwallpaper.shop"
+                href="https://aiapp.icu"
                 target="_blank"
                 className="font-inter font-light text-gray-500"
               >
-                AI Wallpaper
+                AI app: I SEE YOU
               </a>
             </div>
           </div>
           <div className="mt-10 flex flex-col lg:mt-0">
             <div className="mb-4 flex flex-row items-center">
-              <p className="block">联系作者: </p>
-              <p className="font-inter ml-4 text-black">me@idoubi.cc</p>
+              <p className="block">Contact: </p>
+              <p className="font-inter ml-4 text-black">luchao62@gmail.com</p>
             </div>
           </div>
         </div>
@@ -60,11 +60,11 @@ export default function () {
           <p className="font-inter text-center text-sm text-gray-500 lg:mt-0">
             © Copyright 2024.{" "}
             <a
-              href="https://aicover.design"
+              href="https://aiapp.icu"
               target="_blank"
               className="text-primary hidden md:inline-block"
             >
-              aicover.design
+              AI app: I SEE YOU
             </a>{" "}
             All rights reserved.
           </p>
