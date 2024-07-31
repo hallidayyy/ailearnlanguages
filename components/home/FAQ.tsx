@@ -3,7 +3,7 @@ import { ALL_FAQS } from "@/config/faqs";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { PlusIcon } from "lucide-react";
 import { RoughNotation } from "react-rough-notation";
-import en from "@/locales/en.json"; // 使用路径别名
+
 
 // update rough notation highlight
 function triggerResizeEvent() {
@@ -20,8 +20,7 @@ const FAQ = ({
     locale: any;
     langName: string;
 }) => {
-    langName = "EN"; //未添加多语言之前，先写死成EN
-    locale = en;
+
     //console.error(locale.FAQ.title);
     const FAQS = ALL_FAQS[`FAQS_${langName.toUpperCase()}`];
 
@@ -34,10 +33,10 @@ const FAQ = ({
                 <div className="flex flex-col text-center gap-4">
                     <h2 className="text-center text-white">
                         <RoughNotation type="highlight" show={true} color="#2563EB">
-                            {locale.FAQ.title}
+                        {locale.title}
                         </RoughNotation>
                     </h2>
-                    <p className="text-large text-default-500">{locale.FAQ.description}</p>
+                    <p className="text-large text-default-500">{locale.description}</p>
                 </div>
                 <Accordion
                     fullWidth

@@ -82,7 +82,7 @@ export default function () {
 
                 </>
               )}
-              {/* <LangSwitcher /> */}
+              <LangSwitcher /> 
             </div>
 
             <a href="#" className="absolute right-5 lg:hidden"></a>

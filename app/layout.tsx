@@ -7,13 +7,16 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 
+import Footer from "@/components/footer/Footer";
+import Header from "@/components/header";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "微信红包封面生成器 ｜ AI Cover",
+  title: "Learn Languages From Podcasts",
   description:
-    "微信红包封面生成器，利用 AI 技术生成高清精美的微信红包封面图片。",
-  keywords: "微信红包封面, 微信红包, AI 红包封面, AI Cover",
+    "flexible, immersive audio lessons for language skills and cultural insights on-the-go.",
+  keywords: "language learning podcasts, podcast for language learners, learn languages online, audio language lessons, podcast immersion, language podcast subscription, cultural language podcast, podcast language practice, multilingual podcasts, podcast language acquisition",
 };
 
 export default function RootLayout({

@@ -1,3 +1,4 @@
+// app/[lang]/studyroom/page.tsx
 "use client";
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -5,11 +6,26 @@ import MainLayout from "@/components/MainLayout";
 import Navigation from '@/components/StudyRoom/Navigation';
 import MainContent from '@/components/StudyRoom/MainContent';
 import SubHeader from '@/components/StudyRoom/SubHeader';
-
-import { useLanguage } from '@/contexts/LanguageContext';
-import { LangSwitcher } from '@/components/header/LangSwitcher';
+import { useRouter } from 'next/router';
 
 const StudyRoom: React.FC = () => {
+  const router = useRouter();
+  const { lang } = router.query;
+  const [locale, setLocale] = useState<any>(null);
+
+  useEffect(() => {
+    if (lang) {
+      import(`@/locales/${lang}.json`).then(module => {
+        setLocale(module.default);
+      }).catch(error => {
+        console.error(`Failed to load locale for ${lang}:`, error);
+        import(`@/locales/en.json`).then(module => {
+          setLocale(module.default);
+        });
+      });
+    }
+  }, [lang]);
+  console.error(lang);
   const [content, setContent] = useState('Summary');
   const [audioLink, setAudioLink] = useState('');
   const [extraContent, setExtraContent] = useState('');
@@ -88,6 +104,10 @@ const StudyRoom: React.FC = () => {
 
   console.log('Rendering StudyRoom with content:', content, 'and audioLink:', audioLink);
 
+  if (!locale) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <MainLayout>
       <div className="flex h-screen bg-gray-900 text-white">
@@ -97,6 +117,7 @@ const StudyRoom: React.FC = () => {
             audioLink={audioLink}
             onProcessClick={handleProcessClick}
             onFetchResult={handleFetchResult}
+            locale={locale} // 传递 locale 对象
           />
           <div className="flex-1 flex">
             <Navigation
@@ -108,8 +129,9 @@ const StudyRoom: React.FC = () => {
               onRewriteArticleClick={handleRewriteArticleClick}
               onQuestionsClick={handleQuestionsClick}
               onExportNotesClick={handleExportNotesClick}
+              locale={locale} // 传递 locale 对象
             />
-            <MainContent content={content} jsonDataContent={extraContent} loading={loading} error={error} prompt={prompt} />
+            <MainContent content={content} jsonDataContent={extraContent} loading={loading} error={error} prompt={prompt} locale={locale} />
           </div>
         </main>
       </div>

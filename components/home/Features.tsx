@@ -1,7 +1,7 @@
 import { ALL_FEATURES } from "@/config/features";
 import React from "react";
 import { RoughNotation } from "react-rough-notation";
-import en from "@/locales/en.json"; // 使用路径别名
+
 
 
 const Feature = ({
@@ -13,8 +13,7 @@ const Feature = ({
     locale: any;
     langName: string;
 }) => {
-    langName = "en";
-    locale = en;
+
     const FEATURES = ALL_FEATURES[`FEATURES_${langName.toUpperCase()}`];
     return (
         <section
@@ -23,7 +22,7 @@ const Feature = ({
         >
             <h2 className="text-center text-white">
                 <RoughNotation type="highlight" show={true} color="#2563EB">
-                    {locale.Feature.title}
+                    {locale.title}
                 </RoughNotation>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

@@ -15,7 +15,7 @@ import { siteConfig } from "@/config/site";
 import { ALL_TIERS } from "@/config/tiers";
 import { FaCheck } from "react-icons/fa";
 import { RoughNotation } from "react-rough-notation";
-import en from "@/locales/en.json"; // 使用路径别名
+
 
 const Pricing = ({
   id,
@@ -26,8 +26,7 @@ const Pricing = ({
   locale: any;
   langName: string;
 }) => {
-  langName = "en";
-  locale = en;
+
   const TIERS = ALL_TIERS[`TIERS_${langName.toUpperCase()}`];
   return (
     <div className="flex justify-center">
@@ -38,14 +37,14 @@ const Pricing = ({
         <div className="flex flex-col text-center max-w-xl">
           <h2 className="text-center text-white">
             <RoughNotation type="highlight" show={true} color="#2563EB">
-              {locale.Pricing.title}
+              {locale.title}
             </RoughNotation>
           </h2>
           <h3 className="text-4xl font-medium tracking-tight mt-2">
-            {locale.Pricing.title2}
+            {locale.title2}
           </h3>
           <Spacer y={4} />
-          <p className="text-large text-default-500">{locale.Pricing.description}</p>
+          <p className="text-large text-default-500">{locale.description}</p>
         </div>
         <Spacer y={8} />
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 justify-items-center">
@@ -95,14 +94,14 @@ const Pricing = ({
         <Spacer y={12} />
         <div className="flex py-2">
           <p className="text-default-400 text-center">
-            {locale.Pricing.doYouLike}&nbsp;
+            {locale.doYouLike}&nbsp;
             <Link
               color="foreground"
               href={siteConfig.authors[0].twitter}
               underline="always"
               rel="noopener noreferrer nofollow"
             >
-              {locale.Pricing.follow}
+              {locale.follow}
             </Link>
           </p>
         </div>

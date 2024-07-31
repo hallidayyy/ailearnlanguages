@@ -1,5 +1,6 @@
-import { match } from "@formatjs/intl-localematcher";
-import Negotiator from "negotiator";
+// lib/i18n.js
+import { match } from '@formatjs/intl-localematcher';
+import Negotiator from 'negotiator';
 
 export const locales = ["", "en", "en-US", "zh", "zh-CN", "zh-TW", 'zh-HK', 'ja', "ar", "es", "ru"];
 export const localeNames: any = {
@@ -12,11 +13,8 @@ export const localeNames: any = {
 };
 export const defaultLocale = "en";
 
-// If you wish to automatically redirect users to a URL that matches their browser's language setting,
-// you can use the `getLocale` to get the browser's language.
 export function getLocale(headers: any): string {
     let languages = new Negotiator({ headers }).languages();
-
     return match(languages, locales, defaultLocale);
 }
 
