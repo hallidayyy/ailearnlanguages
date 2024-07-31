@@ -26,10 +26,6 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        // primary: {
-        //   DEFAULT: "hsl(var(--primary))",
-        //   foreground: "hsl(var(--primary-foreground))",
-        // },
         primary: {
           foreground: "#FFFFFF",
           DEFAULT: "#3B82F6",
@@ -88,6 +84,12 @@ const config = {
         "scrolling-banner": "scrolling-banner var(--duration) linear infinite",
         "scrolling-banner-vertical": "scrolling-banner-vertical var(--duration) linear infinite",
       },
+    },
+  },
+  variants: {
+    extend: {
+      textColor: ['hover'], // 确保 hover 变体被启用
+      backgroundColor: ['hover'], // 确保 hover 变体被启用
     },
   },
   plugins: [require("tailwindcss-animate"), nextui()],
