@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
 import { Card } from '@/types/Card';
+import Link from 'next/link';
 
 const CardsTable: React.FC = () => {
   const [cards, setCards] = useState<Card[]>([]);
@@ -24,35 +25,35 @@ const CardsTable: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <table className="min-w-full bg-white text-black border border-gray-300">
-        <thead>
+    <div className="overflow-x-auto">
+      <table className="w-full divide-y-2 divide-gray-200 bg-white text-sm">
+        <thead className="ltr:text-left rtl:text-right">
           <tr>
-            <th className="py-2 px-4 border-b">User ID</th>
-            <th className="py-2 px-4 border-b">Link</th>
-            <th className="py-2 px-4 border-b">Original</th>
-            <th className="py-2 px-4 border-b">Translate</th>
-            <th className="py-2 px-4 border-b">Key Words</th>
-            <th className="py-2 px-4 border-b">Key Grammer</th>
-            <th className="py-2 px-4 border-b">Rewrite Article</th>
-            <th className="py-2 px-4 border-b">Questions</th>
-            <th className="py-2 px-4 border-b">Export Notes</th>
-            <th className="py-2 px-4 border-b">Likes</th>
+          <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Title</th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Link</th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Lang</th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">WordCount</th>
+
+
+            <th className="px-4 py-2"></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-200">
           {cards.map(card => (
             <tr key={card.id}>
-              <td className="py-2 px-4 border-b">{card.userid}</td>
-              <td className="py-2 px-4 border-b">{card.link}</td>
-              <td className="py-2 px-4 border-b">{card.original}</td>
-              <td className="py-2 px-4 border-b">{card.translation}</td>
-              <td className="py-2 px-4 border-b">{card.keywords}</td>
-              <td className="py-2 px-4 border-b">{card.keygrammer}</td>
-              <td className="py-2 px-4 border-b">{card.rewritedarticle}</td>
-              <td className="py-2 px-4 border-b">{card.questions}</td>
-              <td className="py-2 px-4 border-b">{card.notes}</td>
-              <td className="py-2 px-4 border-b">{card.likes}</td>
+              <td className="whitespace-nowrap px-4 py-2 text-gray-700">{card.generatedtitle}</td>
+              <td className="whitespace-nowrap px-4 py-2 text-gray-700">{card.link}</td>
+              <td className="whitespace-nowrap px-4 py-2 text-gray-700">{card.lang}</td>
+              <td className="whitespace-nowrap px-4 py-2 text-gray-700">{card.wordcount}</td>
+
+
+              <td className="whitespace-nowrap px-4 py-2">
+                <Link href={`/studyroom/viewcard/${card.id}`} legacyBehavior>
+                  <a className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                    View
+                  </a>
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

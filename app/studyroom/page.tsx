@@ -17,14 +17,13 @@ const MainContent: React.FC = () => {
 
     return (
         <MainLayout>
-            <div className="flex h-screen bg-gray-900 text-white">
+            <div className="flex h-screen bg-white text-black"> {/* 修改背景颜色和文字颜色 */}
                 <SideBar onSelect={handleSelect} />
-                <main className="flex-1 flex flex-col">
-                    <div className="flex-1 flex">
+                <main className="flex-1 flex flex-col w-full"> {/* 设置宽度为100% */}
+                    <div className="flex-1 flex w-full"> {/* 确保内部 div 也占据全部宽度 */}
                         {selectedComponent === "home" && <CardTable state={cardListState} setState={setCardListState} />}
                         {selectedComponent === "play" && <CreateCard state={createCardState} setState={setCreateCardState} />}
-                        {selectedComponent === "settings" && <div>Settings Content</div>}
-                        {selectedComponent !== "home" && selectedComponent !== "play" && selectedComponent !== "settings" && <div>Default Content</div>}
+                      
                     </div>
                 </main>
             </div>

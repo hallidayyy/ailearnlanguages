@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         { role: 'system', content: 'You are a seasoned language teacher who is proficient in the languages of various countries and is good at teaching others languages.Please reply to my question in JSON format.' },
         { role: 'user', content: prompt },
       ],
-      max_tokens: maxTokens || 100,
+      max_tokens: maxTokens || 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
 

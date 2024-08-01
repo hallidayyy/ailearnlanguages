@@ -85,9 +85,9 @@ const SubHeader: React.FC<SubHeaderProps> = ({
             questions: resultCache.Questions,
             notes: resultCache.ExportNotes,
             likes: 0, // 默认点赞数为0
-            wordcount:wordCount,
-            lang:detectedLanguage,
-            generatedtitle:generatedTitle,
+            wordcount: wordCount,
+            lang: detectedLanguage,
+            generatedtitle: generatedTitle,
           }
         ]);
 
@@ -114,42 +114,34 @@ const SubHeader: React.FC<SubHeaderProps> = ({
     <div className="flex items-center justify-center bg-white text-black py-4 w-full">
       <div className="w-full space-y-4 px-4">
         <div className="flex items-center space-x-2 w-full">
+
+
+
+
+
+
           <input
             type="url"
             placeholder="输入链接"
-            value={link} // 使用 link 状态
+            value={link}
             onChange={handleInputChange}
             aria-label="输入链接"
-            className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className=" w-1/2 px-4 py-2 border border-gray-200 rounded-md bg-white text-gray-900 placeholder:text-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+            disabled
           />
-          <button
-            onClick={handleSubmit}
-            className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            Load Podcast
-          </button>
-          <button
-            onClick={onProcessClick}
-            className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            Process
-          </button>
-          <button
-            onClick={handleSaveClick}
-            className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            {loading ? 'Saving...' : 'Save'}
-          </button>
+
+
+
           {error && <p className="text-red-600">Error: {error.message}</p>}
           {audioLink && (
-            <audio controls autoPlay className="ml-4 flex-1">
+            <audio controls autoPlay className="w-1/2 ml-4  bg-gray-100 rounded-lg shadow-md">
               <source src={audioLink} type="audio/mpeg" />
               您的浏览器不支持音频元素。
             </audio>
           )}
         </div>
-        <p className="text-center text-sm text-gray-500">Paste a podcast link to continue</p>
- 
+
+
       </div>
     </div>
   );

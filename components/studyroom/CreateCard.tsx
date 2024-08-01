@@ -4,8 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import SubHeader from '@/components/studyroom/SubHeader';
 import Navigation from '@/components/studyroom/Navigation';
 import MainContent from '@/components/studyroom/MainContent';
-import { useContext } from "react";
-import AppContext from "@/contexts/AppContext";
+import { franc } from 'franc';
 
 interface CreateCardProps {
   state: {
@@ -24,6 +23,10 @@ interface CreateCardProps {
       Questions: string;
       ExportNotes: string;
     };
+    detectedLanguage: string;
+    wordCount: number;
+    link: string; // 添加 link 状态
+    generatedTitle: string;
   };
   setState: React.Dispatch<React.SetStateAction<{
     content: string;
@@ -40,17 +43,18 @@ interface CreateCardProps {
       RewriteArticle: string;
       Questions: string;
       ExportNotes: string;
-    }
+    };
+    detectedLanguage: string;
+    wordCount: number;
+    link: string; // 添加 link 状态
+    generatedTitle: string;
   }>>;
 }
-let indexStr: string = "Orginal";
+
+let indexStr: keyof typeof resultCache = "Original";
 const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
-  const { content, audioLink, extraContent, loading, error, prompt } = state;
+  const { content, audioLink, extraContent, loading, error, prompt, detectedLanguage, wordCount, link, generatedTitle } = state;
 
-
-  //const { user } = useContext(AppContext);
-
-  // 定义 resultCache 变量
   const [resultCache, setResultCache] = useState({
     Original: '',
     Translate: '',
@@ -59,7 +63,6 @@ const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
     RewriteArticle: '',
     Questions: '',
     ExportNotes: '',
-
   });
 
   const handleButtonClick = useCallback((content: string) => {
@@ -70,21 +73,56 @@ const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
     setState(prevState => ({ ...prevState, audioLink: link }));
   }, [setState]);
 
-  const handleProcessClick = useCallback(() => {
-    setState(prevState => ({ ...prevState, loading: true }));
-    fetch('/testdata.json')
-      .then(response => response.json())
-      .then(data => {
-        setState(prevState => ({ ...prevState, extraContent: JSON.stringify(data, null, 2), loading: false }));
-      })
-      .catch(error => {
-        setState(prevState => ({ ...prevState, error, loading: false }));
-      });
+  const handleLinkChange = useCallback((link: string) => {
+    setState(prevState => ({ ...prevState, link }));
   }, [setState]);
+
+  const handleProcessClick = useCallback(async () => {
+    setState(prevState => ({ ...prevState, loading: true }));
+    try {
+      const response = await fetch('/testdata.json');
+      const data = await response.json();
+      const text = JSON.stringify(data, null, 2);
+      const detectedLanguage = franc(text);
+      const wordCount = text.split(/\s+/).length;
+      const prompt = `最简短的总结标题: ${text}`;
+      const generatedTitle = await callDeepSeekAPISimple(prompt);
+
+      setResultCache(prevCache => ({ ...prevCache, Original: text }));
+      setState(prevState => ({
+        ...prevState,
+        extraContent: text,
+        detectedLanguage,
+        wordCount,
+        generatedTitle,
+        loading: false
+      }));
+    } catch (error) {
+      setState(prevState => ({ ...prevState, error, loading: false }));
+    }
+  }, [setState, extraContent]);
 
   const handleFetchResult = (result: string) => {
     setState(prevState => ({ ...prevState, extraContent: result }));
   };
+
+  async function callDeepSeekAPISimple(prompt: string): Promise<string> {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('Error calling DeepSeek API:', error);
+      return '';
+    }
+  }
 
   const callDeepSeekAPI = useCallback(async (prompt: string, handleFunctionName: keyof typeof resultCache) => {
     try {
@@ -104,50 +142,48 @@ const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
   }, []);
 
   const handleShowOriginalClick = useCallback(() => {
-    const prompt = `handleShowOriginalClick: 请把这个文章翻译成中文，只要返回结果即可0: ${extraContent}`;
     setState(prevState => ({ ...prevState, prompt }));
-    //callDeepSeekAPI(prompt, 'Original');
-    resultCache["Original"] = extraContent;
+    setResultCache(prevCache => ({ ...prevCache, Original: extraContent }));
     indexStr = "Original";
-  }, [extraContent, setState, callDeepSeekAPI]);
+  }, [extraContent, setState]);
 
   const handleTranslateClick = useCallback(() => {
-    const prompt = `handleTranslateClick: 请把这段话翻译成中文，只要返回结果即可1: ${extraContent}`;
+    const prompt = `请把这段话翻译成中文: ${extraContent}`;
     setState(prevState => ({ ...prevState, prompt }));
     callDeepSeekAPI(prompt, 'Translate');
     indexStr = "Translate";
   }, [extraContent, setState, callDeepSeekAPI]);
 
   const handleKeyWordsClick = useCallback(() => {
-    const prompt = `handleKeyWordsClick: 请提取这段话的重点词汇: ${extraContent}`;
+    const prompt = `请提取这段话的重点词汇，并对每个单词进行讲解: ${extraContent}`;
     setState(prevState => ({ ...prevState, prompt }));
     callDeepSeekAPI(prompt, 'KeyWords');
     indexStr = "KeyWords";
   }, [extraContent, setState, callDeepSeekAPI]);
 
   const handleKeyGrammerClick = useCallback(() => {
-    const prompt = `handleKeyGrammerClick: 请提取这段话的重点语法: ${extraContent}`;
+    const prompt = `请提取这段话的重点语法，并对每个语法点进行讲解: ${extraContent}`;
     setState(prevState => ({ ...prevState, prompt }));
     callDeepSeekAPI(prompt, 'KeyGrammer');
     indexStr = "KeyGrammer";
   }, [extraContent, setState, callDeepSeekAPI]);
 
   const handleRewriteArticleClick = useCallback(() => {
-    const prompt = `handleRewriteArticleClick: 请用重点词汇重组这篇文章: ${extraContent}`;
+    const prompt = `请用重点词汇重组这篇文章: ${extraContent}`;
     setState(prevState => ({ ...prevState, prompt }));
     callDeepSeekAPI(prompt, 'RewriteArticle');
     indexStr = "RewriteArticle";
   }, [extraContent, setState, callDeepSeekAPI]);
 
   const handleQuestionsClick = useCallback(() => {
-    const prompt = `handleQuestionsClick: 请为这段话出题: ${extraContent}`;
+    const prompt = `请为这段话出题: ${extraContent}`;
     setState(prevState => ({ ...prevState, prompt }));
     callDeepSeekAPI(prompt, 'Questions');
     indexStr = "Questions";
   }, [extraContent, setState, callDeepSeekAPI]);
 
   const handleExportNotesClick = useCallback(() => {
-    const prompt = `handleExportNotesClick: 请导出这段话的笔记: ${extraContent}`;
+    const prompt = `请导出这段话的笔记: ${extraContent}`;
     setState(prevState => ({ ...prevState, prompt }));
     callDeepSeekAPI(prompt, 'ExportNotes');
     indexStr = "ExportNotes";
@@ -160,7 +196,6 @@ const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
   console.log('Rendering CreateCard with content:', content, 'and audioLink:', audioLink);
 
   return (
-
     <div className="flex h-screen bg-gray-900 text-white">
       <main className="flex-1 flex flex-col">
         <SubHeader
@@ -168,8 +203,12 @@ const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
           audioLink={audioLink}
           onProcessClick={handleProcessClick}
           onFetchResult={handleFetchResult}
+          onLinkChange={handleLinkChange}
+          link={link}
           resultCache={resultCache}
-          link={audioLink}
+          detectedLanguage={detectedLanguage}
+          wordCount={wordCount}
+          generatedTitle={generatedTitle}
         />
         <div className="flex-1 flex">
           <Navigation
@@ -182,7 +221,6 @@ const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
             onQuestionsClick={handleQuestionsClick}
             onExportNotesClick={handleExportNotesClick}
             resultCache={resultCache}
-
           />
           <MainContent
             content={content}
@@ -190,8 +228,8 @@ const CreateCard: React.FC<CreateCardProps> = ({ state, setState }) => {
             loading={loading}
             error={error}
             prompt={prompt}
-
-            result={prompt ? resultCache[indexStr] : ''} // 传递 result
+            result={prompt ? resultCache[indexStr] : ''}
+            generatedTitle={generatedTitle}
           />
         </div>
       </main>

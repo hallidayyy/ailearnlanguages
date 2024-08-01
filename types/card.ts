@@ -11,4 +11,7 @@ export interface Card {
     questions: string;
     notes: string;
     likes: number;
+    wordcount:number;
+    lang:string;
+    generatedtitle:string;
   }

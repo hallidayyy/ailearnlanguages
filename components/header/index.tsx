@@ -13,7 +13,7 @@ export default function () {
     { name: "pricing", title: "Pricing", url: "/pricing", target: "_self" },
     {
       name: "doc",
-      title: "AI Scaffolding",
+      title: "Blogs",
       url: "https://cover.weixin.qq.com/cgi-bin/mmcover-bin/readtemplate?t=page/index#/doc?page=design&index=-1",
       target: "_blank",
     },
@@ -31,7 +31,7 @@ export default function () {
                 alt="logo"
               />
               <span className="font-bold text-primary text-2xl">
-                AI Scaffolding
+              Learn Languages From Podcasts
               </span>
             </a>
 
@@ -82,6 +82,15 @@ export default function () {
 
                 </>
               )}
+
+
+<a href="/studyroom" className="mr-4">
+                    <Button>StudyRoom</Button>
+                  </a>
+
+
+
+
               <LangSwitcher /> 
             </div>
 
