@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const response = await openai.chat.completions.create({
       model: isProduction ? 'text-davinci-003' : 'deepseek-chat',
       messages: [
-        { role: 'system', content: 'You are a helpful assistant that outputs JSON format.' },
+        { role: 'system', content: 'You are a seasoned language teacher who is proficient in the languages of various countries and is good at teaching others languages.Please reply to my question in JSON format.' },
         { role: 'user', content: prompt },
       ],
       max_tokens: maxTokens || 100,

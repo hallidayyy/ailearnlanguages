@@ -1,9 +1,7 @@
-// components/Navigation.tsx
 import React from 'react';
-import { Button } from "@/components/ui/button";
 
 interface NavigationProps {
-  onButtonClick: (funcName: string) => void;
+  onButtonClick: (content: string) => void;
   onShowOriginalClick: () => void;
   onTranslateClick: () => void;
   onKeyWordsClick: () => void;
@@ -11,40 +9,88 @@ interface NavigationProps {
   onRewriteArticleClick: () => void;
   onQuestionsClick: () => void;
   onExportNotesClick: () => void;
+  resultCache: {
+    Original: string;
+    Translate: string;
+    KeyWords: string;
+    KeyGrammer: string;
+    RewriteArticle: string;
+    Questions: string;
+    ExportNotes: string;
+  };
 }
 
-const Navigation: React.FC<NavigationProps> = ({
-  onButtonClick,
-  onShowOriginalClick,
-  onTranslateClick,
-  onKeyWordsClick,
-  onKeyGrammerClick,
-  onRewriteArticleClick,
-  onQuestionsClick,
-  onExportNotesClick,
+const Navigation: React.FC<NavigationProps> = ({ 
+  onButtonClick, 
+  onShowOriginalClick, 
+  onTranslateClick, 
+  onKeyWordsClick, 
+  onKeyGrammerClick, 
+  onRewriteArticleClick, 
+  onQuestionsClick, 
+  onExportNotesClick, 
+  resultCache 
 }) => {
-  const buttons = [
-    { name: '显示原文', onClick: onShowOriginalClick },
-    { name: '翻译', onClick: onTranslateClick },
-    { name: '重点词汇', onClick: onKeyWordsClick },
-    { name: '重点语法', onClick: onKeyGrammerClick },
-    { name: '重点词汇重组文章', onClick: onRewriteArticleClick },
-    { name: '出题', onClick: onQuestionsClick },
-    { name: '导出笔记', onClick: onExportNotesClick },
-  ];
-
   return (
-    <nav className="w-48 bg-white p-4">
-      {buttons.map((btn, index) => (
-        <Button
-          key={index}
-          variant="ghost"
-          className="w-full text-left text-black hover:bg-gray-200"
-          onClick={typeof btn === 'string' ? () => onButtonClick(btn) : btn.onClick}
-        >
-          {typeof btn === 'string' ? btn : btn.name}
-        </Button>
-      ))}
+    <nav className="w-64 bg-gray-800 p-4">
+      <ul className="space-y-2">
+        <li>
+          <button 
+            onClick={onShowOriginalClick} 
+            className="w-full text-left text-white p-2 rounded hover:bg-gray-700"
+          >
+            Show Original {resultCache.Original && '✅'}
+          </button>
+        </li>
+        <li>
+          <button 
+            onClick={onTranslateClick} 
+            className="w-full text-left text-white p-2 rounded hover:bg-gray-700"
+          >
+            Translate {resultCache.Translate && '✅'}
+          </button>
+        </li>
+        <li>
+          <button 
+            onClick={onKeyWordsClick} 
+            className="w-full text-left text-white p-2 rounded hover:bg-gray-700"
+          >
+            Key Words {resultCache.KeyWords && '✅'}
+          </button>
+        </li>
+        <li>
+          <button 
+            onClick={onKeyGrammerClick} 
+            className="w-full text-left text-white p-2 rounded hover:bg-gray-700"
+          >
+            Key Grammer {resultCache.KeyGrammer && '✅'}
+          </button>
+        </li>
+        <li>
+          <button 
+            onClick={onRewriteArticleClick} 
+            className="w-full text-left text-white p-2 rounded hover:bg-gray-700"
+          >
+            Rewrite Article {resultCache.RewriteArticle && '✅'}
+          </button>
+        </li>
+        <li>
+          <button 
+            onClick={onQuestionsClick} 
+            className="w-full text-left text-white p-2 rounded hover:bg-gray-700"
+          >
+            Questions {resultCache.Questions && '✅'}
+          </button>
+        </li>
+        <li>
+          <button 
+            onClick={onExportNotesClick} 
+            className="w-full text-left text-white p-2 rounded hover:bg-gray-700"
+          >
+            Export Notes {resultCache.ExportNotes && '✅'}
+          </button>
+        </li>
+      </ul>
     </nav>
   );
 };

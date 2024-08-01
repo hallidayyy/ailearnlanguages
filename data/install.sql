@@ -34,3 +34,21 @@ CREATE TABLE orders (
     credits INT NOT NULL,
     currency VARCHAR(50)
 );
+
+
+CREATE TABLE cards (
+    id SERIAL PRIMARY KEY,
+    userid INT NOT NULL,
+    uuid UUID UNIQUE NOT NULL,
+    link VARCHAR(255) NOT NULL,
+    original TEXT,
+    translation TEXT,
+    keywords TEXT,
+    keygrammer TEXT,
+    rewritedarticle TEXT,
+    questions TEXT,
+    notes TEXT,
+    likes INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userid) REFERENCES users(id)
+);

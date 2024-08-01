@@ -1,23 +1,45 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from 'react';
+import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
+import { v4 as uuidv4 } from 'uuid'; // 导入UUID生成库
 
 interface SubHeaderProps {
   onAudioSubmit: (link: string) => void;
   audioLink: string;
   onProcessClick: () => void;
   onFetchResult: (result: string) => void;
+  link: string; // 添加 link 状态
+  onLinkChange: (link: string) => void; // 添加处理 link 改变的函数
+  userid: string; // 添加 userid 状态
+  resultCache: {
+    Original: string;
+    Translate: string;
+    KeyWords: string;
+    KeyGrammer: string;
+    RewriteArticle: string;
+    Questions: string;
+    ExportNotes: string;
+  };
 }
 
-const SubHeader: React.FC<SubHeaderProps> = ({ onAudioSubmit, audioLink, onProcessClick, onFetchResult }) => {
-  const [link, setLink] = useState('');
+const SubHeader: React.FC<SubHeaderProps> = ({ 
+  onAudioSubmit, 
+  audioLink, 
+  onProcessClick, 
+  onFetchResult, 
+  link, 
+  onLinkChange, 
+  userid, 
+  resultCache 
+}) => {
   const [isAudio, setIsAudio] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setLink(event.target.value);
-  }, []);
+    onLinkChange(event.target.value);
+  }, [onLinkChange]);
 
   const handleSubmit = useCallback(() => {
     const audioExtensions = ['.mp3', '.wav', '.ogg'];
@@ -32,22 +54,41 @@ const SubHeader: React.FC<SubHeaderProps> = ({ onAudioSubmit, audioLink, onProce
     }
   }, [link, onAudioSubmit]);
 
-  const handleFetchClick = async () => {
+  const handleSaveClick = async () => {
+    if (!resultCache) {
+      setError(new Error('ResultCache is undefined'));
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: '给我讲一个笑话', maxTokens: 150 }),
-      });
+      const supabase = await getDb();
+      const { data, error } = await supabase
+        .from('cards')
+        .insert([
+          {
+     
+            uuid: uuidv4(),
+            link: link,
+            original: resultCache.Original,
+            translation: resultCache.Translate,
+            keywords: resultCache.KeyWords,
+            keygrammer: resultCache.KeyGrammer,
+            rewritedarticle: resultCache.RewriteArticle,
+            questions: resultCache.Questions,
+            notes: resultCache.ExportNotes,
+            likes: 0 // 默认点赞数为0
+          }
+        ]);
 
-      const data = await response.json();
-      onFetchResult(data.choices[0].message.content);
+      if (error) {
+        throw error;
+      }
+
+      console.log('Data saved successfully:', data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error saving data:', error);
       setError(error);
     } finally {
       setLoading(false);
@@ -67,7 +108,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ onAudioSubmit, audioLink, onProce
           <input
             type="url"
             placeholder="输入链接"
-            value={link}
+            value={link} // 使用 link 状态
             onChange={handleInputChange}
             aria-label="输入链接"
             className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -85,10 +126,10 @@ const SubHeader: React.FC<SubHeaderProps> = ({ onAudioSubmit, audioLink, onProce
             处理
           </button>
           <button
-            onClick={handleFetchClick}
+            onClick={handleSaveClick}
             className="rounded-md bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500"
           >
-            {loading ? 'Loading...' : 'Fetch Data'}
+            {loading ? 'Saving...' : 'Save Data'}
           </button>
           {error && <p className="text-red-600">Error: {error.message}</p>}
           {audioLink && (

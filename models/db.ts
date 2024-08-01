@@ -18,35 +18,12 @@ export async function getDb() {
 
       supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
-      // 插入测试记录
-      // const testEmail = `test_${Date.now()}@example.com`; // 生成一个唯一的测试邮箱
-      // const testUuid = uuidv4(); // 生成一个唯一的UUID
-      // const { data: insertData, error: insertError } = await supabaseClient
-      //   .from('users')
-      //   .insert([{ email: testEmail, uuid: testUuid }]);
 
-      // if (insertError) {
-      //   throw new Error(`Insert test record failed: ${insertError.message}`);
-      // }
-      // console.log("Insert test record succeeded:", insertData);
-
-      // 查询测试记录
-      // const { data: queryData, error: queryError } = await supabaseClient
-      //   .from('users')
-      //   .select('email')
-      //   .eq('email', testEmail)
-      //   .single();
-
-      // if (queryError) {
-      //   throw new Error(`Query test record failed: ${queryError.message}`);
-      // }
-      // console.log("Query test record succeeded:", queryData);
     } catch (error) {
       console.error("Failed to initialize Supabase client:", error);
       throw error; // 重新抛出错误，以便调用者可以处理
     }
   }
 
-  //console.log("Returning supabaseClient:", supabaseClient);
   return supabaseClient;
 }
