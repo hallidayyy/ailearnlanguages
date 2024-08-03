@@ -6,9 +6,29 @@ interface TaskCardProps {
   description: string;
   duration: string;
   featuring: string[];
+  status: string; // 新增 status prop
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status }) => {
+  const renderButton = () => {
+    switch (status) {
+      case 'pending':
+        return (
+          <button className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded">Check</button>
+        );
+      case 'transcribed':
+        return (
+          <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Process</button>
+        );
+      case 'done':
+        return (
+          <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded">View</button>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <article className="rounded-xl bg-white p-4 ring ring-indigo-50 sm:p-6 lg:p-8">
       <div className="flex items-start sm:gap-8">
@@ -71,6 +91,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
               ))}
             </p>
           </div>
+
+          {renderButton()}
         </div>
       </div>
     </article>

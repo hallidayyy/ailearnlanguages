@@ -68,6 +68,7 @@ const MakeRequest: React.FC = () => {
               description={task.link}
               duration={formatDate(task.start_time)}
               featuring={["Barry", "Sandra", "August"]}
+              status={task.status} // 传递 status prop
             />
           ))}
         </div>
