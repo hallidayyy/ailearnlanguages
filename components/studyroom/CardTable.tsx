@@ -4,6 +4,7 @@ import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
 import { Card } from '@/types/Card';
 import Link from 'next/link';
 
+
 const CardsTable: React.FC = () => {
   const [cards, setCards] = useState<Card[]>([]);
 
@@ -26,10 +27,11 @@ const CardsTable: React.FC = () => {
 
   return (
     <div className="overflow-x-auto">
+
       <table className="w-full divide-y-2 divide-gray-200 bg-white text-sm">
         <thead className="ltr:text-left rtl:text-right">
           <tr>
-          <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Title</th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Title</th>
             <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Link</th>
             <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Lang</th>
             <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">WordCount</th>

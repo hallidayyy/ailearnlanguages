@@ -60,7 +60,9 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
   useEffect(() => {
     const fetchCardData = async () => {
       try {
+        console.log("Fetching card data for id:", id);
         const supabase = await getDb();
+        console.log("Database connection established");
         const { data, error } = await supabase
           .from('cards')
           .select('*')
@@ -68,10 +70,13 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
           .single();
 
         if (error) {
+          console.error("Error fetching card data:", error);
           throw error;
         }
+        console.log("Data fetched successfully:", data);
 
-        setCardData({
+        // 确保 data 对象的结构与 CardData 接口匹配
+        const updatedCardData: CardData = {
           content: '',
           audioLink: data.link,
           extraContent: data.original,
@@ -91,8 +96,12 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
           wordCount: data.wordcount,
           link: data.link,
           generatedTitle: data.generatedtitle,
-        });
+        };
+
+        console.log("Updated card data:", updatedCardData);
+        setCardData(updatedCardData);
       } catch (error) {
+        console.error("Error setting card data:", error);
         setCardData(prevState => ({ ...prevState, error: error as Error, loading: false }));
       }
     };
@@ -133,6 +142,8 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
   };
 
   const { content, audioLink, extraContent, loading, error, prompt, resultCache, detectedLanguage, wordCount, link, generatedTitle } = cardData;
+  console.log("content in view card:"+content);
+  const teststring : string ="hello";
 
   return (
     <div className="flex h-screen w-screen bg-gray-900 text-white">
@@ -162,7 +173,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
             resultCache={resultCache}
           />
           <MainContent
-            content={content}
+            content={teststring}
             jsonDataContent={extraContent}
             loading={loading}
             error={error}
