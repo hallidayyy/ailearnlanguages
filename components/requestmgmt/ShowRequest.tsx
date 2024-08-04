@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link'; // 导入 Link 组件
+import Link from 'next/link';
 import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
 import TaskCard from "@/components/requestmgmt/TaskCard";
 import PendingOrDoneFilter from '@/components/requestmgmt/PendingOrDoneFilter';
@@ -11,7 +11,7 @@ interface Task {
   title: string;
   start_time: string;
   status: string;
-  card_id: number;
+  card_id: number; // 确保 card_id 是 number 类型
 }
 
 const formatDate = (isoString: string): string => {
@@ -28,8 +28,8 @@ const formatDate = (isoString: string): string => {
 };
 
 const MakeRequest: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]); // 定义 tasks 状态
-  const [filters, setFilters] = useState<string[]>([]); // 定义 filters 状态
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [filters, setFilters] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -39,7 +39,7 @@ const MakeRequest: React.FC = () => {
       if (filters.length > 0) {
         query = query.in('status', filters);
       } else {
-        setTasks([]); // 如果不选择任何过滤器，设置 tasks 为空数组
+        setTasks([]);
         return;
       }
 
@@ -68,7 +68,8 @@ const MakeRequest: React.FC = () => {
               description={task.link}
               duration={formatDate(task.start_time)}
               featuring={["Barry", "Sandra", "August"]}
-              status={task.status} // 传递 status prop
+              status={task.status}
+              card_id={task.card_id}
             />
           ))}
         </div>

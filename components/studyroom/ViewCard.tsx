@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from 'react';
 import SubHeader from '@/components/studyroom/SubHeaderForView';
 import Navigation from '@/components/studyroom/Navigation';
@@ -11,51 +9,49 @@ interface ViewCardProps {
 }
 
 interface CardData {
-  content: string;
-  audioLink: string;
-  extraContent: string;
+  id: number;
+  userid: number;
+  uuid: string;
+  link: string;
+  likes: number;
+  create_at: string;
+  original: string;
+  translation: string;
+  keywords: string;
+  keygrammer: string;
+  rewritedarticle: string;
+  questions: string;
+  notes: string;
+  wordcount: number;
+  lang: string;
+  genertedtitle: string;
   loading: boolean;
   error: Error | null;
-  prompt: string;
-  resultCache: {
-    Original: string;
-    Translate: string;
-    KeyWords: string;
-    KeyGrammer: string;
-    RewriteArticle: string;
-    Questions: string;
-    ExportNotes: string;
-  };
-  detectedLanguage: string;
-  wordCount: number;
-  link: string;
-  generatedTitle: string;
 }
 
 const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
   const [cardData, setCardData] = useState<CardData>({
-    content: '',
-    audioLink: '',
-    extraContent: '',
+    id: 0,
+    userid: 0,
+    uuid: '',
+    link: '',
+    likes: 0,
+    create_at: '',
+    original: '',
+    translation: '',
+    keywords: '',
+    keygrammer: '',
+    rewritedarticle: '',
+    questions: '',
+    notes: '',
+    wordcount: 0,
+    lang: '',
+    genertedtitle: '',
     loading: true,
     error: null,
-    prompt: '',
-    resultCache: {
-      Original: '',
-      Translate: '',
-      KeyWords: '',
-      KeyGrammer: '',
-      RewriteArticle: '',
-      Questions: '',
-      ExportNotes: '',
-    },
-    detectedLanguage: '',
-    wordCount: 0,
-    link: '',
-    generatedTitle: '',
   });
 
-  const [indexStr, setIndexStr] = useState<keyof typeof cardData.resultCache>('Original');
+  const [indexStr, setIndexStr] = useState<keyof typeof cardData>('original');
 
   useEffect(() => {
     const fetchCardData = async () => {
@@ -75,27 +71,25 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
         }
         console.log("Data fetched successfully:", data);
 
-        // 确保 data 对象的结构与 CardData 接口匹配
         const updatedCardData: CardData = {
-          content: '',
-          audioLink: data.link,
-          extraContent: data.original,
+          id: data.id,
+          userid: data.userid,
+          uuid: data.uuid,
+          link: data.link,
+          likes: data.likes,
+          create_at: data.create_at,
+          original: data.original || '',
+          translation: data.translation || '',
+          keywords: data.keywords || '',
+          keygrammer: data.keygrammer || '',
+          rewritedarticle: data.rewritedarticle || '',
+          questions: data.questions || '',
+          notes: data.notes || '',
+          wordcount: parseInt(data.wordcount) || 0,
+          lang: data.lang || '',
+          genertedtitle: data.genertedtitle || '',
           loading: false,
           error: null,
-          prompt: '',
-          resultCache: {
-            Original: data.original,
-            Translate: data.translation,
-            KeyWords: data.keywords,
-            KeyGrammer: data.keygrammer,
-            RewriteArticle: data.rewritedarticle,
-            Questions: data.questions,
-            ExportNotes: data.notes,
-          },
-          detectedLanguage: '',
-          wordCount: data.wordcount,
-          link: data.link,
-          generatedTitle: data.generatedtitle,
         };
 
         console.log("Updated card data:", updatedCardData);
@@ -110,7 +104,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
   }, [id]);
 
   const handleButtonClick = (content: string) => {
-    setCardData(prevState => ({ ...prevState, content }));
+    setCardData(prevState => ({ ...prevState, original: content }));
   };
 
   const handleShowOriginalClick = () => {
@@ -141,24 +135,30 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
     setIndexStr('ExportNotes');
   };
 
-  const { content, audioLink, extraContent, loading, error, prompt, resultCache, detectedLanguage, wordCount, link, generatedTitle } = cardData;
-  console.log("content in view card:"+content);
-  const teststring : string ="hello";
+  const { link, loading, error, genertedtitle } = cardData;
 
   return (
     <div className="flex h-screen w-screen bg-gray-900 text-white">
       <main className="flex-1 flex flex-col">
         <SubHeader
           onAudioSubmit={() => { }}
-          audioLink={audioLink}
+          audioLink={link}
           onProcessClick={() => { }}
           onFetchResult={() => { }}
           onLinkChange={() => { }}
           link={link}
-          resultCache={resultCache}
-          detectedLanguage={detectedLanguage}
-          wordCount={wordCount}
-          generatedTitle={generatedTitle}
+          resultCache={{
+            Original: cardData.original,
+            Translate: cardData.translation,
+            KeyWords: cardData.keywords,
+            KeyGrammer: cardData.keygrammer,
+            RewriteArticle: cardData.rewritedarticle,
+            Questions: cardData.questions,
+            ExportNotes: cardData.notes,
+          }}
+          detectedLanguage={cardData.lang}
+          wordCount={cardData.wordcount}
+          generatedTitle={genertedtitle}
         />
         <div className="flex-1 flex">
           <Navigation
@@ -170,16 +170,27 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
             onRewriteArticleClick={handleRewriteArticleClick}
             onQuestionsClick={handleQuestionsClick}
             onExportNotesClick={handleExportNotesClick}
-            resultCache={resultCache}
+            resultCache={{
+              Original: cardData.original,
+              Translate: cardData.translation,
+              KeyWords: cardData.keywords,
+              KeyGrammer: cardData.keygrammer,
+              RewriteArticle: cardData.rewritedarticle,
+              Questions: cardData.questions,
+              ExportNotes: cardData.notes,
+            }}
           />
           <MainContent
-            content={teststring}
-            jsonDataContent={extraContent}
-            loading={loading}
-            error={error}
-            prompt={prompt}
-            result={resultCache[indexStr]}
-            generatedTitle={generatedTitle}
+            resultCache={{
+              Original: cardData.original,
+              Translate: cardData.translation,
+              KeyWords: cardData.keywords,
+              KeyGrammer: cardData.keygrammer,
+              RewriteArticle: cardData.rewritedarticle,
+              Questions: cardData.questions,
+              ExportNotes: cardData.notes,
+            }}
+            indexStr={indexStr}
           />
         </div>
       </main>

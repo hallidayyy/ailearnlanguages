@@ -1,31 +1,24 @@
 import React from 'react';
 
 const TranslateParser: React.FC<{ content: string }> = ({ content }) => {
-    // console.log('Content Received:', content); // Log the raw content
-
-    const cleanedContent = content.replace(/[\r\n]+/g, ' ');
-
-
     // Check if the content is a valid JSON string
-    if (!content.trim().startsWith('{') || !content.trim().endsWith('}')) {
+    if (!isValidJsonString(content)) {
         return <div>Invalid JSON</div>;
     }
 
     let json;
     try {
-        json = JSON.parse(cleanedContent);
+        json = JSON.parse(content);
     } catch (e) {
         console.error('JSON Parsing Error:', e);
         return <div>Invalid JSON</div>;
     }
 
-    //   console.log('Parsed JSON:', json); // Log the parsed JSON
-
-    if (!json || typeof json.content !== 'string') {
-        return <div>No content available</div>;
+    if (!json || typeof json.translation !== 'string') {
+        return <div>No translation available</div>;
     }
 
-    const paragraphs = json.content.split('\n\n').filter(paragraph => paragraph.trim() !== '');
+    const paragraphs = json.translation.split('\n\n').filter(paragraph => paragraph.trim() !== '');
 
     return (
         <div>
@@ -34,6 +27,15 @@ const TranslateParser: React.FC<{ content: string }> = ({ content }) => {
             ))}
         </div>
     );
+};
+
+const isValidJsonString = (str: string): boolean => {
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
 
 export default TranslateParser;

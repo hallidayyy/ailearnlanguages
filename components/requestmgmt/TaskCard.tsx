@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 interface TaskCardProps {
   episode: string;
@@ -6,10 +7,11 @@ interface TaskCardProps {
   description: string;
   duration: string;
   featuring: string[];
-  status: string; // 新增 status prop
+  status: string;
+  card_id: number; // 确保 card_id 是 number 类型
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id }) => {
   const renderButton = () => {
     switch (status) {
       case 'pending':
@@ -22,7 +24,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
         );
       case 'done':
         return (
-          <button className="mt-4 px-4 py-2 bg-green-500 text-white rounded">View</button>
+          <Link href={`/studyroom/viewcard/${card_id}`} legacyBehavior>
+            <a className="mt-4 px-4 py-2 bg-green-500 text-white rounded">View</a>
+          </Link>
         );
       default:
         return null;
