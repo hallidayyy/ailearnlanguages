@@ -9,11 +9,9 @@ interface TaskCardProps {
   featuring: string[];
   status: string;
   card_id: number; // 确保 card_id 是 number 类型
-  originalText: string; // 添加 originalText 属性
-  userId: number; // 添加 userId 属性
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id, originalText, userId }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id }) => {
   const [processing, setProcessing] = useState(false);
 
   const handleProcess = async () => {
@@ -26,13 +24,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
         },
         body: JSON.stringify({
           card_id: card_id,
-          originalText: originalText,
-          userId: userId,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Error processing transcribed text');
+        const errorText = await response.text();
+        throw new Error(`Error processing transcribed text: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();

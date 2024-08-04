@@ -24,67 +24,93 @@ const openai = new OpenAI({
 const modelName = process.env.NEXT_PUBLIC_OPENAI_MODEL || 'deepseek-chat';
 
 export async function POST(req: NextRequest) {
-  const { card_id, originalText, userId } = await req.json();
+  const { card_id } = await req.json();
+
+  console.log(`Processing card_id: ${card_id}`);
 
   try {
+    // 从 Supabase 数据库中获取 originalText
+    const supabase = await getDb();
+    const { data: cardData, error: cardError } = await supabase
+      .from('cards')
+      .select('original')
+      .eq('id', card_id)
+      .single();
+
+    if (cardError) {
+      console.error('Error fetching card data:', cardError);
+      return NextResponse.json({ message: 'Error fetching card data' }, { status: 500 });
+    }
+
+    const originalText = cardData.original;
+    console.log(`Original text: ${originalText}`);
+
     // 调用deepseek-chat模型生成五个JSON结果
+    console.log(`Calling OpenAI API with model: ${modelName}`);
+
     const translationResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Translate the following text to Chinese:\n\n${originalText}\n\nOutput format: {"translation": ""}` }
+        { role: 'user', content: `Translate the following text to Chinese and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"translation": ""}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
     const translation = JSON.parse(translationResponse.choices[0].message.content.trim());
+    console.log('Translation response:', translation);
 
     const keywordsResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Extract keywords and their Chinese translations from the following text:\n\n${originalText}\n\nOutput format: {"keywords": [{"word": "", "translation": ""}]}` }
+        { role: 'user', content: `Extract keywords and their Chinese translations from the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"keywords": [{"word": "", "translation": ""}]}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
     const keywords = JSON.parse(keywordsResponse.choices[0].message.content.trim());
+    console.log('Keywords response:', keywords);
 
     const keygrammerResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Extract key grammar points and their explanations from the following text:\n\n${originalText}\n\nOutput format: {"keygrammer": [{"grammer": "", "description": "", "example": ""}]}` }
+        { role: 'user', content: `Extract key grammar points and their explanations from the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"keygrammer": [{"grammer": "", "description": "", "example": ""}]}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
     const keygrammer = JSON.parse(keygrammerResponse.choices[0].message.content.trim());
+    console.log('Keygrammer response:', keygrammer);
 
     const rewritedarticleResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Rewrite the following text:\n\n${originalText}\n\nOutput format: {"content": ""}` }
+        { role: 'user', content: `Rewrite the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"content": ""}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
     const rewritedarticle = JSON.parse(rewritedarticleResponse.choices[0].message.content.trim());
+    console.log('Rewrited article response:', rewritedarticle);
 
     const questionsResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Create 5 questions based on the following text:\n\n${originalText}\n\nOutput format: {"questions": [{"stem": "", "options": ["A": "", "B": "", "C": "", "D": ""], "answer": ""}]}` }
+        { role: 'user', content: `Create 5 questions based on the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"questions": [{"stem": "", "options": ["A": "", "B": "", "C": "", "D": ""], "answer": ""}]}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
     const questions = JSON.parse(questionsResponse.choices[0].message.content.trim());
+    console.log('Questions response:', questions);
 
     // 将结果更新到Supabase数据库的cards表格中
-    const supabase = await getDb();
+    console.log('Updating Supabase database...');
+
     const { data: updatedData, error: updateError } = await supabase
       .from('cards')
       .update({
@@ -102,6 +128,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Error updating card' }, { status: 500 });
     }
 
+    console.log('Card updated successfully:', updatedData);
+
     // 检查所有字段是否都不为空
     const updatedCard = updatedData[0];
     if (
@@ -112,21 +140,25 @@ export async function POST(req: NextRequest) {
       updatedCard.questions
     ) {
       // 更新tasks表格中的status为done
+      console.log('Updating task status to done...');
+
       const { error: taskUpdateError } = await supabase
-        .from('tasks')
+        .from('task')
         .update({ status: 'done' })
-        .eq('id', card_id);
+        .eq('card_id', card_id);
 
       if (taskUpdateError) {
         console.error('Error updating task status:', taskUpdateError);
         return NextResponse.json({ message: 'Error updating task status' }, { status: 500 });
       }
+
+      console.log('Task status updated to done successfully');
     }
 
     // 返回成功响应
     return NextResponse.json({ message: 'Success' }, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error('Error generating response from API:', error);
     // 返回错误响应
     return NextResponse.json({ message: 'Error generating response from API' }, { status: 500 });
   }
