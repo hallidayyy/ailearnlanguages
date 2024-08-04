@@ -2,13 +2,21 @@ import React, { useState, useRef } from "react";
 import { getDb } from '@/models/db'; // 请根据实际情况调整路径
 import { v4 as uuidv4 } from 'uuid'; // 导入UUID生成库
 import { startAsyncRecognition } from '@/lib/azureSpeech'; // 导入 Azure Speech 库
+import Select from "@/components/requestmgmt/SelectOption";
+import { options } from "@/lib/i18n";
 
 const MakeRequest: React.FC = () => {
   const [audioSrc, setAudioSrc] = useState<string>("");
   const [additionalInput, setAdditionalInput] = useState<string>("");
   const [recognitionInfo, setRecognitionInfo] = useState<string | null>(null);
   const [audioDuration, setAudioDuration] = useState<number | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(event.target.value);
+    console.log('Selected value:', event.target.value);
+  };
 
   const handlePlayAudio = () => {
     const audioElement = audioRef.current;
@@ -73,6 +81,7 @@ const MakeRequest: React.FC = () => {
           title: "Task Title", // 请根据实际情况设置 title
           status: "pending",
           card_id: cardIdInt,
+          lang: selectedLanguage, // 更新选择的语言
         },
       ]);
 
@@ -153,6 +162,16 @@ const MakeRequest: React.FC = () => {
                   name="additionalInput"
                   value={additionalInput}
                   onChange={(e) => setAdditionalInput(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <Select
+                  name="HeadlineAct"
+                  label="podcasts language!"
+                  options={options}
+                  placeholder="Select an option"
+                  onChange={handleSelectChange}
                 />
               </div>
 

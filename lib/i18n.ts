@@ -3,7 +3,7 @@ import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 
 export const locales = ["", "en", "en-US", "zh", "zh-CN", "zh-TW", 'zh-HK', 'ja', "ar", "es", "ru"];
-export const localeNames: any = {
+export const localeNames: Record<string, string> = {
     en: "🇺🇸 English",
     zh: "🇨🇳 中文",
     ja: "🇯🇵 日本語",
@@ -18,7 +18,7 @@ export function getLocale(headers: any): string {
     return match(languages, locales, defaultLocale);
 }
 
-const dictionaries: any = {
+const dictionaries: Record<string, () => Promise<any>> = {
     en: () => import("@/locales/en.json").then((module) => module.default),
     zh: () => import("@/locales/zh.json").then((module) => module.default),
     ja: () => import("@/locales/ja.json").then((module) => module.default),
@@ -36,5 +36,22 @@ export const getDictionary = async (locale: string) => {
         locale = "en";
     }
 
-    return dictionaries[locale]();
+    try {
+        return await dictionaries[locale]();
+    } catch (error) {
+        console.error(`Failed to load dictionary for locale ${locale}:`, error);
+        return await dictionaries["en"]();
+    }
 };
+
+export const options = [
+    { value: 'EN', label: 'English' },
+    { value: 'ZH', label: 'Chinese' },
+    { value: 'ES', label: 'Spanish' },
+    { value: 'FR', label: 'French' },
+    { value: 'DE', label: 'German' },
+    { value: 'RU', label: 'Russian' },
+    { value: 'JP', label: 'Japanese' },
+    { value: 'PT', label: 'Portuguese' },
+    { value: 'IT', label: 'Italian' },
+];

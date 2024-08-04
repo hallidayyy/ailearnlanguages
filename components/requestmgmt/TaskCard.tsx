@@ -9,9 +9,10 @@ interface TaskCardProps {
   featuring: string[];
   status: string;
   card_id: number; // 确保 card_id 是 number 类型
+  curr_lang: string;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id, curr_lang }) => {
   const [processing, setProcessing] = useState(false);
 
   const handleProcess = async () => {
@@ -24,6 +25,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
         },
         body: JSON.stringify({
           card_id: card_id,
+          curr_lang: curr_lang,
         }),
       });
 
@@ -49,8 +51,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
         );
       case 'transcribed':
         return (
-          <button 
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded" 
+          <button
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
             onClick={handleProcess}
             disabled={processing}
           >

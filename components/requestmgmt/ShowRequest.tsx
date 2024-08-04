@@ -4,6 +4,8 @@ import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
 import TaskCard from "@/components/requestmgmt/TaskCard";
 import PendingOrDoneFilter from '@/components/requestmgmt/PendingOrDoneFilter';
 import { AppContext } from '@/contexts/AppContext';
+import { getDictionary } from '@/lib/i18n';
+
 
 interface Task {
   id: string;
@@ -28,10 +30,11 @@ const formatDate = (isoString: string): string => {
   });
 };
 
-const MakeRequest = ({ locale, CTALocale }: { locale: any; CTALocale: any }) => {
+const MakeRequest: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filters, setFilters] = useState<string[]>([]);
   const { lang } = useContext(AppContext);
+  const [locale, setLocale] = useState<any>(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -57,12 +60,25 @@ const MakeRequest = ({ locale, CTALocale }: { locale: any; CTALocale: any }) => 
     fetchTasks();
   }, [filters]);
 
+  useEffect(() => {
+    const fetchLocale = async () => {
+      const dict = await getDictionary(lang);
+      setLocale(dict);
+    };
+
+    fetchLocale();
+  }, [lang]);
+
+  if (!locale) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <div className="text-center mt-8">
         <Link href="/makerequest" legacyBehavior>
           <a className="inline-block rounded bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:bg-indigo-500">
-            Transcribe podcasts
+            {locale.ShowRequest.process}
           </a>
         </Link>
       </div>
@@ -79,6 +95,7 @@ const MakeRequest = ({ locale, CTALocale }: { locale: any; CTALocale: any }) => 
               featuring={["Barry", "Sandra", "August"]}
               status={task.status}
               card_id={task.card_id}
+              curr_lang={lang}
             />
           ))}
           <div className="mt-8 text-center">

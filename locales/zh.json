@@ -45,6 +45,6 @@
       "title": "获取模板"
     },
     "ShowRequest": {
-      "process": "Transcribe"
+      "process": "转写"
     }
   }

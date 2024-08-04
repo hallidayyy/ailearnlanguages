@@ -45,6 +45,6 @@
       "title": "テンプレートを入手"
     },
     "ShowRequest": {
-      "process": "Transcribe"
+      "process": "転写する"
     }
   }

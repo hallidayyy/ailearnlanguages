@@ -1,21 +1,22 @@
-"use client";
-
-import { useRouter } from 'next/navigation';
+// hooks/useTranslation.ts
+import { useContext, useEffect, useState } from 'react';
+import { AppContext } from '@/contexts/AppContext';
 import { getDictionary } from '@/lib/i18n';
-import { useEffect, useState } from 'react';
 
 const useTranslation = () => {
-  const router = useRouter();
-  const { locale } = router.query || {};
-  const [translations, setTranslations] = useState({});
+  const { lang } = useContext(AppContext);
+  const [dictionary, setDictionary] = useState<any>(null);
 
   useEffect(() => {
-    if (locale) {
-      getDictionary(locale).then(setTranslations);
-    }
-  }, [locale]);
+    const fetchDictionary = async () => {
+      const dict = await getDictionary(lang);
+      setDictionary(dict);
+    };
 
-  return translations;
+    fetchDictionary();
+  }, [lang]);
+
+  return dictionary;
 };
 
 export default useTranslation;

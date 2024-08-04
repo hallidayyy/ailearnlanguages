@@ -24,10 +24,10 @@ const openai = new OpenAI({
 const modelName = process.env.NEXT_PUBLIC_OPENAI_MODEL || 'deepseek-chat';
 
 export async function POST(req: NextRequest) {
-  const { card_id } = await req.json();
+  const { card_id, curr_lang } = await req.json();
 
   console.log(`Processing card_id: ${card_id}`);
-
+  console.log(`Processing curr_lang: ${curr_lang}`);
   try {
     // 从 Supabase 数据库中获取 originalText
     const supabase = await getDb();
@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
     const translationResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Translate the following text to Chinese and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"translation": ""}` }
+        { role: 'system', content: 'You are a master of language education proficient in various languages.' },
+        { role: 'user', content: `Translate the following text to ${curr_lang} and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"translation": ""}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
@@ -63,8 +63,8 @@ export async function POST(req: NextRequest) {
     const keywordsResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: `Extract keywords and their Chinese translations from the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"keywords": [{"word": "", "translation": ""}]}` }
+        { role: 'system', content: 'You are a master of language education proficient in various languages.' },
+        { role: 'user', content: `Extract keywords and their ${curr_lang} translations from the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"keywords": [{"word": "", "translation": ""}]}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
     const keygrammerResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'system', content: 'You are a master of language education proficient in various languages.' },
         { role: 'user', content: `Extract key grammar points and their explanations from the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"keygrammer": [{"grammer": "", "description": "", "example": ""}]}` }
       ],
       max_tokens: 2000,
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     const rewritedarticleResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'system', content: 'You are a master of language education proficient in various languages.' },
         { role: 'user', content: `Rewrite the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"content": ""}` }
       ],
       max_tokens: 2000,
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
     const questionsResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'system', content: 'You are a master of language education proficient in various languages.' },
         { role: 'user', content: `Create 5 questions based on the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"questions": [{"stem": "", "options": ["A": "", "B": "", "C": "", "D": ""], "answer": ""}]}` }
       ],
       max_tokens: 2000,
