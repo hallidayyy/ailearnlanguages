@@ -31,7 +31,7 @@ export default function () {
                 alt="logo"
               />
               <span className="font-bold text-primary text-2xl">
-              Learn Languages From Podcasts
+              LinguaPod
               </span>
             </a>
 

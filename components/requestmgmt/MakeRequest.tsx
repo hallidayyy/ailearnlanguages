@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { getDb } from '@/models/db'; // 请根据实际情况调整路径
 import { v4 as uuidv4 } from 'uuid'; // 导入UUID生成库
 import { startAsyncRecognition } from '@/lib/azureSpeech'; // 导入 Azure Speech 库
@@ -11,6 +11,8 @@ const MakeRequest: React.FC = () => {
   const [recognitionInfo, setRecognitionInfo] = useState<string | null>(null);
   const [audioDuration, setAudioDuration] = useState<number | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userIdInt, setUserIdInt] = useState<number | null>(null); // 新增的状态变量
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -31,9 +33,12 @@ const MakeRequest: React.FC = () => {
   };
 
   const handleProcess = async () => {
-    const supabase = await getDb();
+    if (!userIdInt) {
+      console.error('User ID is not available');
+      return;
+    }
 
-    const userId = 46; // 请根据实际情况设置 userid
+    const supabase = await getDb();
 
     // 插入 cards 记录
     const cardId = uuidv4(); // 生成 card id
@@ -41,7 +46,7 @@ const MakeRequest: React.FC = () => {
       .from('cards')
       .insert([
         {
-          userid: userId,
+          userid: userIdInt, // 使用 userIdInt
           uuid: cardId,
           link: audioSrc,
           original: "",
@@ -76,7 +81,7 @@ const MakeRequest: React.FC = () => {
       .insert([
         {
           id: taskId,
-          user_id: userId,
+          user_id: userIdInt, // 使用 userIdInt
           link: audioSrc,
           title: "Task Title", // 请根据实际情况设置 title
           status: "pending",
@@ -102,6 +107,41 @@ const MakeRequest: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await fetch('/api/get-user-info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data) {
+          setUserId(data.data.uuid);
+          //console.log("uuid tmd:"+data.data.uuid);
+
+          // 通过 uuid 获取 users 表格中的 id
+          const supabase = await getDb();
+          const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('uuid', data.data.uuid)
+            .single();
+
+          if (userError) {
+            console.error('Error fetching user id:', userError);
+          } else {
+            setUserIdInt(userData.id);
+          }
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <section className="bg-gray-100">
       <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
@@ -126,6 +166,22 @@ const MakeRequest: React.FC = () => {
 
           <div className="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
             <form action="#" className="space-y-8">
+              {/* 显示用户 ID */}
+              {userId && (
+                <div className="mb-4">
+                  <p className="text-sm text-gray-600">User ID: {userId}</p>
+                </div>
+              )}
+
+              {userId && (
+                <div className="mb-4">
+                  <p className="text-sm text-gray-600">User ID: {userIdInt}</p>
+                </div>
+              )}
+
+
+
+
               {/* 音频播放控件 */}
               <div className="mb-4">
                 <audio ref={audioRef} controls className="w-full">

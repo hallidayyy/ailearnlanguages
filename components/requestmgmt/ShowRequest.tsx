@@ -6,7 +6,6 @@ import PendingOrDoneFilter from '@/components/requestmgmt/PendingOrDoneFilter';
 import { AppContext } from '@/contexts/AppContext';
 import { getDictionary } from '@/lib/i18n';
 
-
 interface Task {
   id: string;
   user_id: number;
@@ -33,8 +32,10 @@ const formatDate = (isoString: string): string => {
 const MakeRequest: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filters, setFilters] = useState<string[]>([]);
-  const { lang } = useContext(AppContext);
+  const { lang, user } = useContext(AppContext);
   const [locale, setLocale] = useState<any>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userIdInt, setUserIdInt] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -69,6 +70,29 @@ const MakeRequest: React.FC = () => {
     fetchLocale();
   }, [lang]);
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (user) {
+        setUserId(user.uuid);
+
+        const supabase = await getDb();
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('id')
+          .eq('uuid', user.uuid)
+          .single();
+
+        if (userError) {
+          console.error('Error fetching user id:', userError);
+        } else {
+          setUserIdInt(userData.id);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [user]);
+
   if (!locale) {
     return <div>Loading...</div>;
   }
@@ -100,6 +124,8 @@ const MakeRequest: React.FC = () => {
           ))}
           <div className="mt-8 text-center">
             <p>Current Language: {lang}</p>
+            {userId && <p>User UUID: {userId}</p>}
+            {userIdInt && <p>User ID: {userIdInt}</p>}
           </div>
         </div>
       </section>
