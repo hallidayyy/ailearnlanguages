@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
 import TaskCard from "@/components/requestmgmt/TaskCard";
 import PendingOrDoneFilter from '@/components/requestmgmt/PendingOrDoneFilter';
+import { AppContext } from '@/contexts/AppContext';
 
 interface Task {
   id: string;
@@ -27,9 +28,10 @@ const formatDate = (isoString: string): string => {
   });
 };
 
-const MakeRequest: React.FC = () => {
+const MakeRequest = ({ locale, CTALocale }: { locale: any; CTALocale: any }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filters, setFilters] = useState<string[]>([]);
+  const { lang } = useContext(AppContext);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -79,6 +81,9 @@ const MakeRequest: React.FC = () => {
               card_id={task.card_id}
             />
           ))}
+          <div className="mt-8 text-center">
+            <p>Current Language: {lang}</p>
+          </div>
         </div>
       </section>
     </div>

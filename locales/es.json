@@ -42,5 +42,8 @@
     },
     "CTAButton": {
       "title": "Obtener Plantilla"
+    },
+    "ShowRequest": {
+      "process": "Transcribe"
     }
   }

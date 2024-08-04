@@ -43,5 +43,8 @@
     },
     "CTAButton": {
       "title": "获取模板"
+    },
+    "ShowRequest": {
+      "process": "Transcribe"
     }
   }

@@ -42,5 +42,8 @@
     },
     "CTAButton": {
       "title": "Получить Шаблон"
+    },
+    "ShowRequest": {
+      "process": "Transcribe"
     }
   }

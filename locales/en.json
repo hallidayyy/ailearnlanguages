@@ -43,5 +43,10 @@
     },
     "CTAButton": {
       "title": "Get Boilerplate"
+    },
+
+    "ShowRequest": {
+      "process": "Transcribe"
     }
+    
   }
