@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 interface TaskCardProps {
@@ -9,9 +9,41 @@ interface TaskCardProps {
   featuring: string[];
   status: string;
   card_id: number; // 确保 card_id 是 number 类型
+  originalText: string; // 添加 originalText 属性
+  userId: number; // 添加 userId 属性
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id, originalText, userId }) => {
+  const [processing, setProcessing] = useState(false);
+
+  const handleProcess = async () => {
+    setProcessing(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          card_id: card_id,
+          originalText: originalText,
+          userId: userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error processing transcribed text');
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('Error processing transcribed text:', error);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const renderButton = () => {
     switch (status) {
       case 'pending':
@@ -20,7 +52,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
         );
       case 'transcribed':
         return (
-          <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Process</button>
+          <button 
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded" 
+            onClick={handleProcess}
+            disabled={processing}
+          >
+            {processing ? 'Processing...' : 'Process'}
+          </button>
         );
       case 'done':
         return (
