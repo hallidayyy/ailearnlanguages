@@ -84,8 +84,8 @@ export default function () {
               )}
 
 
-<a href="/studyroom" className="mr-4">
-                    <Button>StudyRoom</Button>
+<a href="/showrequest" className="mr-4">
+                    <Button>dashboard</Button>
                   </a>
 
 
