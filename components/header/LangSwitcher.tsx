@@ -8,9 +8,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react"; // 确保导入 useContext
 
 import { defaultLocale, localeNames } from "@/lib/i18n";
+
+
+import { AppContext } from "@/contexts/AppContext"; // 替换为你的 AppContext 路径
 
 export const LangSwitcher = () => {
   const params = useParams();
@@ -20,12 +23,22 @@ export const LangSwitcher = () => {
 
   const [selectedLang, setSelectedLang] = useState(lang);
   const router = useRouter();
+  const { lang: contextLang, setLang } = useContext(AppContext);
 
   useEffect(() => {
     setSelectedLang(lang);
   }, [lang]);
 
+  useEffect(() => {
+    if (contextLang) {
+      setSelectedLang(contextLang);
+    }
+  }, [contextLang]);
+
   const handleSwitchLanguage = (value: string) => {
+    // 更新 AppContext 中的 lang 状态
+    setLang(value);
+
     // 获取当前路径
     const currentPath = window.location.pathname;
 

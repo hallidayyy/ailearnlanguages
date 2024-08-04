@@ -1,3 +1,4 @@
+// @/path-to-your-context-file.tsx
 import { ContextProviderProps, ContextProviderValue } from "@/types/context";
 import { createContext, useEffect, useState } from "react";
 
@@ -10,6 +11,7 @@ export const AppContext = createContext({} as ContextProviderValue);
 export const AppContextProvider = ({ children }: ContextProviderProps) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [covers, setCovers] = useState<Cover[] | null>(null);
+  const [lang, setLang] = useState<string>("en"); // 默认语言为英语
 
   const fetchUserInfo = async function () {
     try {
@@ -43,7 +45,7 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ user, fetchUserInfo, covers, setCovers }}>
+    <AppContext.Provider value={{ user, fetchUserInfo, covers, setCovers, lang, setLang }}>
       {children}
     </AppContext.Provider>
   );
