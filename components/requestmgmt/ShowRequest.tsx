@@ -57,6 +57,13 @@ const MakeRequest: React.FC = () => {
 
   return (
     <div>
+      <div className="text-center mt-8">
+        <Link href="/makerequest" legacyBehavior>
+          <a className="inline-block rounded bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:bg-indigo-500">
+            Make a Request
+          </a>
+        </Link>
+      </div>
       <PendingOrDoneFilter onFilterChange={setFilters} />
       <section className="bg-gray-100">
         <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">

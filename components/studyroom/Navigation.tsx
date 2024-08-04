@@ -112,14 +112,14 @@ const Navigation: React.FC<NavigationProps> = ({
             </button>
           </li>
 
-          <li>
+          {/* <li>
             <button
               onClick={onExportNotesClick}
               className="block w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-200"
             >
               Export Notes {resultCache.ExportNotes && '✓'}
             </button>
-          </li>
+          </li> */}
         </ul>
       </div>
 

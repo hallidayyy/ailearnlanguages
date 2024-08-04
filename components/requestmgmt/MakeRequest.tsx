@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { getDb } from '@/models/db'; // 请根据实际情况调整路径
 import { v4 as uuidv4 } from 'uuid'; // 导入UUID生成库
 import { startAsyncRecognition } from '@/lib/azureSpeech'; // 导入 Azure Speech 库
@@ -7,12 +7,18 @@ const MakeRequest: React.FC = () => {
   const [audioSrc, setAudioSrc] = useState<string>("");
   const [additionalInput, setAdditionalInput] = useState<string>("");
   const [recognitionInfo, setRecognitionInfo] = useState<string | null>(null);
+  const [audioDuration, setAudioDuration] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handlePlayAudio = () => {
-    const audioElement = document.querySelector("audio");
+    const audioElement = audioRef.current;
     if (audioElement) {
       audioElement.src = audioSrc;
       audioElement.play();
+      audioElement.addEventListener('loadedmetadata', () => {
+        const durationInMinutes = audioElement.duration / 60;
+        setAudioDuration(durationInMinutes);
+      });
     }
   };
 
@@ -113,7 +119,7 @@ const MakeRequest: React.FC = () => {
             <form action="#" className="space-y-8">
               {/* 音频播放控件 */}
               <div className="mb-4">
-                <audio controls className="w-full">
+                <audio ref={audioRef} controls className="w-full">
                   <source src="" type="audio/mpeg" />
                   Your browser does not support the audio element.
                 </audio>
@@ -149,6 +155,15 @@ const MakeRequest: React.FC = () => {
                   onChange={(e) => setAdditionalInput(e.target.value)}
                 />
               </div>
+
+              {/* 显示音频时长 */}
+              {audioDuration !== null && (
+                <div className="mt-4">
+                  <p className="text-sm text-gray-600">
+                    Audio Duration: {audioDuration.toFixed(2)} minutes, processing it will cost  {audioDuration.toFixed(2)} credits.
+                  </p>
+                </div>
+              )}
 
               {/* 添加额外的间距 */}
               <div className="flex justify-center space-x-4">
