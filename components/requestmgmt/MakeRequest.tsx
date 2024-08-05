@@ -37,6 +37,42 @@ const MakeRequest: React.FC = () => {
       console.error('User ID is not available');
       return;
     }
+    const taskId = uuidv4(); // 生成 task id
+    console.log("task_id:" + taskId);
+    console.log('audiosrc:' + audioSrc);
+    // 开始 upload and transcribe
+
+    const response = await fetch('/api/uploadAndTranscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ audioUrl: audioSrc, resultFilename: taskId }), // 移除多余的逗号
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text(); // 获取错误信息
+      throw new Error(`Failed to process the audio file: ${errorText}`);
+    }
+
+    const { operationName } = await response.json();
+
+    if (!operationName) {
+      throw new Error('No operation name returned');
+    }
+
+    // 处理成功的操作名称
+    console.log('Operation started:', operationName);
+
+
+
+
+
+
+
+
+
+
 
     const supabase = await getDb();
 
@@ -75,7 +111,7 @@ const MakeRequest: React.FC = () => {
     const cardIdInt = cardData[0].id; // 获取插入的 card id
 
     // 插入 task 记录
-    const taskId = uuidv4(); // 生成 task id
+
     const { data: taskData, error: taskError } = await supabase
       .from('task')
       .insert([
@@ -97,14 +133,7 @@ const MakeRequest: React.FC = () => {
 
     console.log('Task inserted successfully:', taskData);
 
-    // 发起 Azure Speech 异步请求
-    try {
-      const recognitionResult = await startAsyncRecognition(audioSrc);
-      setRecognitionInfo(JSON.stringify(recognitionResult, null, 2));
-      console.log('Async recognition started:', recognitionResult);
-    } catch (error) {
-      console.error('Error starting async recognition:', error);
-    }
+
   };
 
   useEffect(() => {
@@ -259,13 +288,7 @@ const MakeRequest: React.FC = () => {
               </div>
             </form>
 
-            {/* 显示 Azure 返回的信息 */}
-            {recognitionInfo && (
-              <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-                <h2 className="text-lg font-bold mb-2">Azure Recognition Info:</h2>
-                <pre className="whitespace-pre-wrap">{recognitionInfo}</pre>
-              </div>
-            )}
+
           </div>
         </div>
       </div>

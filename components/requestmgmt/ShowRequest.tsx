@@ -112,7 +112,7 @@ const MakeRequest: React.FC = () => {
           {tasks.map(task => (
             <TaskCard
               key={task.id}
-              episode={`Episode #${task.id}`}
+              episode={`${task.id}`}
               title={task.title}
               description={task.link}
               duration={formatDate(task.start_time)}

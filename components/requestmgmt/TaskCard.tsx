@@ -14,6 +14,7 @@ interface TaskCardProps {
 
 const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, duration, featuring, status, card_id, curr_lang }) => {
   const [processing, setProcessing] = useState(false);
+  const [transcription, setTranscription] = useState<string | null>(null);
 
   const handleProcess = async () => {
     setProcessing(true);
@@ -43,11 +44,42 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
     }
   };
 
+  const handleCheck = async () => {
+    try {
+      const response = await fetch('/api/getTranscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ taskid: episode }), // 使用 card_id 作为 taskid
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error fetching transcription: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      if (data.transcription) {
+        setTranscription(data.transcription);
+      } else {
+        alert('转录结果尚未生成，请稍后再试。');
+      }
+    } catch (error) {
+      console.error('Error fetching transcription:', error);
+    }
+  };
+
   const renderButton = () => {
     switch (status) {
       case 'pending':
         return (
-          <button className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded">Check</button>
+          <button
+            className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded"
+            onClick={handleCheck} // 点击 Check 按钮时调用 handleCheck
+          >
+            Check
+          </button>
         );
       case 'transcribed':
         return (
@@ -134,6 +166,14 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
           </div>
 
           {renderButton()}
+
+          {/* 显示转录内容（如果有的话） */}
+          {transcription && (
+            <div className="mt-4 p-4 bg-gray-100 rounded">
+              <h4 className="text-lg font-medium">Transcription:</h4>
+              <p>{transcription}</p>
+            </div>
+          )}
         </div>
       </div>
     </article>
