@@ -13,7 +13,7 @@ interface Task {
   title: string;
   start_time: string;
   status: string;
-  card_id: number; // 确保 card_id 是 number 类型
+  card_id: number;
 }
 
 const formatDate = (isoString: string): string => {
@@ -39,22 +39,26 @@ const MakeRequest: React.FC = () => {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const supabase = await getDb();
-      let query = supabase.from('task').select('*');
+      try {
+        const supabase = await getDb();
+        let query = supabase.from('task').select('*');
 
-      if (filters.length > 0) {
-        query = query.in('status', filters);
-      } else {
-        setTasks([]);
-        return;
-      }
+        if (filters.length > 0) {
+          query = query.in('status', filters);
+        } else {
+          setTasks([]);
+          return;
+        }
 
-      const { data, error } = await query;
+        const { data, error } = await query;
 
-      if (error) {
+        if (error) {
+          console.error('Error fetching tasks:', error);
+        } else {
+          setTasks(data as Task[]);
+        }
+      } catch (error) {
         console.error('Error fetching tasks:', error);
-      } else {
-        setTasks(data as Task[]);
       }
     };
 
@@ -63,8 +67,12 @@ const MakeRequest: React.FC = () => {
 
   useEffect(() => {
     const fetchLocale = async () => {
-      const dict = await getDictionary(lang);
-      setLocale(dict);
+      try {
+        const dict = await getDictionary(lang);
+        setLocale(dict);
+      } catch (error) {
+        console.error('Error fetching locale:', error);
+      }
     };
 
     fetchLocale();
@@ -72,21 +80,25 @@ const MakeRequest: React.FC = () => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      if (user) {
-        setUserId(user.uuid);
+      try {
+        if (user) {
+          setUserId(user.uuid);
 
-        const supabase = await getDb();
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('uuid', user.uuid)
-          .single();
+          const supabase = await getDb();
+          const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('uuid', user.uuid)
+            .single();
 
-        if (userError) {
-          console.error('Error fetching user id:', userError);
-        } else {
-          setUserIdInt(userData.id);
+          if (userError) {
+            console.error('Error fetching user id:', userError);
+          } else {
+            setUserIdInt(userData.id);
+          }
         }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
       }
     };
 
@@ -98,35 +110,42 @@ const MakeRequest: React.FC = () => {
   }
 
   return (
-    <div>
-      <div className="text-center mt-8">
-        <Link href="/makerequest" legacyBehavior>
-          <a className="inline-block rounded bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:bg-indigo-500">
-            {locale.ShowRequest.process}
-          </a>
-        </Link>
-      </div>
-      <PendingOrDoneFilter onFilterChange={setFilters} />
+    <div className="relative">
       <section className="bg-gray-100">
-        <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-          {tasks.map(task => (
-            <TaskCard
-              key={task.id}
-              episode={`${task.id}`}
-              title={task.title}
-              description={task.link}
-              duration={formatDate(task.start_time)}
-              featuring={["Barry", "Sandra", "August"]}
-              status={task.status}
-              card_id={task.card_id}
-              curr_lang={lang}
-            />
-          ))}
-          <div className="mt-8 text-center">
-            <p>Current Language: {lang}</p>
-            {userId && <p>User UUID: {userId}</p>}
-            {userIdInt && <p>User ID: {userIdInt}</p>}
+        <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="relative flex items-center justify-between mb-8">
+            <div className="relative flex items-center space-x-4">
+              <PendingOrDoneFilter
+                onFilterChange={setFilters}
+                className="absolute top-0 left-0 z-50 mt-8"
+              />
+            </div>
+            <div className="flex items-center">
+              <Link href="/makerequest" legacyBehavior>
+                <a className="inline-block rounded bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:bg-indigo-500">
+                  {locale.ShowRequest.process}
+                </a>
+              </Link>
+            </div>
           </div>
+          {tasks.length > 0 ? (
+            tasks.map((task, index) => (
+              <div key={task.id} className={`mb-6 ${index < tasks.length - 1 ? 'mb-6' : ''}`}>
+                <TaskCard
+                  episode={`${task.id}`}
+                  title={task.title}
+                  description={task.link}
+                  duration={formatDate(task.start_time)}
+                  featuring={["Barry", "Sandra", "August"]}
+                  status={task.status}
+                  card_id={task.card_id}
+                  curr_lang={lang}
+                />
+              </div>
+            ))
+          ) : (
+            <div className="text-center">No tasks available</div>
+          )}
         </div>
       </section>
     </div>

@@ -46,5 +46,16 @@
     },
     "ShowRequest": {
       "process": "転写する"
+    },
+
+    
+      "ViewCard": {
+        "showoriginal": "原文を表示",
+        "translate": "翻訳",
+        "keywords": "重要な語彙を学ぶ",
+        "keygrammer": "重要な文法を学ぶ",
+        "rewrite": "文章を書き換え",
+        "questions": "テスト"
+      
     }
   }

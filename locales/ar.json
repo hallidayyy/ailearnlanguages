@@ -45,5 +45,16 @@
     },
     "ShowRequest": {
       "process": "نسخ النص"
-    }
+    },
+
+    
+      "ViewCard": {
+        "showoriginal": "عرض النص الأصلي",
+        "translate": "ترجمة",
+        "keywords": "تعلم المفردات الرئيسية",
+        "keygrammer": "تعلم القواعد الرئيسية",
+        "rewrite": "إعادة كتابة النص",
+        "questions": "اختبارات"
+      }
+    
   }

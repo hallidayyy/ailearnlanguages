@@ -138,8 +138,8 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
   const { link, loading, error, genertedtitle } = cardData;
 
   return (
-    <div className="flex h-screen w-screen bg-gray-900 text-white">
-      <main className="flex-1 flex flex-col">
+    <div className="bg-white shadow-lg rounded-lg p-4 w-4/5 h-4/5 flex flex-col overflow-hidden mt-4">
+      <div className="flex-none">
         <SubHeader
           onAudioSubmit={() => { }}
           audioLink={link}
@@ -160,7 +160,9 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
           wordCount={cardData.wordcount}
           generatedTitle={genertedtitle}
         />
-        <div className="flex-1 flex">
+      </div>
+      <div className="flex-1 flex overflow-hidden">
+        <div className="flex-none w-1/9">
           <Navigation
             onButtonClick={handleButtonClick}
             onShowOriginalClick={handleShowOriginalClick}
@@ -179,7 +181,10 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
               Questions: cardData.questions,
               ExportNotes: cardData.notes,
             }}
+            className="h-full" // 确保 Navigation 组件高度为 100%
           />
+        </div>
+        <div className="flex-1 overflow-y-auto">
           <MainContent
             resultCache={{
               Original: cardData.original,
@@ -191,9 +196,10 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
               ExportNotes: cardData.notes,
             }}
             indexStr={indexStr}
+            className="p-4" // 确保 MainContent 组件有内边距
           />
         </div>
-      </main>
+      </div>
     </div>
   );
 };

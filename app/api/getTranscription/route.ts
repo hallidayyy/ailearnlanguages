@@ -12,6 +12,40 @@ const storage = new Storage({
 const BUCKET_NAME = process.env.GCS_BUCKET_NAME || 'forlinguapod';
 const TRANSCRIPT_FOLDER = 'transcription-results';
 
+interface TranscriptResult {
+  results: {
+    alternatives: {
+      transcript: string;
+    }[];
+    languageCode: string;
+    resultEndTime: string;
+  }[];
+}
+
+/**
+ * 处理输入的 JSON 字符串，提取 transcripts 并生成合并后的字符串
+ * @param jsonString - JSON 字符串
+ * @returns 处理后的字符串
+ */
+export function processTranscript(jsonString: string): string {
+  try {
+    // 解析 JSON 字符串
+    const data: TranscriptResult = JSON.parse(jsonString);
+
+    // 提取所有 transcripts
+    const transcripts = data.results
+      .flatMap(result => result.alternatives)
+      .map(alternative => alternative.transcript)
+      .join(' ');
+
+    return JSON.stringify({ content: transcripts });
+  } catch (error) {
+    console.error('Invalid JSON string:', error);
+    return 'Error: Invalid JSON input';
+  }
+}
+
+
 // 导出 POST 方法
 export async function POST(req: NextRequest) {
   const { taskid } = await req.json();
@@ -32,6 +66,10 @@ export async function POST(req: NextRequest) {
       console.log('找到转录结果文件，开始读取...');
       const [content] = await file.download();
       const transcriptionResult = content.toString('utf-8');
+      const resultContent = processTranscript(transcriptionResult);
+
+
+
 
       console.log('转录结果获取成功');
 
@@ -60,7 +98,7 @@ export async function POST(req: NextRequest) {
       // 更新 cards 表中的 original 字段
       const { error: cardUpdateError } = await supabase
         .from('cards')
-        .update({ original: transcriptionResult })
+        .update({ original: resultContent })
         .eq('id', cardId);
 
       if (cardUpdateError) {
@@ -68,7 +106,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: '更新卡片时发生错误。' }, { status: 500 });
       }
 
-      return NextResponse.json({ transcription: transcriptionResult });
+      return NextResponse.json({ transcription: resultContent });
     } else {
       console.log('转录结果文件尚未生成');
       return NextResponse.json({ status: 'pending' });

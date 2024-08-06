@@ -23,7 +23,7 @@ const Select: React.FC<SelectProps> = ({ name, label, options = [], defaultValue
       <select
         name={name}
         id={name}
-        className="mt-1.5 w-full rounded-lg border border-gray-300 shadow-sm text-gray-700 sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="mt-1 w-full rounded-lg border border-gray-300 py-3 px-4 text-sm text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         defaultValue={defaultValue}
         onChange={onChange}
       >

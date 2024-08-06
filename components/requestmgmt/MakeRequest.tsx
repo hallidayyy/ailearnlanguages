@@ -177,25 +177,24 @@ const MakeRequest: React.FC = () => {
         <div className="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
           <div className="lg:col-span-2 lg:py-12">
             <p className="max-w-xl text-lg">
-              At the same time, the fact that we are wholly owned and totally independent from
-              manufacturer and other group control gives you confidence that we will only recommend what
-              is right for you.
+              Learning a language may not be very difficult. You just need to choose a podcast, listen to it repeatedly, read along while imitating, and try to understand each word and grammar point.
+              Perhaps after a few times, you might master the language. This is also the most natural and human-centered way to learn a language.
             </p>
 
             <div className="mt-8">
               <a href="#" className="text-2xl font-bold text-pink-600">
-                0151 475 4450
+                LinguaPod
               </a>
 
               <address className="mt-2 not-italic">
-                282 Kevin Brook, Imogeneborough, CA 58517
+                Insert a podcast link, then listen to it. Choose the language used in the podcast, and click on “Transcribe.”
               </address>
             </div>
           </div>
 
           <div className="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
             <form action="#" className="space-y-8">
-              {/* 显示用户 ID */}
+              {/* 显示用户 ID
               {userId && (
                 <div className="mb-4">
                   <p className="text-sm text-gray-600">User ID: {userId}</p>
@@ -206,7 +205,7 @@ const MakeRequest: React.FC = () => {
                 <div className="mb-4">
                   <p className="text-sm text-gray-600">User ID: {userIdInt}</p>
                 </div>
-              )}
+              )} */}
 
 
 
@@ -234,7 +233,7 @@ const MakeRequest: React.FC = () => {
                 />
               </div>
 
-              {/* 新增的输入框 */}
+              {/* 新增的输入框
               <div>
                 <label className="sr-only" htmlFor="additionalInput">
                   Additional Input
@@ -248,15 +247,16 @@ const MakeRequest: React.FC = () => {
                   value={additionalInput}
                   onChange={(e) => setAdditionalInput(e.target.value)}
                 />
-              </div>
+              </div> */}
 
               <div>
                 <Select
                   name="HeadlineAct"
-                  label="podcasts language!"
+                  label="podcasts language"
                   options={options}
                   placeholder="Select an option"
                   onChange={handleSelectChange}
+                  className="w-full rounded-lg border border-gray-300 p-3 text-sm"
                 />
               </div>
 

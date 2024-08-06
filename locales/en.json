@@ -47,6 +47,16 @@
 
     "ShowRequest": {
       "process": "Transcribe"
+    },
+
+    "ViewCard": {
+      "showoriginal": "Show Original Text",
+      "translate": "Translate",
+      "keywords": "Learn Key Vocabulary",
+      "keygrammer": "Learn Key Grammar",
+      "rewrite": "Rewrite Text",
+      "questions": "Tests"
     }
+    
     
   }

@@ -8,7 +8,7 @@ interface TaskCardProps {
   duration: string;
   featuring: string[];
   status: string;
-  card_id: number; // 确保 card_id 是 number 类型
+  card_id: number;
   curr_lang: string;
 }
 
@@ -75,7 +75,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
       case 'pending':
         return (
           <button
-            className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded"
+            className="px-4 py-2 bg-yellow-500 text-white rounded"
             onClick={handleCheck} // 点击 Check 按钮时调用 handleCheck
           >
             Check
@@ -84,7 +84,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
       case 'transcribed':
         return (
           <button
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-4 py-2 bg-blue-500 text-white rounded"
             onClick={handleProcess}
             disabled={processing}
           >
@@ -94,7 +94,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
       case 'done':
         return (
           <Link href={`/studyroom/viewcard/${card_id}`} legacyBehavior>
-            <a className="mt-4 px-4 py-2 bg-green-500 text-white rounded">View</a>
+            <a className="px-4 py-2 bg-green-500 text-white rounded">View</a>
           </Link>
         );
       default:
@@ -103,7 +103,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
   };
 
   return (
-    <article className="rounded-xl bg-white p-4 ring ring-indigo-50 sm:p-6 lg:p-8">
+    <article className="relative rounded-xl bg-white p-4 ring ring-indigo-50 sm:p-6 lg:p-8">
       <div className="flex items-start sm:gap-8">
         <div
           className="hidden sm:grid sm:size-20 sm:shrink-0 sm:place-content-center sm:rounded-full sm:border-2 sm:border-indigo-500"
@@ -118,7 +118,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
           </div>
         </div>
 
-        <div>
+        <div className="flex-1">
           <strong
             className="rounded border border-indigo-500 bg-indigo-500 px-3 py-1.5 text-[10px] font-medium text-white"
           >
@@ -152,20 +152,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
 
               <p className="text-xs font-medium">{duration}</p>
             </div>
-
-            <span className="hidden sm:block" aria-hidden="true">&middot;</span>
-
-            <p className="mt-2 text-xs font-medium text-gray-500 sm:mt-0">
-              Featuring {featuring.map((name, index) => (
-                <React.Fragment key={index}>
-                  <a href="#" className="underline hover:text-gray-700">{name}</a>
-                  {index < featuring.length - 1 && ", "}
-                </React.Fragment>
-              ))}
-            </p>
           </div>
-
-          {renderButton()}
 
           {/* 显示转录内容（如果有的话） */}
           {transcription && (
@@ -174,6 +161,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
               <p>{transcription}</p>
             </div>
           )}
+        </div>
+
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+          {renderButton()}
         </div>
       </div>
     </article>

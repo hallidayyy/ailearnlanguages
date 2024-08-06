@@ -45,5 +45,16 @@
     },
     "ShowRequest": {
       "process": "Transcribe"
+    },
+
+    
+      "ViewCard": {
+        "showoriginal": "Показать Оригинальный Текст",
+        "translate": "Перевести",
+        "keywords": "Изучить Ключевые Слова",
+        "keygrammer": "Изучить Ключевую Грамматику",
+        "rewrite": "Переписать Текст",
+        "questions": "Тесты"
+      
     }
   }

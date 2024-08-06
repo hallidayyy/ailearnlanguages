@@ -46,5 +46,16 @@
     },
     "ShowRequest": {
       "process": "转写"
-    }
+    },
+
+    
+      "ViewCard": {
+        "showoriginal": "显示原文",
+        "translate": "翻译",
+        "keywords": "学习关键词汇",
+        "keygrammer": "学习关键语法",
+        "rewrite": "重写文本",
+        "questions": "测试"
+      }
+    
   }
