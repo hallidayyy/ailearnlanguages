@@ -3,6 +3,9 @@ import { ALL_FAQS } from "@/config/faqs";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { PlusIcon } from "lucide-react";
 import { RoughNotation } from "react-rough-notation";
+import { AppContext } from '@/contexts/AppContext';
+import { getDictionary } from '@/lib/i18n';
+import React, { useState, useEffect, useContext } from 'react';
 
 
 // update rough notation highlight

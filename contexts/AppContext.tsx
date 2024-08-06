@@ -11,7 +11,13 @@ export const AppContext = createContext({} as ContextProviderValue);
 export const AppContextProvider = ({ children }: ContextProviderProps) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [covers, setCovers] = useState<Cover[] | null>(null);
-  const [lang, setLang] = useState<string>("en"); // 默认语言为英语
+  const [lang, setLang] = useState<string>(() => {
+    // 从本地存储读取语言设置，默认为 "en"
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("lang") || "en";
+    }
+    return "en";
+  });
 
   const fetchUserInfo = async function () {
     try {
@@ -43,6 +49,13 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
   useEffect(() => {
     fetchUserInfo();
   }, []);
+
+  useEffect(() => {
+    // 将语言设置保存到本地存储
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lang", lang);
+    }
+  }, [lang]);
 
   return (
     <AppContext.Provider value={{ user, fetchUserInfo, covers, setCovers, lang, setLang }}>

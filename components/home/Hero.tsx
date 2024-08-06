@@ -1,4 +1,4 @@
-"use client";
+
 import { LineText } from "@/components/LineText";
 import CTAButton from "@/components/home/CTAButton";
 
