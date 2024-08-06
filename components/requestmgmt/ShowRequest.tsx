@@ -123,7 +123,7 @@ const MakeRequest: React.FC = () => {
             <div className="flex items-center">
               <Link href="/makerequest" legacyBehavior>
                 <a className="inline-block rounded bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:bg-indigo-500">
-                  {locale.ShowRequest.process}
+                Transcribe
                 </a>
               </Link>
             </div>

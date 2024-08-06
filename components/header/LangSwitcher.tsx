@@ -30,12 +30,12 @@ export const LangSwitcher = () => {
     // 获取当前路径
     const currentPath = window.location.pathname;
 
-    // 更新 URL 中的语言参数
-    // if (value === defaultLocale) {
-    //   router.push(currentPath.includes("?") ? currentPath.split("?")[0] : currentPath);
-    // } else {
-    //   router.push(`${currentPath.split("?")[0]}?lang=${value}`);
-    // }
+    //更新 URL 中的语言参数
+    if (value === defaultLocale) {
+      router.push(currentPath.includes("?") ? currentPath.split("?")[0] : currentPath);
+    } else {
+      router.push(`${currentPath.split("?")[0]}?lang=${value}`);
+    }
   };
 
   return (

@@ -49,7 +49,7 @@ const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void
           onClick={toggleMenu}
           className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600"
         >
-          <span className="text-sm font-medium">Availability</span>
+          <span className="text-sm font-medium">Filter</span>
           <span className="transition group-open:-rotate-180">
             <svg
               xmlns="http://www.w3.org/2000/svg"

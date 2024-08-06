@@ -4,7 +4,7 @@ import { RoughNotation } from "react-rough-notation";
 
 const CTA = ({ locale, CTALocale }: { locale: any; CTALocale: any }) => {
   return (
-    <section className="flex flex-col justify-center max-w-[88%] items-center py-16 gap-12">
+    <section className="flex flex-col justify-center max-w-[88%] mx-auto items-center py-16 gap-12">
       <div className="flex flex-col text-center gap-4">
         <h2 className="text-center">{locale.title}</h2>
         <p className="text-large text-default-500">
@@ -18,7 +18,7 @@ const CTA = ({ locale, CTALocale }: { locale: any; CTALocale: any }) => {
           {locale.description4}{" "}
           <RoughNotation type="box" color="#b71c1c" show={true}>
             {locale.description5}
-          </RoughNotation>
+          </RoughNotation>{" "}
           {locale.description6}
         </p>
       </div>

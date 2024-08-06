@@ -7,38 +7,38 @@ import { MdCloudUpload } from "react-icons/md";
 
 export const FEATURES_EN = [
   {
-    title: "Open Source Advantage",
-    content: "Completely free with a wealth of customization options.",
+    title: "Podcast Transcription",
+    content: "Transcribe podcasts into text in over 125 languages.",
     icon: BsGithub,
   },
   {
-    title: "Responsive Design",
+    title: "Explain Key Vocabulary",
     content:
-      "Templates meticulously designed to ensure optimal display on any device.",
+     "Extract key vocabulary from the podcast and provide detailed explanations for you.",
     icon: FaMobileScreenButton,
   },
   {
-    title: "Easy Customization",
+    title: "Explain Key Grammar Points",
     content:
-      "Effortlessly change colors, fonts, and layouts without any coding knowledge.",
+     "Extract key grammar points from the podcast and provide detailed explanations for you.",
     icon: FaToolbox,
   },
   {
-    title: "SEO Optimized",
+    title: "Supports Learning 9 Languages",
     content:
-      "Templates built with search engine optimization in mind to enhance your website's discoverability.",
+      "Currently supports learning 9 languages, including English, French, Spanish, German, Russian, and Japanese, with plans to support 125 languages in the future.",
     icon: MagnetIcon,
   },
   {
-    title: "One-Click Deployment",
+    title: "Explain in Your Native Language",
     content:
-      "Tightly integrated with leading web hosting services for instant website publishing.",
+      "All explanations are in your native language, which enhances your language learning experience.",
     icon: MdCloudUpload,
   },
   {
-    title: "Globalization Support",
+    title: "AI assistance",
     content:
-      "Supports multiple languages, making your website attractive to a global audience.",
+      "Use the latest AI to help you learn a new language.",
     icon: FaEarthAsia,
   },
 ];

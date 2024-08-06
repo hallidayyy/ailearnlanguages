@@ -9,42 +9,42 @@ import { useState } from "react";
 
 const tiers = [
   {
-    name: "试用版",
+    name: "20 minutes",
     id: "try",
     href: "#",
-    priceMonthly: "¥5.20",
-    unit: "一次性支付",
+    priceMonthly: "$1",
+    unit: "One-time payment",
     plan: "one-time",
-    amount: 520,
-    currency: "cny",
-    credits: 5,
+    amount: 1,
+    currency: "usd",
+    credits: 10,
     description: "",
     features: [
-      "可生成 5 个 AI 红包封面",
-      "1 个月内有效",
-      "高清的图片质量",
-      "较快的生成速度",
-      "可下载 5 个 AI 红包封面",
+      "Transcribe a 10-minute podcast",
+      "Long-term validity",
+      "High-speed transcription",
+      "High-quality transcription",
+      "AI-assisted learning",
     ],
     featured: true,
   },
   {
-    name: "畅享版",
+    name: "60 minutes",
     id: "one-time-payment",
     href: "#",
-    priceMonthly: "¥20.24",
-    unit: "一次性支付",
+    priceMonthly: "$3",
+    unit: "One-time payment",
     plan: "one-time",
-    amount: 2024,
-    currency: "cny",
-    credits: 30,
+    amount: 3,
+    currency: "usd",
+    credits: 60,
     description: "",
     features: [
-      "可生成 30 个 AI 红包封面",
-      "1 个月内有效",
-      "超清的图片质量",
-      "更快的生成速度",
-      "不限制 AI 红包封面下载次数",
+      "Transcribe a 60-minute podcast",
+      "Long-term validity",
+      "High-speed transcription",
+      "High-quality transcription",
+      "AI-assisted learning",
     ],
     featured: false,
   },
@@ -54,7 +54,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function () {
+export default function PricingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -130,27 +130,17 @@ export default function () {
     <div className="relative isolate bg-white px-6 py-8 md:py-16 lg:px-8">
       <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-6xl">
-          付费方案
+          Pricing
         </h1>
       </div>
       <h2 className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-        选择一个付费方案，支付完成后可生成 AI 红包封面
+        Choose a payment plan, and after completing the payment, you will receive credits for learning
       </h2>
-      <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl lg:grid-cols-2">
-        {tiers.map((tier, tierIdx) => (
+      <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-8 sm:mt-20 sm:gap-y-10 lg:max-w-4xl lg:grid-cols-2 lg:gap-x-8">
+        {tiers.map((tier) => (
           <div
             key={tier.id}
-            className={classNames(
-              tier.featured
-                ? "relative bg-white shadow-2xl"
-                : "bg-white/60 sm:mx-8 lg:mx-0",
-              tier.featured
-                ? ""
-                : tierIdx === 0
-                ? "rounded-t-3xl sm:rounded-b-none lg:rounded-tr-none lg:rounded-bl-3xl"
-                : "sm:rounded-t-none lg:rounded-tr-3xl lg:rounded-bl-none",
-              "rounded-3xl p-8 ring-1 ring-gray-900/10 sm:p-10"
-            )}
+            className="relative bg-white shadow-2xl rounded-3xl p-8 ring-1 ring-gray-900/10 sm:p-10"
           >
             <p
               id={tier.id}
@@ -193,7 +183,7 @@ export default function () {
                 );
               }}
             >
-              {loading ? "处理中..." : "购买"}
+              {loading ? "Processing..." : "Purchase"}
             </Button>
           </div>
         ))}

@@ -17,8 +17,8 @@ export default async function HomeIndex({ lang }: { lang: string }) {
         <div className="w-full px-6">
             <Hero locale={dict.Hero} CTALocale={dict.CTAButton} />
             <Features id="Features" locale={dict.Feature} langName={langName} />
-            <FAQ id="FAQ" locale={dict.FAQ} langName={langName} />
-            <Pricing id="Pricing" locale={dict.Pricing} langName={langName} />
+            {/* <FAQ id="FAQ" locale={dict.FAQ} langName={langName} /> */}
+            {/* <Pricing id="Pricing" locale={dict.Pricing} langName={langName} /> */}
             <CTA locale={dict.CTA} CTALocale={dict.CTAButton} />
         </div>
     );
