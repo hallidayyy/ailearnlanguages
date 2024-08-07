@@ -3,13 +3,13 @@ import { Storage } from '@google-cloud/storage';
 import { Buffer } from 'buffer';
 import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
 
-// // 初始化 Google Cloud Storage 客户端
-// const storage = new Storage({
-//   credentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_KEY!, 'base64').toString()),
-// });
+// 初始化 Google Cloud Storage 客户端
+const storage = new Storage({
+  credentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_KEY!, 'base64').toString()),
+});
 
 // 初始化 Google Cloud Storage 客户端
-const storage = new Storage();
+// const storage = new Storage();
 
 
 // 从环境变量获取 Google Cloud Storage 存储桶名称

@@ -7,21 +7,21 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 
-// // 从环境变量获取 Google Cloud 客户端凭据
-// const googleServiceKey = process.env.GOOGLE_SERVICE_KEY!;
-// const credential = JSON.parse(Buffer.from(googleServiceKey, 'base64').toString());
-
-// // 初始化 Google Cloud 客户端
-// const storage = new Storage({ credentials: credential });
-// const speechClient = new SpeechClient({ credentials: credential });
-
-
-
-
+// 从环境变量获取 Google Cloud 客户端凭据
+const googleServiceKey = process.env.GOOGLE_SERVICE_KEY!;
+const credential = JSON.parse(Buffer.from(googleServiceKey, 'base64').toString());
 
 // 初始化 Google Cloud 客户端
-const storage = new Storage();
-const speechClient = new SpeechClient();
+const storage = new Storage({ credentials: credential });
+const speechClient = new SpeechClient({ credentials: credential });
+
+
+
+
+
+// // 初始化 Google Cloud 客户端
+// const storage = new Storage();
+// const speechClient = new SpeechClient();
 
 // 从环境变量获取 Google Cloud Storage 存储桶名称
 const BUCKET_NAME = process.env.GCS_BUCKET_NAME || 'forlinguapod'; // 请替换为你的存储桶名称
