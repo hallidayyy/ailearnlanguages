@@ -15,9 +15,9 @@ const baseSiteConfig = {
   keywords: ["landing page boilerplate", "landing page template", "awesome landing page", "next.js landing page"],
   authors: [
     {
-      name: "weijunext",
-      url: "https://weijunext.com",
-      twitter: 'https://twitter.com/weijunext',
+      name: "halliday",
+      url: "https://twitter.com/languepod",
+      twitter: 'https://twitter.com/languepod',
     }
   ],
   creator: '@weijunext',
@@ -34,25 +34,19 @@ const baseSiteConfig = {
   },
   headerLinks: [
     { name: 'repo', href: OPEN_SOURCE_URL, icon: BsGithub },
-    { name: 'twitter', href: "https://twitter.com/weijunext", icon: BsTwitterX },
-    { name: 'buyMeCoffee', href: "https://www.buymeacoffee.com/weijunext", icon: SiBuymeacoffee }
+    { name: 'twitter', href: "https://twitter.com/languepod", icon: BsTwitterX },
+    { name: 'buyMeCoffee', href: "https://www.buymeacoffee.com/hallidayyy", icon: SiBuymeacoffee }
   ],
   footerLinks: [
-    { name: 'email', href: "mailto:weijunext@gmail.com", icon: MdEmail },
-    { name: 'twitter', href: "https://twitter.com/weijunext", icon: BsTwitterX },
-    { name: 'github', href: "https://github.com/weijunext/", icon: BsGithub },
-    { name: 'buyMeCoffee', href: "https://www.buymeacoffee.com/weijunext", icon: SiBuymeacoffee },
-    { name: 'juejin', href: "https://juejin.cn/user/26044008768029", icon: SiJuejin },
-    { name: 'weChat', href: "https://weijunext.com/make-a-friend", icon: BsWechat }
+    { name: 'email', href: "mailto:luchao62@gmail.com", icon: MdEmail },
+    { name: 'twitter', href: "https://twitter.com/languepod", icon: BsTwitterX },
+    { name: 'github', href: "https://github.com/hallidayyy/", icon: BsGithub },
+    { name: 'buyMeCoffee', href: "https://www.buymeacoffee.com/hallidayyy", icon: SiBuymeacoffee },
+   
   ],
   footerProducts: [
-    { url: 'https://phcopilot.ai/', name: 'Product Hunt Copilot' },
-    { url: 'https://smartexcel.cc/', name: 'Smart Excel' },
-    { url: 'https://landingpage.weijunext.com/', name: 'Landing Page Boilerplate' },
-    { url: 'https://starter.weijunext.com/', name: 'Next.js Starter' },
-    { url: 'https://weijunext.com/', name: 'J实验室' },
-    { url: 'https://nextjs.weijunext.com/', name: 'Next.js Practice' },
-    { url: 'https://github.com/weijunext/indie-hacker-tools', name: 'Indie Hacker Tools' },
+    { url: 'https://www.aiapp.icu/', name: 'AI app: I SEE YOU' },
+
   ]
 }
 

@@ -14,7 +14,7 @@ export default function () {
     {
       name: "doc",
       title: "Blogs",
-      url: "https://cover.weixin.qq.com/cgi-bin/mmcover-bin/readtemplate?t=page/index#/doc?page=design&index=-1",
+      url: "https://languepodblog.vercel.app/",
       target: "_blank",
     },
   ];
@@ -31,7 +31,7 @@ export default function () {
                 alt="logo"
               />
               <span className="font-bold text-primary text-2xl">
-              LinguaPod
+              LanguePod
               </span>
             </a>
 
