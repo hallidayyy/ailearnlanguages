@@ -8,6 +8,8 @@ interface ViewCardProps {
   id: string;
 }
 
+
+
 interface CardData {
   id: number;
   userid: number;
@@ -51,7 +53,21 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
     error: null,
   });
 
-  const [indexStr, setIndexStr] = useState<keyof typeof cardData>('original');
+  interface MainContentProps {
+    resultCache: {
+      Original: string;
+      Translate: string;
+      KeyWords: string;
+      KeyGrammer: string;
+      RewriteArticle: string;
+      Questions: string;
+      ExportNotes: string;
+    };
+    indexStr: keyof MainContentProps['resultCache']; // 明确指定类型
+    className?: string; // 添加 className 属性
+  }
+
+  const [indexStr, setIndexStr] = useState<keyof MainContentProps['resultCache']>('Original');
 
   useEffect(() => {
     const fetchCardData = async () => {
@@ -147,6 +163,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
           onFetchResult={() => { }}
           onLinkChange={() => { }}
           link={link}
+          userid={String(cardData.userid)} // 添加 userid 属性
           resultCache={{
             Original: cardData.original,
             Translate: cardData.translation,
@@ -158,7 +175,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ id }) => {
           }}
           detectedLanguage={cardData.lang}
           wordCount={cardData.wordcount}
-          generatedTitle={genertedtitle}
+          generatedTitle={cardData.genertedtitle}
         />
       </div>
       <div className="flex-1 flex overflow-hidden">
