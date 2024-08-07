@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void }> = ({ onFilterChange }) => {
+interface PendingOrDoneFilterProps {
+  onFilterChange: (filter: string[]) => void;
+  className?: string; // 添加 className 属性
+}
+
+const PendingOrDoneFilter: React.FC<PendingOrDoneFilterProps> = ({ onFilterChange, className }) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>(['done']);
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -43,7 +48,7 @@ const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void
   };
 
   return (
-    <div className="relative flex gap-8">
+    <div className={`relative flex gap-8 ${className}`}>
       <div className="relative" ref={menuRef}>
         <button
           onClick={toggleMenu}
@@ -113,8 +118,6 @@ const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void
                   <span className="text-sm font-medium text-gray-700">all set, you can start learning</span>
                 </label>
               </li>
-
-              
             </ul>
           </div>
         )}
