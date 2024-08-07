@@ -186,17 +186,23 @@ const MakeRequest: React.FC = () => {
 
     console.log('Task inserted successfully:', taskData);
 
-    const newCredits = userCredits - audioDuration;
+    if (userCredits !== null && audioDuration !== null) {
+      const newCredits = userCredits - audioDuration;
 
-    // 更新用户信用额度
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({ credit: newCredits })
-      .eq('id', userIdInt);
+      // 更新用户信用额度
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ credit: newCredits })
+        .eq('id', userIdInt);
 
-    if (updateError) {
-      console.error('Error updating user credits:', updateError);
-      setErrorMessage('Error updating user credits.');
+      if (updateError) {
+        console.error('Error updating user credits:', updateError);
+        setErrorMessage('Error updating user credits.');
+        setProcessing(false); // 清除处理状态
+        return;
+      }
+    } else {
+      setErrorMessage('User credits or audio duration is not available.');
       setProcessing(false); // 清除处理状态
       return;
     }
