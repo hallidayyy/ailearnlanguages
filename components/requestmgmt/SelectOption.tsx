@@ -12,9 +12,10 @@ interface SelectProps {
   defaultValue?: string;
   placeholder?: string;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  className?: string; // 添加 className 属性
 }
 
-const Select: React.FC<SelectProps> = ({ name, label, options = [], defaultValue, placeholder, onChange }) => {
+const Select: React.FC<SelectProps> = ({ name, label, options = [], defaultValue, placeholder, onChange, className }) => {
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium text-gray-900">
@@ -23,7 +24,7 @@ const Select: React.FC<SelectProps> = ({ name, label, options = [], defaultValue
       <select
         name={name}
         id={name}
-        className="mt-1 w-full rounded-lg border border-gray-300 py-3 px-4 text-sm text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className={`mt-1 w-full rounded-lg border border-gray-300 py-3 px-4 text-sm text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${className}`}
         defaultValue={defaultValue}
         onChange={onChange}
       >
