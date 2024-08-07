@@ -58,7 +58,7 @@ const MakeRequest: React.FC = () => {
         const userEmail = userInfo.data.email;
 
         const userCredits = await getUserCredits(userEmail);
-        setUserCredits(userCredits)；
+        setUserCredits(userCredits);
         if (!userCredits || userCredits < durationInMinutes) {
           setErrorMessage('credits not enough. please <a href="/pricing" target="_blank" rel="noopener noreferrer" style="color: #1a0dab; text-decoration: underline;">recharge</a>.');
           setIsCreditEnough(false);
