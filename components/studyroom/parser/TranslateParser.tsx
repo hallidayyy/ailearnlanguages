@@ -1,6 +1,8 @@
 import React from 'react';
 
 const TranslateParser: React.FC<{ content: string }> = ({ content }) => {
+
+    console.log("translate: "+content);
     // Check if the content is a valid JSON string
     if (!isValidJsonString(content)) {
         return <div>Invalid JSON</div>;
@@ -14,16 +16,12 @@ const TranslateParser: React.FC<{ content: string }> = ({ content }) => {
         return <div>Invalid JSON</div>;
     }
 
-    if (!json || typeof json.translation !== 'string') {
+    // Check if json.translation exists and is a string
+    if (!json.translation || typeof json.translation !== 'string') {
         return <div>No translation available</div>;
     }
 
-    // Check if json.content exists and is a string
-    if (!json.content || typeof json.content !== 'string') {
-        return <div>No content available</div>;
-    }
-
-    const paragraphs = json.content.split('\n\n').filter((paragraph: string) => paragraph.trim() !== '');
+    const paragraphs = json.translation.split('\n\n').filter((paragraph: string) => paragraph.trim() !== '');
 
     return (
         <div>
