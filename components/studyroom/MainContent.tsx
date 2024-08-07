@@ -19,10 +19,11 @@ interface MainContentProps {
     Questions: string;
     ExportNotes: string;
   };
-  indexStr: keyof typeof resultCache;
+  indexStr: keyof MainContentProps['resultCache']; // 明确指定类型
+  className?: string; // 添加 className 属性
 }
 
-const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr }) => {
+const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, className }) => {
   const renderComponent = () => {
     switch (indexStr) {
       case 'Original':
@@ -44,8 +45,9 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr }) => {
     }
   };
 
+
   return (
-    <div>
+    <div className={className}>
       {renderComponent()}
     </div>
   );
