@@ -63,7 +63,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
       if (data.transcription) {
         setTranscription(data.transcription);
       } else {
-        alert('转录结果尚未生成，请稍后再试。');
+        alert('transcription result has not been generated yet. please try again later.');
       }
     } catch (error) {
       console.error('Error fetching transcription:', error);
@@ -78,7 +78,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
             className="px-4 py-2 bg-yellow-500 text-white rounded"
             onClick={handleCheck} // 点击 Check 按钮时调用 handleCheck
           >
-            Check
+            check
           </button>
         );
       case 'transcribed':
@@ -88,13 +88,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
             onClick={handleProcess}
             disabled={processing}
           >
-            {processing ? 'Processing...' : 'Process'}
+            {processing ? 'processing...' : 'process'}
           </button>
         );
       case 'done':
         return (
           <Link href={`/studyroom/viewcard/${card_id}`} legacyBehavior>
-            <a className="px-4 py-2 bg-green-500 text-white rounded">View</a>
+            <a className="px-4 py-2 bg-green-500 text-white rounded">view</a>
           </Link>
         );
       default:
@@ -122,12 +122,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
           <strong
             className="rounded border border-indigo-500 bg-indigo-500 px-3 py-1.5 text-[10px] font-medium text-white"
           >
-            {episode}
+          task id:  {episode}
           </strong>
 
-          <h3 className="mt-4 text-lg font-medium sm:text-xl">
-            <a href="#" className="hover:underline">{title}</a>
-          </h3>
+      
 
           <p className="mt-1 text-sm text-gray-700">
             {description}
@@ -157,8 +155,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
           {/* 显示转录内容（如果有的话） */}
           {transcription && (
             <div className="mt-4 p-4 bg-gray-100 rounded">
-              <h4 className="text-lg font-medium">Transcription:</h4>
-              <p>{transcription}</p>
+             
+              <p>transcription is complete, please proceed with ai.</p>
             </div>
           )}
         </div>

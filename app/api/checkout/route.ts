@@ -59,7 +59,7 @@ export async function POST(req: Request) {
           price_data: {
             currency: currency,
             product_data: {
-              name: "aicover credits plan",
+              name: "LanguePod Credits Plan",
             },
             unit_amount: amount,
             recurring:

@@ -77,7 +77,7 @@ const Navigation: React.FC<NavigationProps> = ({
               className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Original ? 'text-gray-700' : 'text-gray-500'
                 }`}
             >
-              Show Original
+              show original
             </button>
           </li>
 
@@ -87,7 +87,7 @@ const Navigation: React.FC<NavigationProps> = ({
               className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Translate ? 'text-gray-700' : 'text-gray-500'
                 }`}
             >
-              Translate</button>
+              translate</button>
           </li>
 
           <li>
@@ -96,7 +96,7 @@ const Navigation: React.FC<NavigationProps> = ({
               className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.KeyWords ? 'text-gray-700' : 'text-gray-500'
                 }`}
             >
-              Key Words
+              key words
             </button>
           </li>
 
@@ -106,7 +106,7 @@ const Navigation: React.FC<NavigationProps> = ({
               className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.KeyGrammer ? 'text-gray-700' : 'text-gray-500'
                 }`}
             >
-              Key Grammar
+              key grammar
             </button>
           </li>
 
@@ -116,7 +116,7 @@ const Navigation: React.FC<NavigationProps> = ({
               className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.RewriteArticle ? 'text-gray-700' : 'text-gray-500'
                 }`}
             >
-              Rewrite Article
+              rewrite article
             </button>
           </li>
 
@@ -126,7 +126,7 @@ const Navigation: React.FC<NavigationProps> = ({
               className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Questions ? 'text-gray-700' : 'text-gray-500'
                 }`}
             >
-              Questions
+              questions
             </button>
           </li>
 

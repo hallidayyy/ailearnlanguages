@@ -9,14 +9,14 @@ import { useState } from "react";
 
 const tiers = [
   {
-    name: "20 minutes",
+    name: "10 minutes",
     id: "try",
     href: "#",
-    priceMonthly: "$1",
-    unit: "One-time payment",
+    priceMonthly: "¥4.99",
+    unit: "One Time Payment",
     plan: "one-time",
-    amount: 1,
-    currency: "usd",
+    amount: 499,
+    currency: "cny",
     credits: 10,
     description: "",
     features: [
@@ -32,11 +32,11 @@ const tiers = [
     name: "60 minutes",
     id: "one-time-payment",
     href: "#",
-    priceMonthly: "$3",
-    unit: "One-time payment",
+    priceMonthly: "¥19.99",
+    unit: "One Time Payment",
     plan: "one-time",
-    amount: 3,
-    currency: "usd",
+    amount: 1999,
+    currency: "cny",
     credits: 60,
     description: "",
     features: [
@@ -130,7 +130,7 @@ export default function PricingPage() {
     <div className="relative isolate bg-white px-6 py-8 md:py-16 lg:px-8">
       <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-6xl">
-          Pricing
+          pricing
         </h1>
       </div>
       <h2 className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">

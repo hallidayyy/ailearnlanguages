@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { getDb } from '@/models/db'; // 请根据实际情况调整路径
 import { v4 as uuidv4 } from 'uuid'; // 导入UUID生成库
-import { startAsyncRecognition } from '@/lib/azureSpeech'; // 导入 Azure Speech 库
 import Select from "@/components/requestmgmt/SelectOption";
 import { options } from "@/lib/i18n";
+import { getUserCredits } from "@/services/order";
+import { respData, respErr } from "@/lib/resp";
+import { select } from "@nextui-org/react";
 
 const MakeRequest: React.FC = () => {
   const [audioSrc, setAudioSrc] = useState<string>("");
@@ -14,6 +16,10 @@ const MakeRequest: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [userIdInt, setUserIdInt] = useState<number | null>(null); // 新增的状态变量
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // 新增成功信息状态
+  const [processing, setProcessing] = useState<boolean>(false); // 新增处理状态
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLanguage(event.target.value);
@@ -21,68 +27,111 @@ const MakeRequest: React.FC = () => {
   };
 
   const handlePlayAudio = () => {
+    setErrorMessage(null); // 清除错误信息
+    setSuccessMessage(null); // 清除成功信息
+
+    if (!audioSrc || !selectedLanguage || selectedLanguage == 'NULL') {
+      setErrorMessage('please paste an audio url and pick a language.');
+      return;
+    }
+
     const audioElement = audioRef.current;
     if (audioElement) {
       audioElement.src = audioSrc;
-      audioElement.play();
-      audioElement.addEventListener('loadedmetadata', () => {
-        const durationInMinutes = audioElement.duration / 60;
-        setAudioDuration(durationInMinutes);
+      audioElement.play().then(() => {
+        setIsAudioPlaying(true);
+        audioElement.addEventListener('loadedmetadata', () => {
+          const durationInMinutes = Math.ceil(audioElement.duration / 60);
+          setAudioDuration(durationInMinutes);
+        });
+      }).catch((error) => {
+        console.error('Error playing audio:', error);
+        setIsAudioPlaying(false);
+        setErrorMessage('error playing audio. please check the url.');
       });
     }
   };
 
   const handleProcess = async () => {
-    if (!userIdInt) {
-      console.error('User ID is not available');
+    setErrorMessage(null); // 清除错误信息
+    setSuccessMessage(null); // 清除成功信息
+    setProcessing(true); // 设置处理状态
+
+    if (!isAudioPlaying) {
+      setErrorMessage('please play the audio first.');
+      setProcessing(false); // 清除处理状态
       return;
     }
-    const taskId = uuidv4(); // 生成 task id
-    console.log("task_id:" + taskId);
-    console.log('audiosrc:' + audioSrc);
-    // 开始 upload and transcribe
 
-    const response = await fetch('/api/uploadAndTranscribe', {
+    if (!userIdInt) {
+      console.error('User ID is not available');
+      setErrorMessage('User ID is not available.');
+      setProcessing(false); // 清除处理状态
+      return;
+    }
+
+    const response = await fetch('/api/get-user-info', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ audioUrl: audioSrc, resultFilename: taskId }), // 移除多余的逗号
+      body: JSON.stringify({}),
     });
 
     if (!response.ok) {
-      const errorText = await response.text(); // 获取错误信息
-      throw new Error(`Failed to process the audio file: ${errorText}`);
+      setErrorMessage('No authentication.');
+      setProcessing(false); // 清除处理状态
+      return;
     }
 
-    const { operationName } = await response.json();
+    const data = await response.json();
+    const user_email = data.data.email;
+    const user_credits = await getUserCredits(user_email);
+
+    if (!user_credits || user_credits.left_credits < audioDuration!) {
+      setErrorMessage('Credits not enough. Please recharge.');
+      window.location.href = '/pricing';
+      setProcessing(false); // 清除处理状态
+      return;
+    }
+
+    const taskId = uuidv4(); // 生成 task id
+    console.log("task_id:" + taskId);
+    console.log('audiosrc:' + audioSrc);
+
+    const uploadResponse = await fetch('/api/uploadAndTranscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ audioUrl: audioSrc, resultFilename: taskId }),
+    });
+
+    if (!uploadResponse.ok) {
+      const errorText = await uploadResponse.text();
+      setErrorMessage(`Failed to process the audio file: ${errorText}`);
+      setProcessing(false); // 清除处理状态
+      return;
+    }
+
+    const { operationName } = await uploadResponse.json();
 
     if (!operationName) {
-      throw new Error('No operation name returned');
+      setErrorMessage('No operation name returned.');
+      setProcessing(false); // 清除处理状态
+      return;
     }
 
-    // 处理成功的操作名称
     console.log('Operation started:', operationName);
-
-
-
-
-
-
-
-
-
-
 
     const supabase = await getDb();
 
-    // 插入 cards 记录
     const cardId = uuidv4(); // 生成 card id
     const { data: cardData, error: cardError } = await supabase
       .from('cards')
       .insert([
         {
-          userid: userIdInt, // 使用 userIdInt
+          userid: userIdInt,
           uuid: cardId,
           link: audioSrc,
           original: "",
@@ -100,40 +149,67 @@ const MakeRequest: React.FC = () => {
 
     if (cardError) {
       console.error('Error inserting card:', cardError);
+      setErrorMessage('Error inserting card.');
+      setProcessing(false); // 清除处理状态
       return;
     }
 
     if (!cardData || cardData.length === 0) {
       console.error('No card data returned');
+      setErrorMessage('No card data returned.');
+      setProcessing(false); // 清除处理状态
       return;
     }
 
-    const cardIdInt = cardData[0].id; // 获取插入的 card id
-
-    // 插入 task 记录
+    const cardIdInt = cardData[0].id;
 
     const { data: taskData, error: taskError } = await supabase
       .from('task')
       .insert([
         {
           id: taskId,
-          user_id: userIdInt, // 使用 userIdInt
+          user_id: userIdInt,
           link: audioSrc,
-          title: "Task Title", // 请根据实际情况设置 title
+          title: "Task Title",
           status: "pending",
           card_id: cardIdInt,
-          lang: selectedLanguage, // 更新选择的语言
+          lang: selectedLanguage,
         },
       ]);
 
     if (taskError) {
       console.error('Error inserting task:', taskError);
+      setErrorMessage('Error inserting task.');
+      setProcessing(false); // 清除处理状态
       return;
     }
 
     console.log('Task inserted successfully:', taskData);
 
+    // 显示成功信息并重定向
+    setSuccessMessage('submission successful, now go to dashboard');
+    setTimeout(() => {
+      window.location.href = '/showrequest';
+    }, 2000); // 2秒后重定向
 
+    // 后续增加一个函数去减少 credit
+    console.log('Reduce credits function should be called here.');
+    setProcessing(false); // 清除处理状态
+  };
+
+  const handleClear = () => {
+    setAudioSrc("");
+    setSelectedLanguage("");
+    setAdditionalInput("");
+    setAudioDuration(null);
+    setIsAudioPlaying(false);
+    setErrorMessage(null);
+    setSuccessMessage(null); // 清除成功信息
+    setProcessing(false); // 清除处理状态
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+    }
   };
 
   useEffect(() => {
@@ -149,9 +225,7 @@ const MakeRequest: React.FC = () => {
         const data = await response.json();
         if (data.data) {
           setUserId(data.data.uuid);
-          //console.log("uuid tmd:"+data.data.uuid);
 
-          // 通过 uuid 获取 users 表格中的 id
           const supabase = await getDb();
           const { data: userData, error: userError } = await supabase
             .from('users')
@@ -176,41 +250,109 @@ const MakeRequest: React.FC = () => {
       <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
           <div className="lg:col-span-2 lg:py-12">
-            <p className="max-w-xl text-lg">
-              Learning a language may not be very difficult. You just need to choose a podcast, listen to it repeatedly, read along while imitating, and try to understand each word and grammar point.
-              Perhaps after a few times, you might master the language. This is also the most natural and human-centered way to learn a language.
-            </p>
+            <img src="/tutorial/createtask.gif" alt="Tutorial" className="max-w-full h-auto" />
 
             <div className="mt-8">
               <a href="#" className="text-2xl font-bold text-pink-600">
-                LinguaPod
+                LanguePod
               </a>
 
               <address className="mt-2 not-italic">
-                Insert a podcast link, then listen to it. Choose the language used in the podcast, and click on “Transcribe.”
+                paste a podcast link, then listen to it. choose the language used in the podcast, and click on process transcription.
               </address>
             </div>
           </div>
 
           <div className="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
             <form action="#" className="space-y-8">
-              {/* 显示用户 ID
-              {userId && (
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600">User ID: {userId}</p>
+              {errorMessage && (
+                <div role="alert" className="rounded-xl border border-gray-100 bg-white p-4">
+                  <div className="flex items-start gap-4">
+                    <span className="text-red-600">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                        />
+                      </svg>
+                    </span>
+
+                    <div className="flex-1">
+                      <strong className="block font-medium text-gray-900"> Error </strong>
+
+                      <p className="mt-1 text-sm text-gray-700">{errorMessage}</p>
+                    </div>
+
+                    <button className="text-gray-500 transition hover:text-gray-600" onClick={() => setErrorMessage(null)}>
+                      <span className="sr-only">Dismiss popup</span>
+
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               )}
 
-              {userId && (
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600">User ID: {userIdInt}</p>
+              {successMessage && (
+                <div role="alert" className="rounded-xl border border-gray-100 bg-white p-4">
+                  <div className="flex items-start gap-4">
+                    <span className="text-green-600">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </span>
+
+                    <div className="flex-1">
+                      <strong className="block font-medium text-gray-900"> success </strong>
+
+                      <p className="mt-1 text-sm text-gray-700">{successMessage}</p>
+                    </div>
+
+                    <button className="text-gray-500 transition hover:text-gray-600" onClick={() => setSuccessMessage(null)}>
+                      <span className="sr-only">Dismiss popup</span>
+
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-              )} */}
+              )}
 
-
-
-
-              {/* 音频播放控件 */}
               <div className="mb-4">
                 <audio ref={audioRef} controls className="w-full">
                   <source src="" type="audio/mpeg" />
@@ -224,7 +366,7 @@ const MakeRequest: React.FC = () => {
                 </label>
                 <input
                   className="w-full rounded-lg border border-gray-300 p-3 text-sm"
-                  placeholder="Enter audio URL"
+                  placeholder="paste audio url"
                   type="text"
                   id="audioUrl"
                   name="audioUrl"
@@ -233,26 +375,10 @@ const MakeRequest: React.FC = () => {
                 />
               </div>
 
-              {/* 新增的输入框
-              <div>
-                <label className="sr-only" htmlFor="additionalInput">
-                  Additional Input
-                </label>
-                <input
-                  className="w-full rounded-lg border border-gray-300 p-3 text-sm"
-                  placeholder="Additional Input"
-                  type="text"
-                  id="additionalInput"
-                  name="additionalInput"
-                  value={additionalInput}
-                  onChange={(e) => setAdditionalInput(e.target.value)}
-                />
-              </div> */}
-
               <div>
                 <Select
                   name="HeadlineAct"
-                  label="podcasts language"
+                  label=""
                   options={options}
                   placeholder="Select an option"
                   onChange={handleSelectChange}
@@ -260,35 +386,39 @@ const MakeRequest: React.FC = () => {
                 />
               </div>
 
-              {/* 显示音频时长 */}
               {audioDuration !== null && (
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">
-                    Audio Duration: {audioDuration.toFixed(2)} minutes, processing it will cost  {audioDuration.toFixed(2)} credits.
+                    audio duration: {audioDuration} minutes, processing it will cost {audioDuration} credits.
                   </p>
                 </div>
               )}
 
-              {/* 添加额外的间距 */}
               <div className="flex justify-center space-x-4">
+                <button
+                  type="button"
+                  className="inline-block rounded-lg bg-black px-5 py-3 font-medium text-white"
+                  onClick={handleClear}
+                >
+                  clear all inputs
+                </button>
                 <button
                   type="button"
                   className="inline-block rounded-lg bg-black px-5 py-3 font-medium text-white"
                   onClick={handlePlayAudio}
                 >
-                  Play Audio
+                  play and preview
                 </button>
                 <button
                   type="button"
                   className="inline-block rounded-lg bg-black px-5 py-3 font-medium text-white"
                   onClick={handleProcess}
+                  disabled={processing} // 禁用按钮当处理中
                 >
-                  Process
+                  {processing ? 'processing' : 'process transcription'}
                 </button>
               </div>
             </form>
-
-
           </div>
         </div>
       </div>

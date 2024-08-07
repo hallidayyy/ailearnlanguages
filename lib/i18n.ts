@@ -45,6 +45,7 @@ export const getDictionary = async (locale: string) => {
 };
 
 export const options = [
+    { value: 'NULL', label: 'pick podcast language' },
     { value: 'EN', label: 'English' },
     { value: 'ZH', label: 'Chinese' },
     { value: 'ES', label: 'Spanish' },

@@ -20,7 +20,7 @@ const Footer = () => {
           <Link href={authors[0].twitter || authors[0].url} target="_blank">
             {authors[0].name}
           </Link>{" "}
-          <div>All rights reserved.</div>
+          <div>all rights reserved.</div>
         </div>
       </div>
     </footer>

@@ -49,7 +49,7 @@ const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void
           onClick={toggleMenu}
           className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600"
         >
-          <span className="text-sm font-medium">Filter</span>
+          <span className="text-sm font-medium">task filter</span>
           <span className="transition group-open:-rotate-180">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -67,9 +67,9 @@ const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void
         {isOpen && (
           <div className="absolute top-full left-0 mt-2 w-96 rounded border border-gray-200 bg-white z-50">
             <header className="flex items-center justify-between p-4">
-              <span className="text-sm text-gray-700">{selectedFilters.length} Selected</span>
+              <span className="text-sm text-gray-700">{selectedFilters.length} selected</span>
               <button type="button" className="text-sm text-gray-900 underline underline-offset-4" onClick={handleReset}>
-                Reset
+                clear all
               </button>
             </header>
 
@@ -84,24 +84,9 @@ const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void
                     checked={selectedFilters.includes('pending')}
                     onChange={handleCheckboxChange}
                   />
-                  <span className="text-sm font-medium text-gray-700">Pending</span>
+                  <span className="text-sm font-medium text-gray-700">transcription submitted</span>
                 </label>
               </li>
-
-              <li>
-                <label htmlFor="FilterDone" className="inline-flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="FilterDone"
-                    value="done"
-                    className="size-5 rounded border-gray-300"
-                    checked={selectedFilters.includes('done')}
-                    onChange={handleCheckboxChange}
-                  />
-                  <span className="text-sm font-medium text-gray-700">Done</span>
-                </label>
-              </li>
-
               <li>
                 <label htmlFor="FilterTranscribed" className="inline-flex items-center gap-2">
                   <input
@@ -112,9 +97,24 @@ const PendingOrDoneFilter: React.FC<{ onFilterChange: (filter: string[]) => void
                     checked={selectedFilters.includes('transcribed')}
                     onChange={handleCheckboxChange}
                   />
-                  <span className="text-sm font-medium text-gray-700">Transcribed</span>
+                  <span className="text-sm font-medium text-gray-700">transcription complete, awaiting AI processing</span>
                 </label>
               </li>
+              <li>
+                <label htmlFor="FilterDone" className="inline-flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="FilterDone"
+                    value="done"
+                    className="size-5 rounded border-gray-300"
+                    checked={selectedFilters.includes('done')}
+                    onChange={handleCheckboxChange}
+                  />
+                  <span className="text-sm font-medium text-gray-700">all set, you can start learning</span>
+                </label>
+              </li>
+
+              
             </ul>
           </div>
         )}

@@ -13,8 +13,8 @@ export async function getDb() {
         throw new Error("Supabase URL or Anon Key is missing from environment variables.");
       }
 
-      console.log("Supabase URL:", supabaseUrl);
-      console.log("Supabase Anon Key:", supabaseAnonKey);
+      // console.log("Supabase URL:", supabaseUrl);
+      // console.log("Supabase Anon Key:", supabaseAnonKey);
 
       supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 

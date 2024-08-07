@@ -25,12 +25,12 @@ export async function POST(req: Request) {
     };
     console.error(userInfo);
     const existUser = await findUserByEmail(email);
-    console.error("existUser "+existUser);
+    // console.error("existUser "+existUser);
     if (existUser) {
       userInfo.uuid = existUser.uuid;
-      console.error("userInfo uuid "+userInfo.uuid);
+      // console.error("userInfo uuid "+userInfo.uuid);
     } else {
-      console.error("get user info insert here.");
+      // console.error("get user info insert here.");
       await insertUser(userInfo);
     }
 
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 
     return respData(userInfo);
   } catch (e) {
-    console.error("get user info failed!", e);
-    return respErr("get user info failed");
+    // console.error("get user info failed!", e);
+    // return respErr("get user info failed");
   }
 }

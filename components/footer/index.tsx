@@ -66,7 +66,7 @@ export default function () {
             >
               AI app: I SEE YOU
             </a>{" "}
-            All rights reserved.
+            all rights reserved.
           </p>
         </div>
       </div>

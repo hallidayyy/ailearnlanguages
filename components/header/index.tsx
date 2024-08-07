@@ -10,10 +10,10 @@ export default function () {
   const { user } = useContext(AppContext);
 
   const navigations: Nav[] = [
-    { name: "pricing", title: "Pricing", url: "/pricing", target: "_self" },
+    { name: "pricing", title: "pricing", url: "/pricing", target: "_self" },
     {
       name: "doc",
-      title: "Blogs",
+      title: "blogs",
       url: "https://languepodblog.vercel.app/",
       target: "_blank",
     },
@@ -31,7 +31,7 @@ export default function () {
                 alt="logo"
               />
               <span className="font-bold text-primary text-2xl">
-              LanguePod
+              languepod
               </span>
             </a>
 
@@ -64,7 +64,7 @@ export default function () {
                           href="/pricing"
                           className="hidden md:block mr-8 font-normal text-gray-800 cursor-pointer"
                         >
-                          Credit:{" "}
+                          credit:{" "}
                           <span className="text-primary">
                             {user.credits.left_credits}
                           </span>
