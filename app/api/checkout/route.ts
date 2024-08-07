@@ -6,7 +6,7 @@ import { currentUser } from "@clerk/nextjs";
 import { genOrderNo } from "@/lib/order";
 import { getDb } from "@/models/db"; // 请确保路径正确
 
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const user = await currentUser();
