@@ -8,7 +8,7 @@ const LangLinks = () => {
         const name = localeNames[key];
         return (
           <span key={key}>
-            <Link href={`/${key === defaultLocale ? "/" : key}`}>{name}</Link>
+            <Link href={`/`}>{name}</Link>
           </span>
         );
       })}
