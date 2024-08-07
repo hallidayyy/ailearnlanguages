@@ -138,7 +138,7 @@ const Header = () => {
                   <div className="flex items-center gap-x-5 justify-between">
                     <HeaderLinks />
                     <div className="flex items-center justify-end gap-x-5">
-                      <ThemedButton />
+                 
                       <LangSwitcher />
                     </div>
                   </div>
