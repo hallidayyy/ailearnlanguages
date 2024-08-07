@@ -31,7 +31,7 @@ interface TranscriptResult {
  * @param jsonString - JSON 字符串
  * @returns 处理后的字符串
  */
-export function processTranscript(jsonString: string): string {
+function processTranscript(jsonString: string): string {
   try {
     // 解析 JSON 字符串
     const data: TranscriptResult = JSON.parse(jsonString);
