@@ -3,7 +3,7 @@ import { getDb } from "@/models/db"; // 请确保路径正确
 import { Order } from "@/types/order";
 import Stripe from "stripe";
 
-import { getUserCoversCount } from "@/models/cover";
+
 
 export async function handleOrderSession(session_id: string) {
   const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "");

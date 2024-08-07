@@ -18,6 +18,10 @@ const TranslateParser: React.FC<{ content: string }> = ({ content }) => {
         return <div>No translation available</div>;
     }
 
+    // Check if json.content exists and is a string
+    if (!json.content || typeof json.content !== 'string') {
+        return <div>No content available</div>;
+    }
 
     const paragraphs = json.content.split('\n\n').filter((paragraph: string) => paragraph.trim() !== '');
 
