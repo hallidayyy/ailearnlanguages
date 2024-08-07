@@ -34,3 +34,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+credentials/plasma-figure-431600-s4-bbed4cc09dfc.json
