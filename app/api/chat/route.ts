@@ -57,6 +57,12 @@ export async function POST(req: NextRequest) {
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
+
+    if (!translationResponse.choices || !translationResponse.choices[0] || !translationResponse.choices[0].message || !translationResponse.choices[0].message.content) {
+      console.error('Invalid translation response:', translationResponse);
+      return NextResponse.json({ message: 'Invalid translation response' }, { status: 500 });
+    }
+
     const translation = JSON.parse(translationResponse.choices[0].message.content.trim());
     console.log('Translation response:', translation);
 
@@ -69,6 +75,12 @@ export async function POST(req: NextRequest) {
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
+
+    if (!keywordsResponse.choices || !keywordsResponse.choices[0] || !keywordsResponse.choices[0].message || !keywordsResponse.choices[0].message.content) {
+      console.error('Invalid keywords response:', keywordsResponse);
+      return NextResponse.json({ message: 'Invalid keywords response' }, { status: 500 });
+    }
+
     const keywords = JSON.parse(keywordsResponse.choices[0].message.content.trim());
     console.log('Keywords response:', keywords);
 
@@ -81,6 +93,12 @@ export async function POST(req: NextRequest) {
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
+
+    if (!keygrammerResponse.choices || !keygrammerResponse.choices[0] || !keygrammerResponse.choices[0].message || !keygrammerResponse.choices[0].message.content) {
+      console.error('Invalid keygrammer response:', keygrammerResponse);
+      return NextResponse.json({ message: 'Invalid keygrammer response' }, { status: 500 });
+    }
+
     const keygrammer = JSON.parse(keygrammerResponse.choices[0].message.content.trim());
     console.log('Keygrammer response:', keygrammer);
 
@@ -93,6 +111,12 @@ export async function POST(req: NextRequest) {
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
+
+    if (!rewritedarticleResponse.choices || !rewritedarticleResponse.choices[0] || !rewritedarticleResponse.choices[0].message || !rewritedarticleResponse.choices[0].message.content) {
+      console.error('Invalid rewrited article response:', rewritedarticleResponse);
+      return NextResponse.json({ message: 'Invalid rewrited article response' }, { status: 500 });
+    }
+
     const rewritedarticle = JSON.parse(rewritedarticleResponse.choices[0].message.content.trim());
     console.log('Rewrited article response:', rewritedarticle);
 
@@ -105,6 +129,12 @@ export async function POST(req: NextRequest) {
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
     });
+
+    if (!questionsResponse.choices || !questionsResponse.choices[0] || !questionsResponse.choices[0].message || !questionsResponse.choices[0].message.content) {
+      console.error('Invalid questions response:', questionsResponse);
+      return NextResponse.json({ message: 'Invalid questions response' }, { status: 500 });
+    }
+
     const questions = JSON.parse(questionsResponse.choices[0].message.content.trim());
     console.log('Questions response:', questions);
 
