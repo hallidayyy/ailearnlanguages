@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { ThemedButton } from "../ThemedButton";
+
 
 const links = [
   {
@@ -70,7 +70,7 @@ const Header = () => {
 
         <div className="hidden md:flex items-center gap-x-6">
           <HeaderLinks />
-          <ThemedButton />
+     
           <LangSwitcher />
         </div>
 
