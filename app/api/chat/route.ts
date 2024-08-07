@@ -63,8 +63,8 @@ export async function POST(req: NextRequest) {
     const keywordsResponse = await openai.chat.completions.create({
       model: modelName,
       messages: [
-        { role: 'system', content: 'You are a master of language education proficient in various languages.' },
-        { role: 'user', content: `Extract keywords and their ${curr_lang} translations from the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"keywords": [{"word": "", "translation": ""}]}` }
+        { role: 'system', content: 'You are an expert in language education, skilled in identifying and translating key vocabulary from various texts.' },
+        { role: 'user', content: `Extract the key vocabulary from the following text that are crucial for understanding the main ideas and themes. Provide their translations in ${curr_lang}. Return the result in the JSON format specified below:\n\n${originalText}\n\nOutput format:\n{\n  "keywords": [\n    {\n      "word": "example",\n      "translation": "translation example"\n    }\n  ]\n}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a master of language education proficient in various languages.' },
-        { role: 'user', content: `Extract key grammar points and their explanations from the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"keygrammer": [{"grammer": "", "description": "", "example": ""}]}` }
+        { role: 'user', content: `Extract key grammar points and their explanations from the following text and return the result in JSON format. Please provide the grammar descriptions in ${curr_lang} and the examples in the original text language.\n\n${originalText}\n\nOutput format: {"keygrammer": [{"grammer": "", "description": "", "example": ""}]}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a master of language education proficient in various languages.' },
-        { role: 'user', content: `Rewrite the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"content": ""}` }
+        { role: 'user', content: `Rewrite the following text in its original language with emphasis and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"content": ""}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       model: modelName,
       messages: [
         { role: 'system', content: 'You are a master of language education proficient in various languages.' },
-        { role: 'user', content: `Create 5 questions based on the following text and return the result in JSON format:\n\n${originalText}\n\nOutput format: {"questions": [{"stem": "", "options": ["A": "", "B": "", "C": "", "D": ""], "answer": ""}]}` }
+        { role: 'user', content: `Create 5 questions based on the following text. The questions and answers should be in the same language as the original text. Return the result in JSON format:\n\n${originalText}\n\nOutput format: {\n  "questions": [\n    {\n      "stem": "",\n      "options": {\n        "A": "",\n        "B": "",\n        "C": "",\n        "D": ""\n      },\n      "answer": ""\n    }\n  ]\n}` }
       ],
       max_tokens: 2000,
       response_format: { type: 'json_object' }, // 确保返回 JSON 格式

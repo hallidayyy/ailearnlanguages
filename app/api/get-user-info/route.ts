@@ -22,6 +22,7 @@ export async function POST(req: Request) {
       nickname: nickname || "",
       avatar_url: avatarUrl,
       uuid: genUuid(),
+
     };
     console.error(userInfo);
     const existUser = await findUserByEmail(email);
@@ -33,8 +34,9 @@ export async function POST(req: Request) {
       // console.error("get user info insert here.");
       await insertUser(userInfo);
     }
-
+   
     const user_credits = await getUserCredits(email);
+    console.log("user credit:"+user_credits);
     userInfo.credits = user_credits;
 
     return respData(userInfo);

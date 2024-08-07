@@ -1,10 +1,10 @@
 import { insertOrder, updateOrderSession } from "@/models/order";
 import { respData, respErr } from "@/lib/resp";
-
 import { Order } from "@/types/order";
 import Stripe from "stripe";
 import { currentUser } from "@clerk/nextjs";
 import { genOrderNo } from "@/lib/order";
+import { getDb } from "@/models/db"; // 请确保路径正确
 
 export const maxDuration = 120;
 
@@ -81,6 +81,7 @@ export async function POST(req: Request) {
         credits: credits,
       },
       mode: plan === "monthly" ? "subscription" : "payment",
+      // success_url: `${process.env.WEB_BASE_URI}/pay-success/{CHECKOUT_SESSION_ID}`,
       success_url: `${process.env.WEB_BASE_URI}/pay-success/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.WEB_BASE_URI}/pricing`,
     };
@@ -97,6 +98,7 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create(options);
 
     const stripe_session_id = session.id;
+    console.log("call uos");
     updateOrderSession(order_no, stripe_session_id);
     console.log("update order session: ", order_no, stripe_session_id);
 

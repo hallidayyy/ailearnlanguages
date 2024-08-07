@@ -56,6 +56,7 @@ const MakeRequest: React.FC = () => {
     setErrorMessage(null); // 清除错误信息
     setSuccessMessage(null); // 清除成功信息
     setProcessing(true); // 设置处理状态
+    console.log("start processing");
 
     if (!isAudioPlaying) {
       setErrorMessage('please play the audio first.');
@@ -86,9 +87,10 @@ const MakeRequest: React.FC = () => {
 
     const data = await response.json();
     const user_email = data.data.email;
+    console.log("make request email:"+user_email);
     const user_credits = await getUserCredits(user_email);
-
-    if (!user_credits || user_credits.left_credits < audioDuration!) {
+    console.log("make request credit: "+user_credits);
+    if (!user_credits || user_credits < audioDuration!) {
       setErrorMessage('Credits not enough. Please recharge.');
       window.location.href = '/pricing';
       setProcessing(false); // 清除处理状态
@@ -99,12 +101,13 @@ const MakeRequest: React.FC = () => {
     console.log("task_id:" + taskId);
     console.log('audiosrc:' + audioSrc);
 
+    console.log("send langname to uploadandtranscribe "+selectedLanguage);
     const uploadResponse = await fetch('/api/uploadAndTranscribe', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ audioUrl: audioSrc, resultFilename: taskId }),
+      body: JSON.stringify({ audioUrl: audioSrc, resultFilename: taskId, langName: selectedLanguage }),
     });
 
     if (!uploadResponse.ok) {

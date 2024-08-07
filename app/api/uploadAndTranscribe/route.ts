@@ -29,10 +29,13 @@ const TRANSCRIPT_OUTPUT_BUCKET = process.env.TRANSCRIPT_OUTPUT_BUCKET || 'forlin
 
 // 导出 POST 方法
 export async function POST(req: NextRequest) {
-  const { audioUrl, resultFilename } = await req.json();
+  const { audioUrl, resultFilename, langName } = await req.json();
 
-  if (!audioUrl || !resultFilename) {
-    return NextResponse.json({ error: '需要音频 URL 和结果文件名' }, { status: 400 });
+  console.log("i get langname is:"+langName+audioUrl+resultFilename);
+
+
+  if (!audioUrl || !resultFilename || !langName) {
+    return NextResponse.json({ error: '需要音频 URL 和结果文件名和语言名称' }, { status: 400 });
   }
 
   try {
@@ -47,8 +50,8 @@ export async function POST(req: NextRequest) {
     const config: protos.google.cloud.speech.v1.IRecognitionConfig = {
       encoding: protos.google.cloud.speech.v1.RecognitionConfig.AudioEncoding.MP3,
       sampleRateHertz: 16000,
-      languageCode: 'en-US',
-      model: 'video',
+      languageCode: langName,
+      model: 'default',
     };
 
     const outputConfig: protos.google.cloud.speech.v1.ITranscriptOutputConfig = {
