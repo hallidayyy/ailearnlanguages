@@ -3,10 +3,10 @@ import React from 'react';
 const OriginalContentParser: React.FC<{ content: string }> = ({ content }) => {
   console.log('Content Received:', content); // Log the raw content
 
+  // 清理内容中的多余换行符
   const cleanedContent = content.replace(/[\r\n]+/g, ' ');
 
-
-  // Check if the content is a valid JSON string
+  // 检查内容是否为有效的 JSON 字符串
   if (!content.trim().startsWith('{') || !content.trim().endsWith('}')) {
     return <div>Invalid JSON</div>;
   }
@@ -21,15 +21,17 @@ const OriginalContentParser: React.FC<{ content: string }> = ({ content }) => {
 
   console.log('Parsed JSON:', json); // Log the parsed JSON
 
+  // 检查解析后的 JSON 是否包含有效的内容
   if (!json || typeof json.content !== 'string') {
     return <div>No content available</div>;
   }
 
-  const paragraphs = json.content.split('\n\n').filter(paragraph => paragraph.trim() !== '');
+  // 将内容按段落分割，并去除空段落
+  const paragraphs = json.content.split('\n\n').filter((paragraph: string) => paragraph.trim() !== '');
 
   return (
     <div>
-      {paragraphs.map((paragraph, index) => (
+      {paragraphs.map((paragraph: string, index: number) => (
         <p key={index}>{paragraph}</p>
       ))}
     </div>

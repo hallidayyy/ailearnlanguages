@@ -13,7 +13,7 @@ import Header from "@/components/header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "LanguePod",
+  title: "languepod",
   description:
     "flexible, immersive audio lessons for language skills and cultural insights on-the-go.",
   keywords: "language learning podcasts, podcast for language learners, learn languages online, audio language lessons, podcast immersion, language podcast subscription, cultural language podcast, podcast language practice, multilingual podcasts, podcast language acquisition",

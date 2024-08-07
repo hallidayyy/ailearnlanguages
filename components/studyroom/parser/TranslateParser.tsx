@@ -18,11 +18,12 @@ const TranslateParser: React.FC<{ content: string }> = ({ content }) => {
         return <div>No translation available</div>;
     }
 
-    const paragraphs = json.translation.split('\n\n').filter(paragraph => paragraph.trim() !== '');
+
+    const paragraphs = json.content.split('\n\n').filter((paragraph: string) => paragraph.trim() !== '');
 
     return (
         <div>
-            {paragraphs.map((paragraph, index) => (
+            {paragraphs.map((paragraph: string, index: number) => (
                 <p key={index}>{paragraph}</p>
             ))}
         </div>
