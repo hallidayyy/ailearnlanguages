@@ -41,7 +41,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({
 }) => {
   const [isAudio, setIsAudio] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null); // 修改初始状态类型
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     onLinkChange(event.target.value);
@@ -74,7 +74,6 @@ const SubHeader: React.FC<SubHeaderProps> = ({
         .from('cards')
         .insert([
           {
-
             uuid: uuidv4(),
             link: link,
             original: resultCache.Original,
@@ -98,7 +97,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({
       console.log('Data saved successfully:', data);
     } catch (error) {
       console.error('Error saving data:', error);
-      setError(error);
+      setError(error as Error); // Cast error to Error
     } finally {
       setLoading(false);
     }
@@ -114,12 +113,6 @@ const SubHeader: React.FC<SubHeaderProps> = ({
     <div className="flex items-center justify-center bg-white text-black py-4 w-full">
       <div className="w-full space-y-4 px-4">
         <div className="flex items-center space-x-2 w-full">
-
-
-
-
-
-
           <input
             type="url"
             placeholder="输入链接"
@@ -129,9 +122,6 @@ const SubHeader: React.FC<SubHeaderProps> = ({
             className=" w-1/2 px-4 py-2 border border-gray-200 rounded-md bg-white text-gray-900 placeholder:text-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
             disabled
           />
-
-
-
           {error && <p className="text-red-600">Error: {error.message}</p>}
           {audioLink && (
             <audio controls autoPlay className="w-1/2 ml-4  bg-gray-100 rounded-lg shadow-md">
@@ -140,8 +130,6 @@ const SubHeader: React.FC<SubHeaderProps> = ({
             </audio>
           )}
         </div>
-
-
       </div>
     </div>
   );
