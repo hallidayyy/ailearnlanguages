@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.5",
+    "@formatjs/intl-localematcher": "^0.5.4",
     "@google-cloud/speech": "^6.7.0",
     "@google-cloud/storage": "^7.12.0",
     "@heroicons/react": "^2.1.1",
@@ -47,6 +48,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/negotiator": "^0.6.3",
     "@types/node": "^20.11.8",
     "@types/pg": "^8.11.0",
     "@types/react": "^18.2.48",
