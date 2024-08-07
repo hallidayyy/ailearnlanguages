@@ -3,7 +3,7 @@ import { getDb } from "@/models/db"; // 确保 getDb 返回的是 Supabase 客�
 
 export async function insertUser(user: User) {
   const createdAt: string = new Date().toISOString();
-  const supabase: SupabaseClient = await getDb();
+  const supabase = await getDb();
 
   // 验证supabase对象
   if (!supabase || typeof supabase.from !== 'function') {

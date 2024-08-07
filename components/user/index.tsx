@@ -38,7 +38,7 @@ export default function ({ user }: Props) {
         <DropdownMenuSeparator />
 
         <DropdownMenuCheckboxItem className="md:hidden text-center">
-          额度: {user.credits?.left_credits}
+          credit: {user.credits}
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator className="md:hidden" />
 
@@ -49,7 +49,7 @@ export default function ({ user }: Props) {
 
         <DropdownMenuCheckboxItem>
           <SignOutButton signOutCallback={() => location.reload()}>
-            退出登录
+            log out
           </SignOutButton>
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
