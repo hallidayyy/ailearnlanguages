@@ -67,7 +67,7 @@ export async function findUserByEmail(
 }
 
 export async function findUserByUuid(uuid: string): Promise<User | undefined> {
-  const supabase: SupabaseClient = await getDb();
+  const supabase = await getDb();
 
   // 验证supabase对象
   if (!supabase || typeof supabase.from !== 'function') {

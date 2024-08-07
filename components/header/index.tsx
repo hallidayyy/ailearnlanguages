@@ -31,7 +31,7 @@ export default function () {
                 alt="logo"
               />
               <span className="font-bold text-primary text-2xl">
-              languepod
+                languepod
               </span>
             </a>
 
@@ -64,9 +64,9 @@ export default function () {
                           href="/pricing"
                           className="hidden md:block mr-8 font-normal text-gray-800 cursor-pointer"
                         >
-                          credit: 
+                          credit: &nbsp;
                           <span className="text-primary">
-                          {user.credits}
+                            {user.credits}
                           </span>
                         </a>
                       )}
@@ -84,19 +84,19 @@ export default function () {
               )}
 
 
-<a href="/showrequest" className="mr-4">
-                    <Button>dashboard</Button>
-                  </a>
+              <a href="/showrequest" className="mr-4">
+                <Button>dashboard</Button>
+              </a>
 
 
 
 
-              <LangSwitcher /> 
+              <LangSwitcher />
             </div>
 
             <a href="#" className="absolute right-5 lg:hidden"></a>
           </div>
-   
+
         </nav>
       </div>
     </header>

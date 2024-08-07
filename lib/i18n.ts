@@ -46,13 +46,13 @@ export const getDictionary = async (locale: string) => {
 
 export const options = [
     { value: 'NULL', label: 'pick podcast language' },
-    { value: 'en-US', label: 'English' },
-    { value: 'zh-CN', label: 'Chinese' },
-    { value: 'es-ES', label: 'Spanish' },
-    { value: 'fr-FR', label: 'French' },
-    { value: 'de-DE', label: 'German' },
-    { value: 'ru-RU', label: 'Russian' },
-    { value: 'ja-JP', label: 'Japanese' },
-    { value: 'pt-BR', label: 'Portuguese' },
-    { value: 'it-IT', label: 'Italian' }
+    { value: 'en-US', label: 'english' },
+    { value: 'zh-CN', label: 'chinese' },
+    { value: 'es-ES', label: 'spanish' },
+    { value: 'fr-FR', label: 'french' },
+    { value: 'de-DE', label: 'german' },
+    { value: 'ru-RU', label: 'russian' },
+    { value: 'ja-JP', label: 'japanese' },
+    { value: 'pt-BR', label: 'portuguese' },
+    { value: 'it-IT', label: 'italian' }
 ];

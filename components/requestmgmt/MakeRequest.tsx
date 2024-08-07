@@ -20,43 +20,66 @@ const MakeRequest: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null); // 新增成功信息状态
   const [processing, setProcessing] = useState<boolean>(false); // 新增处理状态
+  const [isCreditEnough, setIsCreditEnough] = useState<boolean>(true); // 新增信用是否足够的状态
+  const [userCredits, setUserCredits] = useState<number | null>(null);
+
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLanguage(event.target.value);
     console.log('Selected value:', event.target.value);
   };
 
-  const handlePlayAudio = () => {
-    setErrorMessage(null); // 清除错误信息
-    setSuccessMessage(null); // 清除成功信息
+  const handlePlayAudio = async () => {
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setIsCreditEnough(false);
 
-    if (!audioSrc || !selectedLanguage || selectedLanguage == 'NULL') {
-      setErrorMessage('please paste an audio url and pick a language.');
+
+    if (!audioSrc || !selectedLanguage || selectedLanguage === 'NULL') {
+      setErrorMessage('Please paste an audio URL and pick a language.');
       return;
     }
 
     const audioElement = audioRef.current;
     if (audioElement) {
       audioElement.src = audioSrc;
-      audioElement.play().then(() => {
+      try {
+        await audioElement.play();
         setIsAudioPlaying(true);
-        audioElement.addEventListener('loadedmetadata', () => {
-          const durationInMinutes = Math.ceil(audioElement.duration / 60);
-          setAudioDuration(durationInMinutes);
-        });
-      }).catch((error) => {
+
+        const durationInMinutes = Math.ceil(audioElement.duration / 60);
+        setAudioDuration(durationInMinutes);
+
+        // Fetch user info and credits
+        const userInfoResponse = await fetch('/api/get-user-info', { method: 'POST' });
+        if (!userInfoResponse.ok) throw new Error('No authentication.');
+
+        const userInfo = await userInfoResponse.json();
+        const userEmail = userInfo.data.email;
+
+        const userCredits = await getUserCredits(userEmail);
+        setUserCredits(userCredits);
+        if (!userCredits || userCredits < durationInMinutes) {
+          setErrorMessage('credits not enough. please <a href="/pricing" target="_blank" rel="noopener noreferrer" style="color: #1a0dab; text-decoration: underline;">recharge</a>.');
+          setIsCreditEnough(false);
+        } else {
+          setIsCreditEnough(true);
+        }
+      } catch (error) {
         console.error('Error playing audio:', error);
         setIsAudioPlaying(false);
-        setErrorMessage('error playing audio. please check the url.');
-      });
+        setErrorMessage('Error playing audio. Please check the URL.');
+      }
     }
   };
+
+
 
   const handleProcess = async () => {
     setErrorMessage(null); // 清除错误信息
     setSuccessMessage(null); // 清除成功信息
     setProcessing(true); // 设置处理状态
-    console.log("start processing");
+
 
     if (!isAudioPlaying) {
       setErrorMessage('please play the audio first.');
@@ -64,44 +87,18 @@ const MakeRequest: React.FC = () => {
       return;
     }
 
-    if (!userIdInt) {
-      console.error('User ID is not available');
-      setErrorMessage('User ID is not available.');
-      setProcessing(false); // 清除处理状态
-      return;
-    }
 
-    const response = await fetch('/api/get-user-info', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}),
-    });
 
-    if (!response.ok) {
-      setErrorMessage('No authentication.');
-      setProcessing(false); // 清除处理状态
-      return;
-    }
 
-    const data = await response.json();
-    const user_email = data.data.email;
-    console.log("make request email:"+user_email);
-    const user_credits = await getUserCredits(user_email);
-    console.log("make request credit: "+user_credits);
-    if (!user_credits || user_credits < audioDuration!) {
-      setErrorMessage('Credits not enough. Please recharge.');
-      window.location.href = '/pricing';
-      setProcessing(false); // 清除处理状态
-      return;
-    }
+    console.log("start processing");
+
+
 
     const taskId = uuidv4(); // 生成 task id
     console.log("task_id:" + taskId);
     console.log('audiosrc:' + audioSrc);
 
-    console.log("send langname to uploadandtranscribe "+selectedLanguage);
+    console.log("send langname to uploadandtranscribe " + selectedLanguage);
     const uploadResponse = await fetch('/api/uploadAndTranscribe', {
       method: 'POST',
       headers: {
@@ -189,6 +186,22 @@ const MakeRequest: React.FC = () => {
 
     console.log('Task inserted successfully:', taskData);
 
+    const newCredits = userCredits - audioDuration;
+
+    // 更新用户信用额度
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ credit: newCredits })
+      .eq('id', userIdInt);
+
+    if (updateError) {
+      console.error('Error updating user credits:', updateError);
+      setErrorMessage('Error updating user credits.');
+      setProcessing(false); // 清除处理状态
+      return;
+    }
+
+
     // 显示成功信息并重定向
     setSuccessMessage('submission successful, now go to dashboard');
     setTimeout(() => {
@@ -257,7 +270,7 @@ const MakeRequest: React.FC = () => {
 
             <div className="mt-8">
               <a href="#" className="text-2xl font-bold text-pink-600">
-                LanguePod
+                languepod
               </a>
 
               <address className="mt-2 not-italic">
@@ -291,7 +304,7 @@ const MakeRequest: React.FC = () => {
                     <div className="flex-1">
                       <strong className="block font-medium text-gray-900"> Error </strong>
 
-                      <p className="mt-1 text-sm text-gray-700">{errorMessage}</p>
+                      <p className="mt-1 text-sm text-gray-700" dangerouslySetInnerHTML={{ __html: errorMessage }} />
                     </div>
 
                     <button className="text-gray-500 transition hover:text-gray-600" onClick={() => setErrorMessage(null)}>
@@ -416,7 +429,7 @@ const MakeRequest: React.FC = () => {
                   type="button"
                   className="inline-block rounded-lg bg-black px-5 py-3 font-medium text-white"
                   onClick={handleProcess}
-                  disabled={processing} // 禁用按钮当处理中
+                  disabled={!isCreditEnough || processing} // 禁用按钮当信用不足或处理中
                 >
                   {processing ? 'processing' : 'process transcription'}
                 </button>
