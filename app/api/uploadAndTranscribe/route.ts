@@ -15,14 +15,6 @@ const credential = JSON.parse(Buffer.from(googleServiceKey, 'base64').toString()
 const storage = new Storage({ credentials: credential });
 const speechClient = new SpeechClient({ credentials: credential });
 
-
-
-
-
-// // 初始化 Google Cloud 客户端
-// const storage = new Storage();
-// const speechClient = new SpeechClient();
-
 // 从环境变量获取 Google Cloud Storage 存储桶名称
 const BUCKET_NAME = process.env.GCS_BUCKET_NAME || 'forlinguapod'; // 请替换为你的存储桶名称
 const TRANSCRIPT_OUTPUT_BUCKET = process.env.TRANSCRIPT_OUTPUT_BUCKET || 'forlinguapod';
@@ -31,16 +23,18 @@ const TRANSCRIPT_OUTPUT_BUCKET = process.env.TRANSCRIPT_OUTPUT_BUCKET || 'forlin
 export async function POST(req: NextRequest) {
   const { audioUrl, resultFilename, langName } = await req.json();
 
-  console.log("i get langname is:"+langName+audioUrl+resultFilename);
-
+  console.log("i get langname is:" + langName + audioUrl + resultFilename);
 
   if (!audioUrl || !resultFilename || !langName) {
     return NextResponse.json({ error: '需要音频 URL 和结果文件名和语言名称' }, { status: 400 });
   }
 
+  const controller = new AbortController(); // 创建 AbortController 实例
+  const { signal } = controller; // 获取 AbortSignal
+
   try {
     // 下载音频文件到本地临时目录
-    const localFilePath = await downloadFile(audioUrl);
+    const localFilePath = await downloadFile(audioUrl, signal);
     // 上传音频文件到 Google Cloud Storage
     const gcsUri = await uploadFileToGCS(localFilePath, BUCKET_NAME);
 
@@ -81,15 +75,17 @@ export async function POST(req: NextRequest) {
  * 从URL下载文件到本地路径
  *
  * @param {string} fileUrl - 要下载的文件的URL
+ * @param {AbortSignal} signal - 取消请求的信号
  * @returns {Promise<string>} - 下载文件的本地路径
  */
-async function downloadFile(fileUrl: string): Promise<string> {
+async function downloadFile(fileUrl: string, signal: AbortSignal): Promise<string> {
   try {
     console.log('开始从 URL 下载文件...');
     const response = await axios({
       url: fileUrl,
       method: 'GET',
       responseType: 'stream',
+      signal, // 传递 AbortSignal
     });
 
     const urlParts = fileUrl.split('/');
