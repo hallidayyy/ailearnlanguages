@@ -16,7 +16,7 @@ const storage = new Storage({ credentials: credential });
 const speechClient = new SpeechClient({ credentials: credential });
 
 // 从环境变量获取 Google Cloud Storage 存储桶名称
-const BUCKET_NAME = process.env.GCS_BUCKET_NAME || 'forlinguapod'; // 请替换为你的存储桶名称
+const BUCKET_NAME = process.env.GCS_BUCKET_NAME || 'forlinguapod';
 const TRANSCRIPT_OUTPUT_BUCKET = process.env.TRANSCRIPT_OUTPUT_BUCKET || 'forlinguapod';
 
 // 导出 POST 方法
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
  */
 async function downloadFile(fileUrl: string, signal: AbortSignal): Promise<string> {
   try {
-    console.log('AbortSignal 实例:', signal instanceof AbortSignal); // 确认 signal 是 AbortSignal 实例
+    console.log('AbortSignal 实例:', signal instanceof AbortSignal);
     console.log('开始从 URL 下载文件...');
     const response = await axios({
       url: fileUrl,
@@ -124,7 +124,7 @@ async function uploadFileToGCS(localFilePath: string, bucketName: string): Promi
     await storage.bucket(bucketName).upload(localFilePath, {
       destination: gcsFileName,
       metadata: {
-        contentType: `audio/${fileExtension}`, // 根据文件类型调整
+        contentType: `audio/${fileExtension}`,
       },
     });
 
