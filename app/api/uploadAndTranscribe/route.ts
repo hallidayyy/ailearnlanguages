@@ -23,8 +23,6 @@ const TRANSCRIPT_OUTPUT_BUCKET = process.env.TRANSCRIPT_OUTPUT_BUCKET || 'forlin
 export async function POST(req: NextRequest) {
   const { audioUrl, resultFilename, langName } = await req.json();
 
-  console.log("Received parameters - langName:", langName, "audioUrl:", audioUrl, "resultFilename:", resultFilename);
-
   if (!audioUrl || !resultFilename || !langName) {
     return NextResponse.json({ error: '需要音频 URL 和结果文件名和语言名称' }, { status: 400 });
   }
@@ -66,11 +64,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ operationName: operation.name! });
   } catch (error) {
-    console.error('上传或转录过程中发生错误:', {
-      message: (error as Error).message || error,
-      stack: (error as Error).stack || 'No stack trace available'
-    });
-    return NextResponse.json({ error: '上传或转录过程中发生错误。', details: (error as Error).message }, { status: 500 });
+    console.error('上传或转录过程中发生错误:', (error as Error).message || error);
+    return NextResponse.json({ error: '上传或转录过程中发生错误。', details: (error as Error).stack }, { status: 500 });
   }
 }
 
@@ -83,6 +78,7 @@ export async function POST(req: NextRequest) {
  */
 async function downloadFile(fileUrl: string, signal: AbortSignal): Promise<string> {
   try {
+    console.log('AbortSignal 实例:', signal instanceof AbortSignal); // 确认 signal 是 AbortSignal 实例
     console.log('开始从 URL 下载文件...');
     const response = await axios({
       url: fileUrl,
@@ -104,10 +100,7 @@ async function downloadFile(fileUrl: string, signal: AbortSignal): Promise<strin
       writer.on('error', reject);
     });
   } catch (error) {
-    console.error('文件下载过程中发生错误:', {
-      message: (error as Error).message || error,
-      stack: (error as Error).stack || 'No stack trace available'
-    });
+    console.error('文件下载过程中发生错误:', (error as Error).message || error);
     throw error;
   }
 }
@@ -141,10 +134,7 @@ async function uploadFileToGCS(localFilePath: string, bucketName: string): Promi
 
     return gcsUri;
   } catch (error) {
-    console.error('上传文件过程中发生错误:', {
-      message: (error as Error).message || error,
-      stack: (error as Error).stack || 'No stack trace available'
-    });
+    console.error('上传文件过程中发生错误:', (error as Error).message || error);
     throw error;
   }
 }
