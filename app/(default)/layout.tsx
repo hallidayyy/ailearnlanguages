@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import { ReactNode } from "react";
 import "@/styles/globals.css";
 import "@/styles/loading.css";
+import { Analytics } from "@vercel/analytics/react"
 
 export default function ({ children }: { children: ReactNode }) {
   return (

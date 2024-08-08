@@ -14,7 +14,7 @@ export default function () {
     {
       name: "doc",
       title: "blogs",
-      url: "https://languepodblog.vercel.app/",
+      url: "https://blog.languepod.fun/",
       target: "_blank",
     },
   ];
