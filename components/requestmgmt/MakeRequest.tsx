@@ -1,39 +1,33 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { getDb } from '@/models/db'; // 请根据实际情况调整路径
 import { v4 as uuidv4 } from 'uuid'; // 导入UUID生成库
 import Select from "@/components/requestmgmt/SelectOption";
 import { options } from "@/lib/i18n";
 import { getUserCredits } from "@/services/order";
-import { respData, respErr } from "@/lib/resp";
-import { select } from "@nextui-org/react";
+import { AppContext } from '@/contexts/AppContext';
 
 const MakeRequest: React.FC = () => {
   const [audioSrc, setAudioSrc] = useState<string>("");
-  const [additionalInput, setAdditionalInput] = useState<string>("");
-  const [recognitionInfo, setRecognitionInfo] = useState<string | null>(null);
-  const [audioDuration, setAudioDuration] = useState<number | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
-  const [userId, setUserId] = useState<string | null>(null);
-  const [userIdInt, setUserIdInt] = useState<number | null>(null); // 新增的状态变量
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [userIdInt, setUserIdInt] = useState<number | null>(null);
+  const [audioDuration, setAudioDuration] = useState<number | null>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // 新增成功信息状态
-  const [processing, setProcessing] = useState<boolean>(false); // 新增处理状态
-  const [isCreditEnough, setIsCreditEnough] = useState<boolean>(true); // 新增信用是否足够的状态
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [processing, setProcessing] = useState<boolean>(false);
+  const [isCreditEnough, setIsCreditEnough] = useState<boolean>(true);
   const [userCredits, setUserCredits] = useState<number | null>(null);
-
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { lang, user } = useContext(AppContext);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLanguage(event.target.value);
-    console.log('Selected value:', event.target.value);
   };
 
   const handlePlayAudio = async () => {
     setErrorMessage(null);
     setSuccessMessage(null);
     setIsCreditEnough(false);
-
 
     if (!audioSrc || !selectedLanguage || selectedLanguage === 'NULL') {
       setErrorMessage('Please paste an audio URL and pick a language.');
@@ -50,17 +44,10 @@ const MakeRequest: React.FC = () => {
         const durationInMinutes = Math.ceil(audioElement.duration / 60);
         setAudioDuration(durationInMinutes);
 
-        // Fetch user info and credits
-        const userInfoResponse = await fetch('/api/get-user-info', { method: 'POST' });
-        if (!userInfoResponse.ok) throw new Error('No authentication.');
-
-        const userInfo = await userInfoResponse.json();
-        const userEmail = userInfo.data.email;
-
-        const userCredits = await getUserCredits(userEmail);
+        const userCredits = await getUserCredits(user.email);
         setUserCredits(userCredits);
         if (!userCredits || userCredits < durationInMinutes) {
-          setErrorMessage('credits not enough. please <a href="/pricing" target="_blank" rel="noopener noreferrer" style="color: #1a0dab; text-decoration: underline;">recharge</a>.');
+          setErrorMessage('Credits not enough. Please <a href="/pricing" target="_blank" rel="noopener noreferrer" style="color: #1a0dab; text-decoration: underline;">recharge</a>.');
           setIsCreditEnough(false);
         } else {
           setIsCreditEnough(true);
@@ -73,123 +60,55 @@ const MakeRequest: React.FC = () => {
     }
   };
 
-
-
   const handleProcess = async () => {
-    setErrorMessage(null); // 清除错误信息
-    setSuccessMessage(null); // 清除成功信息
-    setProcessing(true); // 设置处理状态
-
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setProcessing(true);
 
     if (!isAudioPlaying) {
-      setErrorMessage('please play the audio first.');
-      setProcessing(false); // 清除处理状态
+      setErrorMessage('Please play the audio first.');
+      setProcessing(false);
       return;
     }
 
+    const taskId = uuidv4();
+    const cardId = uuidv4();
 
+    const interval_minutes = audioDuration != null ? Math.max(Math.ceil(audioDuration / 2), 1) : 1;
 
+    try {
+      const response = await fetch('/api/processPodcast', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          audioUrl: audioSrc,
+          langName: selectedLanguage,
+          task_id: taskId,
+          card_id: cardId,
+          user_id: userIdInt,
+          curr_lang: lang,
+          interval_minutes: 1,
+          max_attempts: 10,
+        }),
+      });
 
-    console.log("start processing");
-
-
-
-    const taskId = uuidv4(); // 生成 task id
-    console.log("task_id:" + taskId);
-    console.log('audiosrc:' + audioSrc);
-
-    console.log("send langname to uploadandtranscribe " + selectedLanguage);
-    const uploadResponse = await fetch('/api/uploadAndTranscribe', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ audioUrl: audioSrc, resultFilename: taskId, langName: selectedLanguage }),
-    });
-
-    if (!uploadResponse.ok) {
-      const errorText = await uploadResponse.text();
-      setErrorMessage(`Failed to process the audio file: ${errorText}`);
-      setProcessing(false); // 清除处理状态
-      return;
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Process started successfully:', data);
+      } else {
+        console.error('Failed to start the process:', response.statusText);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
     }
-
-    const { operationName } = await uploadResponse.json();
-
-    if (!operationName) {
-      setErrorMessage('No operation name returned.');
-      setProcessing(false); // 清除处理状态
-      return;
-    }
-
-    console.log('Operation started:', operationName);
 
     const supabase = await getDb();
-
-    const cardId = uuidv4(); // 生成 card id
-    const { data: cardData, error: cardError } = await supabase
-      .from('cards')
-      .insert([
-        {
-          userid: userIdInt,
-          uuid: cardId,
-          link: audioSrc,
-          original: "",
-          translation: "",
-          keywords: "",
-          keygrammer: "",
-          rewritedarticle: "",
-          questions: "",
-          notes: "",
-          likes: 0,
-          generatedtitle: additionalInput,
-        },
-      ])
-      .select('id');
-
-    if (cardError) {
-      console.error('Error inserting card:', cardError);
-      setErrorMessage('Error inserting card.');
-      setProcessing(false); // 清除处理状态
-      return;
-    }
-
-    if (!cardData || cardData.length === 0) {
-      console.error('No card data returned');
-      setErrorMessage('No card data returned.');
-      setProcessing(false); // 清除处理状态
-      return;
-    }
-
-    const cardIdInt = cardData[0].id;
-
-    const { data: taskData, error: taskError } = await supabase
-      .from('task')
-      .insert([
-        {
-          id: taskId,
-          user_id: userIdInt,
-          link: audioSrc,
-          title: "Task Title",
-          status: "pending",
-          card_id: cardIdInt,
-          lang: selectedLanguage,
-        },
-      ]);
-
-    if (taskError) {
-      console.error('Error inserting task:', taskError);
-      setErrorMessage('Error inserting task.');
-      setProcessing(false); // 清除处理状态
-      return;
-    }
-
-    console.log('Task inserted successfully:', taskData);
 
     if (userCredits !== null && audioDuration !== null) {
       const newCredits = userCredits - audioDuration;
 
-      // 更新用户信用额度
       const { error: updateError } = await supabase
         .from('users')
         .update({ credit: newCredits })
@@ -198,36 +117,31 @@ const MakeRequest: React.FC = () => {
       if (updateError) {
         console.error('Error updating user credits:', updateError);
         setErrorMessage('Error updating user credits.');
-        setProcessing(false); // 清除处理状态
+        setProcessing(false);
         return;
       }
     } else {
       setErrorMessage('User credits or audio duration is not available.');
-      setProcessing(false); // 清除处理状态
+      setProcessing(false);
       return;
     }
 
-
-    // 显示成功信息并重定向
-    setSuccessMessage('submission successful, now go to dashboard');
+    setSuccessMessage('Submission successful, now go to dashboard');
     setTimeout(() => {
       window.location.href = '/showrequest';
-    }, 2000); // 2秒后重定向
+    }, 10000);
 
-    // 后续增加一个函数去减少 credit
-    console.log('Reduce credits function should be called here.');
-    setProcessing(false); // 清除处理状态
+    setProcessing(false);
   };
 
   const handleClear = () => {
     setAudioSrc("");
     setSelectedLanguage("");
-    setAdditionalInput("");
     setAudioDuration(null);
     setIsAudioPlaying(false);
     setErrorMessage(null);
-    setSuccessMessage(null); // 清除成功信息
-    setProcessing(false); // 清除处理状态
+    setSuccessMessage(null);
+    setProcessing(false);
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.src = "";
@@ -246,8 +160,6 @@ const MakeRequest: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.data) {
-          setUserId(data.data.uuid);
-
           const supabase = await getDb();
           const { data: userData, error: userError } = await supabase
             .from('users')
@@ -280,7 +192,7 @@ const MakeRequest: React.FC = () => {
               </a>
 
               <address className="mt-2 not-italic">
-                paste a podcast link, then listen to it. choose the language used in the podcast, and click on process transcription.
+                Paste a podcast link, then listen to it. Choose the language used in the podcast, and click on process transcription.
               </address>
             </div>
           </div>
@@ -388,7 +300,7 @@ const MakeRequest: React.FC = () => {
                 </label>
                 <input
                   className="w-full rounded-lg border border-gray-300 p-3 text-sm"
-                  placeholder="paste audio url"
+                  placeholder="Paste audio url"
                   type="text"
                   id="audioUrl"
                   name="audioUrl"
@@ -411,7 +323,7 @@ const MakeRequest: React.FC = () => {
               {audioDuration !== null && (
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">
-                    audio duration: {audioDuration} minutes, processing it will cost {audioDuration} credits.
+                    Audio duration: {audioDuration} minutes, processing it will cost {audioDuration} credits.
                   </p>
                 </div>
               )}
@@ -422,22 +334,22 @@ const MakeRequest: React.FC = () => {
                   className="inline-block rounded-lg bg-black px-5 py-3 font-medium text-white"
                   onClick={handleClear}
                 >
-                  clear all inputs
+                  Clear all inputs
                 </button>
                 <button
                   type="button"
                   className="inline-block rounded-lg bg-black px-5 py-3 font-medium text-white"
                   onClick={handlePlayAudio}
                 >
-                  play and preview
+                  Play and preview
                 </button>
                 <button
                   type="button"
                   className="inline-block rounded-lg bg-black px-5 py-3 font-medium text-white"
                   onClick={handleProcess}
-                  disabled={!isCreditEnough || processing} // 禁用按钮当信用不足或处理中
+                  disabled={!isCreditEnough || processing}
                 >
-                  {processing ? 'processing' : 'process transcription'}
+                  {processing ? 'Processing' : 'Process transcription'}
                 </button>
               </div>
             </form>

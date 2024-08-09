@@ -72,7 +72,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
 
   const renderButton = () => {
     switch (status) {
-      case 'pending':
+      case 'pending1':
         return (
           <button
             className="px-4 py-2 bg-yellow-500 text-white rounded"
@@ -81,7 +81,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ episode, title, description, durati
             check
           </button>
         );
-      case 'transcribed':
+      case 'transcribed1':
         return (
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded"

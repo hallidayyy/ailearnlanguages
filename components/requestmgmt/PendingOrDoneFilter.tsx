@@ -30,11 +30,23 @@ const PendingOrDoneFilter: React.FC<PendingOrDoneFilterProps> = ({ onFilterChang
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
     let newFilters = [...selectedFilters];
-    if (checked) {
-      newFilters.push(value);
+
+    if (value === 'pending') {
+      if (checked) {
+        newFilters = ['transcribed', 'pending'];
+      } else {
+        newFilters = newFilters.filter(filter => filter !== 'transcribed' && filter !== 'pending');
+      }
     } else {
-      newFilters = newFilters.filter(filter => filter !== value);
+      if (checked) {
+        newFilters.push(value);
+      } else {
+        newFilters = newFilters.filter(filter => filter !== value);
+      }
     }
+
+    // 去重
+    newFilters = Array.from(new Set(newFilters));
     setSelectedFilters(newFilters);
   };
 
@@ -46,6 +58,9 @@ const PendingOrDoneFilter: React.FC<PendingOrDoneFilterProps> = ({ onFilterChang
   const toggleMenu = () => {
     setIsOpen(prev => !prev);
   };
+
+  // 计算选中的复选框数量
+  const selectedCheckboxCount = (selectedFilters.includes('pending') || selectedFilters.includes('transcribed') ? 1 : 0) + (selectedFilters.includes('done') ? 1 : 0);
 
   return (
     <div className={`relative flex gap-8 ${className}`}>
@@ -72,7 +87,7 @@ const PendingOrDoneFilter: React.FC<PendingOrDoneFilterProps> = ({ onFilterChang
         {isOpen && (
           <div className="absolute top-full left-0 mt-2 w-96 rounded border border-gray-200 bg-white z-50">
             <header className="flex items-center justify-between p-4">
-              <span className="text-sm text-gray-700">{selectedFilters.length} selected</span>
+              <span className="text-sm text-gray-700">{selectedCheckboxCount} selected</span>
               <button type="button" className="text-sm text-gray-900 underline underline-offset-4" onClick={handleReset}>
                 clear all
               </button>
@@ -86,25 +101,13 @@ const PendingOrDoneFilter: React.FC<PendingOrDoneFilterProps> = ({ onFilterChang
                     id="FilterPending"
                     value="pending"
                     className="size-5 rounded border-gray-300"
-                    checked={selectedFilters.includes('pending')}
+                    checked={selectedFilters.includes('pending') || selectedFilters.includes('transcribed')}
                     onChange={handleCheckboxChange}
                   />
                   <span className="text-sm font-medium text-gray-700">transcription submitted</span>
                 </label>
               </li>
-              <li>
-                <label htmlFor="FilterTranscribed" className="inline-flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="FilterTranscribed"
-                    value="transcribed"
-                    className="size-5 rounded border-gray-300"
-                    checked={selectedFilters.includes('transcribed')}
-                    onChange={handleCheckboxChange}
-                  />
-                  <span className="text-sm font-medium text-gray-700">transcription complete, awaiting AI processing</span>
-                </label>
-              </li>
+           
               <li>
                 <label htmlFor="FilterDone" className="inline-flex items-center gap-2">
                   <input
