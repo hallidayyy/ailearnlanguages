@@ -21,13 +21,13 @@ const playAudio = (startTime, endTime, audioRef) => {
   }, (endTime - startTime) * 1000);
 };
 
-const OriginalContentParser = () => {
+const SentenceParser = () => {
   const [data, setData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(null);
   const audioRef = useRef(null);
 
   // 指定 JSON 文件的 URL
-  const jsonUrl = '/test/RealEasyEnglishTalkingAboutSchool.json'; // 这里使用 public 文件夹中的路径
+  const jsonUrl = '/test/sentence_offsets_output.json'; // 这里使用 public 文件夹中的路径
 
   // 获取 JSON 数据
   useEffect(() => {
@@ -91,4 +91,4 @@ const OriginalContentParser = () => {
   );
 };
 
-export default OriginalContentParser;
+export default SentenceParser;

@@ -11,6 +11,10 @@ interface Episode {
     audiourl: string;
     description: string;
     card_id: string;
+    card_id_fr: string;
+    card_id_cn: string;
+    card_id_jp: string;
+
 }
 
 interface EpisodeTableProps {
@@ -60,6 +64,17 @@ const EpisodeTable: React.FC<EpisodeTableProps> = ({ episodes }) => {
         return pages;
     };
 
+
+    const getFlagEmoji = (card_id: string, lang: string) => {
+        console.log("card id:" + card_id)
+
+        if (card_id !== targetId || lang == 'english') return '🇺🇸';
+        if (card_id !== targetId || lang == 'french') return '🇫🇷';
+        if (card_id !== targetId || lang == 'chinese') return '🇨🇳';
+        if (card_id !== targetId || lang == 'japanese') return '🇯🇵';
+        return '';
+    };
+
     return (
         <div className="w-full">
             {selectedEpisodeId ? (
@@ -76,10 +91,10 @@ const EpisodeTable: React.FC<EpisodeTableProps> = ({ episodes }) => {
                         <table className="min-w-full leading-normal table-fixed" style={{ width: '1000px' }}>
                             <thead>
                                 <tr>
-                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/4">Episode</th>
-                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/2">Description</th>
-                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/8">Created At</th>
-                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/8">Status</th>
+                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/4">episode</th>
+                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/2">description</th>
+                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/8">created at</th>
+                                    <th className="px-5 py-3 text-sm font-bold text-left text-gray-800 bg-white border-b border-gray-200 w-1/8">available in</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -110,8 +125,8 @@ const EpisodeTable: React.FC<EpisodeTableProps> = ({ episodes }) => {
                                             <p className="text-gray-900">{new Date(episode.published_at).toLocaleDateString()}</p>
                                         </td>
                                         <td className="px-5 py-5 text-sm bg-white border-b border-gray-200" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                            <span className={`relative inline-block px-3 py-1 font-semibold leading-tight ${episode.card_id ? 'text-green-600 bg-green-200' : 'text-red-600 bg-red-200'}`}>
-                                                {episode.card_id ? "Ready" : "Pending"}
+                                            <span className={`relative inline-block px-3 py-1 font-semibold leading-tight`}>
+                                                {episode.card_id ? '🇺🇸' : ''}{episode.card_id_fr ? '🇫🇷' : ''}{episode.card_id_cn ? '🇨🇳' : ''}{episode.card_id_jp ? '🇯🇵' : ''}
                                             </span>
                                         </td>
                                     </tr>

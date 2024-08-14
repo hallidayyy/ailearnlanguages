@@ -5,6 +5,7 @@ import { getDictionary } from '@/lib/i18n';
 interface NavigationProps {
   onButtonClick: (content: string) => void;
   onShowOriginalClick: () => void;
+  onSentenceClick: () => void;
   onTranslateClick: () => void;
   onKeyWordsClick: () => void;
   onKeyGrammerClick: () => void;
@@ -14,6 +15,7 @@ interface NavigationProps {
   onDictationClick: () => void;
   resultCache?: {
     Original: string;
+    Sentence: string;
     Translate: string;
     KeyWords: string;
     KeyGrammer: string;
@@ -27,6 +29,7 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({
   onButtonClick,
   onShowOriginalClick,
+  onSentenceClick,
   onTranslateClick,
   onKeyWordsClick,
   onKeyGrammerClick,
@@ -36,6 +39,7 @@ const Navigation: React.FC<NavigationProps> = ({
   onDictationClick,
   resultCache = {
     Original: '',
+    Sentence: '',
     Translate: '',
     KeyWords: '',
     KeyGrammer: '',
@@ -73,6 +77,17 @@ const Navigation: React.FC<NavigationProps> = ({
               show original
             </button>
           </li>
+
+          <li>
+            <button
+              onClick={onSentenceClick}
+              className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Sentence ? 'text-gray-700' : 'text-gray-500'}`}
+            >
+              sentence
+            </button>
+          </li>
+
+
 
           <li>
             <button

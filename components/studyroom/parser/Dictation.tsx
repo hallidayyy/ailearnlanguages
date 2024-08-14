@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { marked } from 'marked';
+import {DictationNote} from '@/components/studyroom/DictationNote'
 
 const Container = styled.div<{ isSplit: boolean }>`
     display: flex;
@@ -108,6 +109,7 @@ const Dictation: React.FC = () => {
                     placeholder="请输入文本..."
                     isSplit={isSplit}
                 />
+                {/* <DictationNote /> */}
                 <Button onClick={handleCheck} disabled={loading}>
                     {loading ? 'Checking...' : '检查'}
                 </Button>

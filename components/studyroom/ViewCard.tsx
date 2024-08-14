@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import SubHeader from '@/components/studyroom/SubHeaderForView';
 import Navigation from '@/components/studyroom/Navigation';
 import MainContent from '@/components/studyroom/MainContent';
-import AccessBlock from '@/components/dashboard/AccessBlock'; // 假设你有一个 AccessBlock 组件
-import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
-import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
-import { useActiveComponent } from '@/contexts/ActiveComponentContext'; // 确保路径正确
+import AccessBlock from '@/components/dashboard/AccessBlock'; 
+import { getDb } from '@/models/db'; 
+import { AppContext } from '@/contexts/AppContext'; 
+import { useActiveComponent } from '@/contexts/ActiveComponentContext'; 
 import { v4 as uuidv4 } from 'uuid';
 import { getUserQuota, decrementRunAIQuota } from "@/services/order";
 import { getLangFromEpisodeID } from "@/models/episode"
+import LongCard from './LongCard';
 
 interface ViewCardProps {
   episodeId: string; // 新增 episodeId 属性
@@ -28,6 +29,7 @@ interface CardData {
   rewritedarticle: string;
   questions: string;
   notes: string;
+  sentence: string;
   loading: boolean;
   error: Error | null;
 }
@@ -40,6 +42,9 @@ interface EpisodeData {
   imageUrl: string;
   audioUrl: string;
   card_id: string; // 新增 card_id 属性
+  card_id_fr: string;
+  card_id_cn: string;
+  card_id_jp: string;
 
 }
 
@@ -52,6 +57,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     likes: 0,
     create_at: '',
     original: '',
+    sentence: '',
     translation: '',
     keywords: '',
     keygrammer: '',
@@ -71,19 +77,22 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     imageUrl: '',
     audioUrl: '',
     card_id: '',
+    card_id_fr: '',
+    card_id_cn: '',
+    card_id_jp: '',
 
   });
 
   const [indexStr, setIndexStr] = useState<keyof MainContentProps['resultCache']>('Original');
   const [isFavorited, setIsFavorited] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
-  const { user } = useContext(AppContext); // 从 AppContext 中获取 user 信息
-  const { setActiveComponent } = useActiveComponent(); // 从 ActiveComponentContext 中获取 setActiveComponent 函数
+  const [selectedFlag, setSelectedFlag] = useState<string | null>(null);
+  const { lang, user } = useContext(AppContext); 
+  const { setActiveComponent } = useActiveComponent(); 
 
   useEffect(() => {
     const fetchEpisodeData = async () => {
       try {
-        console.log("ep id in vc" + episodeId);
         const supabase = await getDb();
         const { data, error } = await supabase
           .from('episodes')
@@ -103,7 +112,10 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
           imageUrl: data.imgurl,
           audioUrl: data.audiourl,
           card_id: data.card_id,
-          status: data.status
+          card_id_fr: data.card_id_fr,
+          card_id_cn: data.card_id_cn,
+          card_id_jp: data.card_id_jp
+
         };
 
         setEpisodeData(updatedEpisodeData);
@@ -117,17 +129,34 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
 
   useEffect(() => {
     const fetchCardData = async () => {
-      if (!episodeData.card_id) return;
+      // if (!(episodeData.card_id || episodeData.card_id_fr || episodeData.card_id_cn || episodeData.card_id_jp) { return; }
+
 
       try {
-        console.log("ep id:" + episodeData.id);
-        console.log("card id:" + episodeData.card_id);
         const supabase = await getDb();
+
+        //加入根据点击国旗选择 card_id
+
+        // const card_ids = {
+        //   card_id: episodeData.card_id,
+        //   card_id_fr: episodeData.card_id_fr,
+        //   card_id_cn: episodeData.card_id_cn,
+        //   card_id_jp: episodeData.card_id_jp
+        // };
+
         const { data, error } = await supabase
           .from('cards')
           .select('*')
           .eq('id', episodeData.card_id)
           .single();
+
+
+        const card_ids = [
+          episodeData.card_id,
+          episodeData.card_id_fr,
+          episodeData.card_id_cn,
+          episodeData.card_id_jp
+        ].filter(id => id); // 过滤掉空值
 
         if (error) {
           throw error;
@@ -141,11 +170,13 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
           likes: data.likes,
           create_at: data.create_at,
           original: data.original || '',
+          sentence: data.sentence || '',
           translation: data.translation || '',
           keywords: data.keywords || '',
           keygrammer: data.keygrammer || '',
           rewritedarticle: data.rewritedarticle || '',
           questions: data.questions || '',
+          notes: data.notes || '',
           loading: false,
           error: null,
         };
@@ -157,7 +188,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     };
 
     fetchCardData();
-  }, [episodeData.card_id]);
+  }, [episodeData.card_id, episodeData.card_id_fr, episodeData.card_id_cn, episodeData.card_id_jp]);
 
   useEffect(() => {
     const checkIfFavorited = async () => {
@@ -194,7 +225,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       if (!user || !episodeId) return;
 
       const supabase = await getDb();
-      console.log("vc:user_id:" + user.user_id);
+
       try {
         const { data: permissionData, error: permissionError } = await supabase
           .from('user_episodes_permissions')
@@ -217,6 +248,13 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
 
     checkUserPermission();
   }, [user, episodeId]);
+
+  const handleFlagClick = (flag: string) => {
+    setSelectedFlag(flag);
+    console.log(`Flag clicked: ${flag}`);
+    // 在这里处理点击事件，例如切换语言或执行其他操作
+  };
+
 
   const handleFavoriteClick = async (episodeId: string) => {
     if (!user || !episodeId) return;
@@ -274,6 +312,9 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
 
   const handleShowOriginalClick = () => {
     setIndexStr('Original');
+  };
+  const handleSentenceClick = () => {
+    setIndexStr('Sentence');
   };
 
   const handleTranslateClick = () => {
@@ -360,10 +401,6 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     console.log(taskData);
 
 
-
-
-
-
     try {
       const supabase = await getDb();
       const { error: taskError } = await supabase.from('task').insert([taskData]);
@@ -382,8 +419,9 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
   const { title, description, published_at, imageUrl, audioUrl } = episodeData;
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-white shadow-lg rounded-lg p-4 w-4/5 h-4/5 flex flex-col overflow-hidden mt-4 mx-auto">
+
+    <div className="flex justify-center items-start h-screen">
+      <div className="bg-white shadow-lg rounded-lg p-4 w-7/8 h-5/6 flex flex-col overflow-hidden mt-0 mx-auto">
         <div className="flex-none">
           <SubHeader
             episodeData={{
@@ -393,13 +431,30 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               published_at,
               imageUrl,
               audioUrl,
-              card_id: episodeData.card_id, // 传递 card_id 属性
+              card_id: episodeData.card_id, 
+              card_id_fr: episodeData.card_id_fr,
+              card_id_cn: episodeData.card_id_cn,
+              card_id_jp: episodeData.card_id_jp,
             }}
             isFavorited={isFavorited}
             onFavoriteClick={handleFavoriteClick}
-            onRunAIClick={handleRunAI} // 传递 onRunAIClick 回调函数
+            onRunAIClick={handleRunAI} 
+          />
+
+        </div>
+
+        {/* LongBar Component */}
+        <div className="flex-none w-full">
+          <LongCard
+            labels={['Label 1', 'Label 2', 'Label 3', 'Label 4']}
+            card_id={episodeData.card_id}
+            card_id_fr={episodeData.card_id_fr}
+            card_id_cn={episodeData.card_id_cn}
+            card_id_jp={episodeData.card_id_jp}
+            onFlagClick={handleFlagClick}
           />
         </div>
+
         <div className="flex-1 flex overflow-hidden">
           <div className="flex-none w-1/9">
             <Navigation
@@ -412,8 +467,11 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               onQuestionsClick={handleQuestionsClick}
               onExportNotesClick={handleExportNotesClick}
               onDictationClick={handleDictationClick}
+              onSentenceClick={handleSentenceClick}
+
               resultCache={{
                 Original: cardData.original,
+                Sentence: cardData.sentence,
                 Translate: cardData.translation,
                 KeyWords: cardData.keywords,
                 KeyGrammer: cardData.keygrammer,
@@ -429,6 +487,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               <MainContent
                 resultCache={{
                   Original: cardData.original,
+                  Sentence: cardData.sentence,
                   Translate: cardData.translation,
                   KeyWords: cardData.keywords,
                   KeyGrammer: cardData.keygrammer,
@@ -436,6 +495,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
                   Questions: cardData.questions,
                   ExportNotes: cardData.notes,
                 }}
+                audioUrl
                 indexStr={indexStr}
                 className="p-4"
               />
@@ -445,7 +505,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
                 handleRunAI={() => handleRunAI(user, episodeId)}
                 user={user}
                 episodeId={episodeId}
-                card_id = {episodeData.card_id}
+                card_id={episodeData.card_id}
               />
             )}
           </div>

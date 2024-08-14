@@ -1,17 +1,19 @@
 import React from 'react';
-import OriginalContentParser from "@/components/studyroom/parser/OriginalContentParser";
+import SentenceParser from "@/components/studyroom/parser/SentenceParser";
 import TranslateParser from "@/components/studyroom/parser/TranslateParser";
 import KeywordsParser from './parser/KeyWordsParser';
 import KeyGrammerParser from './parser/KeyGrammerParser';
 import RewritedArticleParser from "./parser/RewritedArticleParser"
 import QuestionsParser from './parser/QuestionsParser';
 import Dictation from './parser/Dictation';
+import OriginalParser from './parser/OriginalParser';
 
 
 
 
 interface MainContentProps {
   resultCache: {
+    Sentence: string;
     Original: string;
     Translate: string;
     KeyWords: string;
@@ -22,13 +24,16 @@ interface MainContentProps {
   };
   indexStr: keyof MainContentProps['resultCache']; // 明确指定类型
   className?: string; // 添加 className 属性
+  audioUrl: string;
 }
 
-const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, className }) => {
+const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, className, audioUrl }) => {
   const renderComponent = () => {
     switch (indexStr) {
       case 'Original':
-        return <OriginalContentParser content={resultCache.Original} />;
+        return <OriginalParser content={resultCache.Original} />;
+      case 'Sentence':
+        return <SentenceParser content={resultCache.Sentence} />;
       case 'Translate':
         return <TranslateParser content={resultCache.Translate} />;
       case 'KeyWords':
@@ -41,10 +46,10 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
         return <QuestionsParser content={resultCache.Questions} />;
       case 'ExportNotes':
         return <OriginalContentParser content={resultCache.ExportNotes} />;
-        case 'Dictation':
-          return <Dictation  />;
+      case 'Dictation':
+        return <Dictation />;
       default:
-        return <OriginalContentParser content={resultCache.Original} />;
+        return <SentenceParser content={resultCache.Sentence} />;
     }
   };
 

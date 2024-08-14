@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+
+import { AppContext } from '@/contexts/AppContext';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+
 
 interface SubHeaderProps {
   episodeData?: {
@@ -11,6 +14,9 @@ interface SubHeaderProps {
     imageUrl: string;
     audioUrl: string;
     card_id: string; // 新增 card_id 属性
+    card_id_fr: string;
+    card_id_cn: string;
+    card_id_jp: string;
   };
   isFavorited: boolean;
   onFavoriteClick?: (episodeId: string) => void; // 传递一个回调函数来处理收藏操作
@@ -19,6 +25,7 @@ interface SubHeaderProps {
 
 const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavoriteClick, onRunAIClick }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const { lang, user } = useContext(AppContext);
 
   useEffect(() => {
     console.log('Rendering SubHeader component');
@@ -106,7 +113,8 @@ const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavor
                 </svg>
               )}
             </button>
-            {(episodeData.card_id === undefined || episodeData.card_id === '' || episodeData.card_id === null) && (
+
+            {(episodeData.card_id === null) && (
               <button
                 onClick={handleRunAIClick}
                 className="py-2 px-4  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white  transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
@@ -120,7 +128,9 @@ const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavor
               <h2 className="text-xl font-bold">{episodeData.title}</h2>
             </div>
             <div className="flex-grow flex flex-col justify-center">
-              <p className="text-gray-600">{episodeData.description}</p>
+              <div className="max-h-12 overflow-hidden">
+                <p className="text-gray-600">{episodeData.description}</p>
+              </div>
               <p className="text-gray-500">
                 {new Date(episodeData.published_at).toLocaleDateString(undefined, {
                   year: 'numeric',
