@@ -8,7 +8,6 @@ export const localeNames: Record<string, string> = {
     zh: "🇨🇳 中文",
     ja: "🇯🇵 日本語",
     ar: "🇸🇦 العربية",
-    es: "🇪🇸 Español",
     ru: "🇷🇺 Русский",
 };
 export const defaultLocale = "en";

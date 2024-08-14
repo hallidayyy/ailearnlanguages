@@ -38,7 +38,7 @@ export default function ({ user }: Props) {
         <DropdownMenuSeparator />
 
         <DropdownMenuCheckboxItem className="md:hidden text-center">
-          credit: {user.credits}
+          credi1t: {user.credits}
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator className="md:hidden" />
 

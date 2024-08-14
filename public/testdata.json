@@ -1,3 +1,350 @@
 {
-  "content": "Reading is an activity that has been enjoyed by people for centuries. Whether for pleasure, education, or professional development, reading offers a multitude of benefits that can enhance our lives in various ways."
+  "mediaCards": [
+    {
+      "title": "The innovators building Africa's thriving tech scene",
+      "author": "TED Talks Daily",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/peace_itimi_the_innovators_building_africa_s_thriving_tech_scene"
+    },
+    {
+      "title": "How to disrupt the smartphone market",
+      "author": "TED Talks Technology",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example2"
+    },
+    {
+      "title": "The future of AI",
+      "author": "TED Talks Future",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example3"
+    },
+    {
+      "title": "How to manage a global team",
+      "author": "TED Talks Leadership",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example4"
+    },
+    {
+      "title": "The impact of social media on youth",
+      "author": "TED Talks Society",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example5"
+    },
+    {
+      "title": "Innovations in healthcare",
+      "author": "TED Talks Health",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example6"
+    },
+    {
+      "title": "The rise of remote work",
+      "author": "TED Talks Business",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example7"
+    },
+    {
+      "title": "The climate change challenge",
+      "author": "TED Talks Environment",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example8"
+    },
+    {
+      "title": "Understanding mental health",
+      "author": "TED Talks Mental Health",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example9"
+    },
+    {
+      "title": "The future of education",
+      "author": "TED Talks Education",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example10"
+    },
+    {
+      "title": "The power of storytelling",
+      "author": "TED Talks Culture",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example11"
+    },
+    {
+      "title": "How to build a startup",
+      "author": "TED Talks Entrepreneurship",
+      "imageUrl": "/test/artwork.jpg",
+      "linkUrl": "https://www.ted.com/talks/example12"
+    }
+  ],
+  "podcastCards": [
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "东亚观察局是一档关于中日韩政治文化的播客节目",
+      "linkUrl": "https://www.ted.com/talks/peace_itimi_the_innovators_building_africa_s_thriving_tech_scene"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "Deep dive into blockchain",
+      "linkUrl": "https://www.ted.com/talks/example4"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "The rise of remote work",
+      "linkUrl": "https://www.ted.com/talks/example5"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "Understanding mental health",
+      "linkUrl": "https://www.ted.com/talks/example6"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "Innovations in healthcare",
+      "linkUrl": "https://www.ted.com/talks/example7"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "The future of AI",
+      "linkUrl": "https://www.ted.com/talks/example8"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "How to disrupt the smartphone market",
+      "linkUrl": "https://www.ted.com/talks/example9"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "The power of storytelling",
+      "linkUrl": "https://www.ted.com/talks/example10"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "How to manage a global team",
+      "linkUrl": "https://www.ted.com/talks/example11"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "The climate change challenge",
+      "linkUrl": "https://www.ted.com/talks/example12"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "The climate change challenge",
+      "linkUrl": "https://www.ted.com/talks/example12"
+    },
+    {
+      "imageUrl": "/test/cover.png",
+      "title": "The climate change challenge",
+      "linkUrl": "https://www.ted.com/talks/example12"
+    }
+  ],
+  "episodes": [
+    {
+      "id": 1,
+      "title": "49. Ray Dalio: How to embrace conflict",
+      "podcast": "Masters of Scale",
+      "createdat": "12/09/2020",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 2,
+      "title": "Thailand dissolves main opposition party",
+      "podcast": "Global News Podcast",
+      "createdat": "01/10/2012",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 3,
+      "title": "Schools Were Created To Make You A Slave (Entrepreneurship Is Modern Freedom)",
+      "podcast": "The Koe Cast",
+      "createdat": "02/10/2018",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 4,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 5,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 6,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 7,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 8,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 9,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 10,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 11,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 12,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 13,
+      "title": "#301 当快乐退场，我们如何学会拥抱自己的「负面情绪」",
+      "podcast": "声东击西",
+      "createdat": "23/09/2010",
+      "status": "done",
+      "imageUrl": "/test/cover.png"
+    }
+  ],
+  "podcasts": [
+    {
+      "id": 1,
+      "name": "The Future of Technology",
+      "url": "http://techinsights.com/01",
+      "author": "Tech Insights",
+      "desc": "In this episode, we explore emerging technologies that are set to revolutionize various industries. From artificial intelligence to quantum computing, we delve into the latest advancements and their potential impacts on our daily lives. Join us as we interview leading experts and innovators who are shaping the future of technology. Discover how these breakthroughs could transform the world and what you need to know to stay ahead in this ever-evolving field.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 2,
+      "name": "Understanding Quantum Computing",
+      "url": "http://sciencesimplified.com/02",
+      "author": "Science Simplified",
+      "desc": "Quantum computing is a complex and fascinating topic that promises to revolutionize the world of computing. In this episode, we break down the principles of quantum mechanics and how they apply to quantum computers. We discuss how these machines work, their potential applications, and the challenges that researchers face. Whether you're a tech enthusiast or a curious learner, this episode provides a clear and engaging overview of quantum computing.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 3,
+      "name": "The Impact of AI on Healthcare",
+      "url": "http://healthmatters.com/03",
+      "author": "Health Matters",
+      "desc": "Artificial intelligence is making significant strides in the healthcare industry. This episode explores how AI is being used to improve diagnostics, treatment plans, and patient outcomes. We interview healthcare professionals and tech experts about the latest AI innovations in medicine, such as predictive analytics and personalized treatment. Learn how AI is transforming healthcare and what it means for the future of patient care.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 4,
+      "name": "Climate Change and Its Effects",
+      "url": "http://ecofocus.com/04",
+      "author": "Eco Focus",
+      "desc": "Climate change is one of the most pressing issues of our time. In this episode, we discuss the causes and consequences of climate change, including rising temperatures, extreme weather events, and environmental degradation. Experts share their insights on how climate change is affecting ecosystems and human societies. We also explore potential solutions and actions that individuals and governments can take to mitigate its impact.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 5,
+      "name": "The Rise of Electric Vehicles",
+      "url": "http://autotrends.com/05",
+      "author": "Auto Trends",
+      "desc": "Electric vehicles (EVs) are rapidly gaining popularity as a cleaner and more sustainable mode of transportation. This episode examines the rise of EVs, including advancements in battery technology, charging infrastructure, and government incentives. We talk to industry leaders and enthusiasts about the benefits and challenges of transitioning to electric vehicles. Discover how EVs are shaping the future of transportation and what it means for the environment.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 6,
+      "name": "Exploring Ancient Civilizations",
+      "url": "http://historyunfolded.com/06",
+      "author": "History Unfolded",
+      "desc": "Journey back in time as we explore the fascinating world of ancient civilizations. In this episode, we delve into the cultures, achievements, and mysteries of ancient societies such as Egypt, Mesopotamia, and the Indus Valley. Experts in archaeology and history share their findings and insights into how these early civilizations shaped the course of human history. Join us for a captivating look at the roots of modern civilization.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 7,
+      "name": "The Evolution of Music Genres",
+      "url": "http://musicevolution.com/07",
+      "author": "Music Evolution",
+      "desc": "Music genres have evolved significantly over the decades, influenced by cultural, technological, and social changes. In this episode, we trace the development of various music genres, from classical and jazz to rock and electronic. We discuss how these genres emerged, their defining characteristics, and their impact on the music industry and popular culture. Interviews with musicians and music historians provide insights into the evolution of music and its enduring influence.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 8,
+      "name": "The Latest in Space Exploration",
+      "url": "http://spaceexploration.com/08",
+      "author": "Space Explorers",
+      "desc": "Space exploration continues to capture the imagination of people around the world. In this episode, we discuss the latest missions and discoveries in space, including Mars rovers, lunar expeditions, and the search for extraterrestrial life. We interview scientists and astronauts about their experiences and the future of space travel. Discover the challenges and achievements of exploring the final frontier and what lies ahead for humanity's quest to understand the universe.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 9,
+      "name": "A Journey Through World History",
+      "url": "http://worldhistory.com/09",
+      "author": "World History Today",
+      "desc": "Dive into the rich tapestry of world history with this episode, where we explore significant events, figures, and periods that have shaped the modern world. From ancient civilizations to modern conflicts, we provide a comprehensive overview of pivotal moments in history. Interviews with historians and scholars shed light on the impacts of these events and their relevance to today's global landscape. Join us for an engaging journey through time and historical transformation.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 10,
+      "name": "Analyzing Economic Trends",
+      "url": "http://economicinsights.com/10",
+      "author": "Economic Insights",
+      "desc": "The global economy is a complex and dynamic system influenced by numerous factors. In this episode, we analyze current economic trends, including market fluctuations, international trade, and financial policies. We interview economists and industry experts to provide a clear understanding of economic concepts and their real-world implications. Whether you're an investor or just curious about the economy, this episode offers valuable insights into the forces shaping our financial landscape.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 11,
+      "name": "Strategies in Digital Marketing",
+      "url": "http://digitalmarketing.com/11",
+      "author": "Marketing Masters",
+      "desc": "Digital marketing has become a critical component of business strategy in the modern world. This episode explores the latest trends and techniques in digital marketing, including social media strategies, content creation, and data analytics. We interview marketing professionals and experts about their successful campaigns and innovative approaches. Learn how businesses are leveraging digital tools to reach their audiences and drive growth in an increasingly competitive marketplace.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 12,
+      "name": "Innovations in Education",
+      "url": "http://futureofeducation.com/12",
+      "author": "Education Innovators",
+      "desc": "The landscape of education is rapidly changing with the advent of new technologies and teaching methods. In this episode, we examine the future of education, including online learning, virtual classrooms, and personalized education. We discuss how these innovations are transforming the way we learn and teach. Interviews with educators, students, and tech developers provide insights into the potential benefits and challenges of modern education trends.",
+      "imageUrl": "/test/cover.png"
+    },
+    {
+      "id": 13,
+      "name": "The Art of Modern Storytelling",
+      "url": "http://creativecraft.com/13",
+      "author": "Creative Craft",
+      "desc": "Storytelling is an art form that continues to evolve with changing media and technologies. In this episode, we delve into the techniques and trends of modern storytelling, including narrative structure, character development, and multimedia integration. We feature conversations with authors, screenwriters, and content creators about their approaches to crafting compelling stories. Discover how contemporary storytelling techniques are influencing literature, film, and digital content.",
+      "imageUrl": "/test/cover.png"
+    }
+  ]
 }

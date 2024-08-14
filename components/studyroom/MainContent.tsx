@@ -5,6 +5,7 @@ import KeywordsParser from './parser/KeyWordsParser';
 import KeyGrammerParser from './parser/KeyGrammerParser';
 import RewritedArticleParser from "./parser/RewritedArticleParser"
 import QuestionsParser from './parser/QuestionsParser';
+import Dictation from './parser/Dictation';
 
 
 
@@ -40,6 +41,8 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
         return <QuestionsParser content={resultCache.Questions} />;
       case 'ExportNotes':
         return <OriginalContentParser content={resultCache.ExportNotes} />;
+        case 'Dictation':
+          return <Dictation  />;
       default:
         return <OriginalContentParser content={resultCache.Original} />;
     }

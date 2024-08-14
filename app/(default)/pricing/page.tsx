@@ -9,44 +9,60 @@ import { useState } from "react";
 
 const tiers = [
   {
-    name: "10 minutes",
-    id: "try",
-    href: "#",
-    priceMonthly: "¥4.99",
-    unit: "One Time Payment",
-    plan: "one-time",
-    amount: 499,
-    currency: "cny",
-    credits: 10,
+    name: "Free",
+    id: "free",
+    priceMonthly: "$0",
+    unit: "Free Plan",
+    plan: "free",
+    amount: 0,
+    currency: "usd",
+    credits: 0,
     description: "",
     features: [
-      "Transcribe a 10-minute podcast",
-      "Long-term validity",
+      "Limited transcription features",
+      "Access to basic tools",
+      "Community support",
+    ],
+    featured: false,
+  },
+  {
+    name: "Standard",
+    id: "standard",
+    priceMonthly: "$5.9",
+    unit: "Per Month",
+    plan: "monthly",
+    amount: 590,
+    currency: "usd",
+    credits: 100,
+    description: "",
+    features: [
+      "100 minutes of transcription per month",
       "High-speed transcription",
       "High-quality transcription",
       "AI-assisted learning",
     ],
     featured: true,
+    price_id: "prod_QeAHtLsVc15D6z", // Stripe 为 Standard 计划生成的 price_id
   },
   {
-    name: "60 minutes",
-    id: "one-time-payment",
-    href: "#",
-    priceMonthly: "¥19.99",
-    unit: "One Time Payment",
-    plan: "one-time",
-    amount: 1999,
-    currency: "cny",
-    credits: 60,
+    name: "Pro",
+    id: "pro",
+    priceMonthly: "$11.9",
+    unit: "Per Month",
+    plan: "monthly",
+    amount: 1190,
+    currency: "usd",
+    credits: 200,
     description: "",
     features: [
-      "Transcribe a 60-minute podcast",
-      "Long-term validity",
-      "High-speed transcription",
+      "200 minutes of transcription per month",
+      "Priority transcription",
       "High-quality transcription",
       "AI-assisted learning",
+      "Premium support",
     ],
     featured: false,
+    price_id: "prod_QeAIUDZnh17m6A", // Stripe 为 Standard 计划生成的 price_id
   },
 ];
 
@@ -106,22 +122,24 @@ export default function PricingPage() {
         return;
       }
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: session_id,
-      });
-      console.log("result", result);
+      if (plan !== "free") {
+        const result = await stripe.redirectToCheckout({
+          sessionId: session_id,
+        });
+        console.log("result", result);
 
-      if (result.error) {
-        setLoading(false);
+        if (result.error) {
+          setLoading(false);
 
-        // 处理错误
-        toast.error(result.error.message);
+          toast.error(result.error.message);
+        }
+      } else {
+        toast.success("You have selected the free plan!");
+        router.push("/success");
       }
     } catch (e) {
       setLoading(false);
-
       console.log("checkout failed: ", e);
-
       toast.error("checkout failed");
     }
   };
@@ -130,13 +148,13 @@ export default function PricingPage() {
     <div className="relative isolate bg-white px-6 py-8 md:py-16 lg:px-8">
       <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-6xl">
-          pricing
+          Pricing
         </h1>
       </div>
       <h2 className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
         Choose a payment plan, and after completing the payment, you will receive credits for learning
       </h2>
-      <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-8 sm:mt-20 sm:gap-y-10 lg:max-w-4xl lg:grid-cols-2 lg:gap-x-8">
+      <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-8 sm:mt-20 sm:gap-y-10 lg:max-w-4xl lg:grid-cols-3 lg:gap-x-8">
         {tiers.map((tier) => (
           <div
             key={tier.id}

@@ -1,3 +1,5 @@
+import { stringList } from "aws-sdk/clients/datapipeline";
+
 export interface Order {
   order_no: string;
   created_at: string;
@@ -10,4 +12,5 @@ export interface Order {
   stripe_session_id?: string;
   credits: number;
   currency: string;
+  customer_id: string;
 }

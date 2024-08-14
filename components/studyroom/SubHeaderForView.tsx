@@ -1,136 +1,143 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
-import { v4 as uuidv4 } from 'uuid'; // 导入UUID生成库
+import React, { useEffect, useRef } from 'react';
 
 interface SubHeaderProps {
-  onAudioSubmit: (link: string) => void;
-  audioLink: string;
-  onProcessClick: () => void;
-  onFetchResult: (result: string) => void;
-  link: string; // 添加 link 状态
-  onLinkChange: (link: string) => void; // 添加处理 link 改变的函数
-  userid: string; // 添加 userid 状态
-  resultCache: {
-    Original: string;
-    Translate: string;
-    KeyWords: string;
-    KeyGrammer: string;
-    RewriteArticle: string;
-    Questions: string;
-    ExportNotes: string;
+  episodeData?: {
+    id: string; // 确保 episodeData 包含 id
+    title: string;
+    description: string;
+    published_at: string; // ISO 日期字符串
+    imageUrl: string;
+    audioUrl: string;
+    card_id: string; // 新增 card_id 属性
   };
-  detectedLanguage: string; // 添加 detectedLanguage 状态
-  wordCount: number; // 添加 wordCount 状态
-  generatedTitle: string;
+  isFavorited: boolean;
+  onFavoriteClick?: (episodeId: string) => void; // 传递一个回调函数来处理收藏操作
+  onRunAIClick?: (episodeId: string) => void; // 新增 onRunAIClick 回调函数
 }
 
-const SubHeader: React.FC<SubHeaderProps> = ({
-  onAudioSubmit,
-  audioLink,
-  onProcessClick,
-  onFetchResult,
-  link,
-  onLinkChange,
-  userid,
-  resultCache,
-  detectedLanguage,
-  wordCount,
-  generatedTitle,
-}) => {
-  const [isAudio, setIsAudio] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null); // 修改初始状态类型
-
-  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    onLinkChange(event.target.value);
-  }, [onLinkChange]);
-
-  const handleSubmit = useCallback(() => {
-    const audioExtensions = ['.mp3', '.wav', '.ogg'];
-    const extension = link.substring(link.lastIndexOf('.')).toLowerCase();
-
-    if (audioExtensions.includes(extension)) {
-      setIsAudio(true);
-      onAudioSubmit(link);
-    } else {
-      alert('请输入一个有效的音频链接。');
-      setIsAudio(false);
-    }
-  }, [link, onAudioSubmit]);
-
-  const handleSaveClick = async () => {
-    if (!resultCache) {
-      setError(new Error('ResultCache is undefined'));
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    try {
-      const supabase = await getDb();
-      const { data, error } = await supabase
-        .from('cards')
-        .insert([
-          {
-            uuid: uuidv4(),
-            link: link,
-            original: resultCache.Original,
-            translation: resultCache.Translate,
-            keywords: resultCache.KeyWords,
-            keygrammer: resultCache.KeyGrammer,
-            rewritedarticle: resultCache.RewriteArticle,
-            questions: resultCache.Questions,
-            notes: resultCache.ExportNotes,
-            likes: 0, // 默认点赞数为0
-            wordcount: wordCount,
-            lang: detectedLanguage,
-            generatedtitle: generatedTitle,
-          }
-        ]);
-
-      if (error) {
-        throw error;
-      }
-
-      console.log('Data saved successfully:', data);
-    } catch (error) {
-      console.error('Error saving data:', error);
-      setError(error as Error); // Cast error to Error
-    } finally {
-      setLoading(false);
-    }
-  };
+const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavoriteClick, onRunAIClick }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     console.log('Rendering SubHeader component');
-  }, []);
+    console.log(episodeData?.card_id);
 
-  console.log('Rendering SubHeader with link:', link, 'isAudio:', isAudio);
+    if (episodeData?.audioUrl && audioRef.current) {
+      audioRef.current.load(); // 加载音频
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (audioRef.current) {
+        switch (event.key) {
+          case ' ': // 空格键
+            event.preventDefault();
+            if (audioRef.current.paused) {
+              audioRef.current.play();
+            } else {
+              audioRef.current.pause();
+            }
+            break;
+          case 'k': // 'k' 键
+            event.preventDefault();
+            if (audioRef.current.paused) {
+              audioRef.current.play();
+            } else {
+              audioRef.current.pause();
+            }
+            break;
+          case 'ArrowRight': // 右箭头键
+            event.preventDefault();
+            audioRef.current.currentTime += 10; // 快进 10 秒
+            break;
+          case 'ArrowLeft': // 左箭头键
+            event.preventDefault();
+            audioRef.current.currentTime -= 10; // 后退 10 秒
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [episodeData?.audioUrl]);
+
+  const handleFavoriteClick = () => {
+    if (episodeData && onFavoriteClick) {
+      onFavoriteClick(episodeData.id);
+    }
+  };
+
+  const handleRunAIClick = () => {
+    if (audioRef.current) {
+      const duration = audioRef.current.duration;
+      // console.log("duration:" + duration);
+      onRunAIClick(episodeData.id);
+    }
+  };
 
   return (
-    <div className="flex items-center justify-center bg-white text-black py-4 w-full">
-      <div className="w-full space-y-4 px-4">
-        <div className="flex items-center space-x-2 w-full">
-          <input
-            type="url"
-            placeholder="输入链接"
-            value={link}
-            onChange={handleInputChange}
-            aria-label="输入链接"
-            className=" w-1/2 px-4 py-2 border border-gray-200 rounded-md bg-white text-gray-900 placeholder:text-gray-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-            disabled
-          />
-          {error && <p className="text-red-600">Error: {error.message}</p>}
-          {audioLink && (
-            <audio controls autoPlay className="w-1/2 ml-4  bg-gray-100 rounded-lg shadow-md">
-              <source src={audioLink} type="audio/mpeg" />
-              您的浏览器不支持音频元素。
-            </audio>
-          )}
-        </div>
-      </div>
+    <div className="flex items-start justify-between bg-white text-black py-4 w-full px-4">
+      {episodeData && (
+        <>
+          <div className="w-1/4 flex flex-col items-center justify-center">
+            <img
+              src={episodeData.imageUrl}
+              alt={episodeData.title}
+              className="w-48 h-48 object-cover rounded-lg"
+            />
+            <button
+              onClick={handleFavoriteClick}
+              className={`mt-2 px-4 py-2 rounded-lg ${isFavorited ? 'text-red-500' : 'text-gray-500'}`}
+            >
+              {isFavorited ? (
+                <svg className="w-6 h-6 inline-block" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              )}
+            </button>
+            {(episodeData.card_id === undefined || episodeData.card_id === '' || episodeData.card_id === null) && (
+              <button
+                onClick={handleRunAIClick}
+                className="py-2 px-4  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white  transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              >
+                Run AI
+              </button>
+            )}
+          </div>
+          <div className="w-3/4 flex flex-col justify-between pl-4 h-48">
+            <div className="flex-none">
+              <h2 className="text-xl font-bold">{episodeData.title}</h2>
+            </div>
+            <div className="flex-grow flex flex-col justify-center">
+              <p className="text-gray-600">{episodeData.description}</p>
+              <p className="text-gray-500">
+                {new Date(episodeData.published_at).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
+            <div className="flex-none mt-auto">
+              <audio ref={audioRef} controls className="w-full bg-gray-100 rounded-lg shadow-md">
+                <source src={episodeData.audioUrl} type="audio/mpeg" />
+                您的浏览器不支持音频元素。
+              </audio>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

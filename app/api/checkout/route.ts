@@ -4,7 +4,6 @@ import { Order } from "@/types/order";
 import Stripe from "stripe";
 import { currentUser } from "@clerk/nextjs";
 import { genOrderNo } from "@/lib/order";
-import { getDb } from "@/models/db"; // 请确保路径正确
 
 export const maxDuration = 60;
 
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
       return respErr("invalid params");
     }
 
-    if (!["monthly", "one-time"].includes(plan)) {
+    if (!["monthly"].includes(plan)) {
       return respErr("invalid plan");
     }
 
@@ -45,11 +44,14 @@ export async function POST(req: Request) {
       order_status: 1,
       credits: credits,
       currency: currency,
+      customer_id: ""
     };
-    insertOrder(order);
+    await insertOrder(order); // 使用 await 确保订单插入完成
     console.log("create new order: ", order);
 
-    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "");
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+      apiVersion: "2023-10-16",
+    });
 
     let options: Stripe.Checkout.SessionCreateParams = {
       customer_email: user_email,
@@ -65,8 +67,8 @@ export async function POST(req: Request) {
             recurring:
               plan === "monthly"
                 ? {
-                    interval: "month",
-                  }
+                  interval: "month",
+                }
                 : undefined,
           },
           quantity: 1,
@@ -74,14 +76,13 @@ export async function POST(req: Request) {
       ],
       allow_promotion_codes: false,
       metadata: {
-        project: "aicover",
-        pay_scene: "buy-credits",
+        project: "languepod",
+        pay_scene: "subscription",
         order_no: order_no.toString(),
         user_email: user_email,
         credits: credits,
       },
       mode: plan === "monthly" ? "subscription" : "payment",
-      // success_url: `${process.env.WEB_BASE_URI}/pay-success/{CHECKOUT_SESSION_ID}`,
       success_url: `${process.env.WEB_BASE_URI}/pay-success/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.WEB_BASE_URI}/pricing`,
     };
@@ -98,8 +99,7 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create(options);
 
     const stripe_session_id = session.id;
-    console.log("call uos");
-    updateOrderSession(order_no, stripe_session_id);
+    await updateOrderSession(order_no, stripe_session_id); // 使用 await 确保订单更新完成
     console.log("update order session: ", order_no, stripe_session_id);
 
     return respData({

@@ -1,44 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { marked } from 'marked'; // Markdown 转换库
+import styled from 'styled-components';
 
-const TranslateParser: React.FC<{ content: string }> = ({ content }) => {
+const StyledContent = styled.div`
+    h1 {
+        font-size: 1.2em;
+        line-height: 1.5; /* 调整行间距 */
+    }
+`;
 
-    console.log("translate: "+content);
-    // Check if the content is a valid JSON string
-    if (!isValidJsonString(content)) {
-        return <div>Invalid JSON</div>;
+const TranslateParser: React.FC = () => {
+    const [content, setContent] = useState<string>('');
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const markdownUrl = '/test/translation.md'; // 替换为实际 Markdown 文件的路径
+
+    useEffect(() => {
+        fetch(markdownUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => {
+                const html = marked(text); // 将 Markdown 转换为 HTML
+                setContent(html);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching markdown file:', error);
+                setError('Failed to load content');
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
     }
 
-    let json;
-    try {
-        json = JSON.parse(content);
-    } catch (e) {
-        console.error('JSON Parsing Error:', e);
-        return <div>Invalid JSON</div>;
+    if (error) {
+        return <div>{error}</div>;
     }
 
-    // Check if json.translation exists and is a string
-    if (!json.translation || typeof json.translation !== 'string') {
-        return <div>No translation available</div>;
-    }
-
-    const paragraphs = json.translation.split('\n\n').filter((paragraph: string) => paragraph.trim() !== '');
-
-    return (
-        <div>
-            {paragraphs.map((paragraph: string, index: number) => (
-                <p key={index}>{paragraph}</p>
-            ))}
-        </div>
-    );
-};
-
-const isValidJsonString = (str: string): boolean => {
-    try {
-        JSON.parse(str);
-        return true;
-    } catch (e) {
-        return false;
-    }
+    return <StyledContent dangerouslySetInnerHTML={{ __html: content }} />;
 };
 
 export default TranslateParser;

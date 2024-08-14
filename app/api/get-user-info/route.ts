@@ -1,13 +1,14 @@
-import { findUserByEmail, insertUser } from "@/models/user";
+import { findUserByEmail, findUserByID, insertUser } from "@/models/user";
 import { respData, respErr } from "@/lib/resp";
 
 import { User } from "@/types/user";
 import { currentUser } from "@clerk/nextjs";
 import { genUuid } from "@/lib";
-import { getUserCredits } from "@/services/order";
+
 
 export async function POST(req: Request) {
   const user = await currentUser();
+  // console.log("current user:" +user);
   if (!user || !user.emailAddresses || user.emailAddresses.length === 0) {
     return respErr("not login");
   }
@@ -16,32 +17,33 @@ export async function POST(req: Request) {
     const email = user.emailAddresses[0].emailAddress;
     const nickname = user.firstName;
     const avatarUrl = user.imageUrl;
+    const existUser = await findUserByEmail(email);
+    const user_id = existUser?.user_id;
+
 
     let userInfo: User = {
+      user_id: user_id,
       email: email,
       nickname: nickname || "",
       avatar_url: avatarUrl,
-      uuid: genUuid(),
+
 
     };
     console.error(userInfo);
-    const existUser = await findUserByEmail(email);
-    // console.error("existUser "+existUser);
+
+    console.error("existUser "+existUser);
     if (existUser) {
-      userInfo.uuid = existUser.uuid;
-      // console.error("userInfo uuid "+userInfo.uuid);
+      userInfo.user_id = existUser.user_id;
+      console.error("userInfo id " + userInfo.user_id);
     } else {
-      // console.error("get user info insert here.");
+      console.error("get user info insert here.");
       await insertUser(userInfo);
     }
-   
-    const user_credits = await getUserCredits(email);
-    console.log("user credit:"+user_credits);
-    userInfo.credits = user_credits;
+
 
     return respData(userInfo);
   } catch (e) {
-    // console.error("get user info failed!", e);
-    // return respErr("get user info failed");
+    console.error("get user info failed!", e);
+    return respErr("get user info failed");
   }
 }

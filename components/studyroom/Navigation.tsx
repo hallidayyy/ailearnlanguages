@@ -11,6 +11,7 @@ interface NavigationProps {
   onRewriteArticleClick: () => void;
   onQuestionsClick: () => void;
   onExportNotesClick: () => void;
+  onDictationClick: () => void;
   resultCache?: {
     Original: string;
     Translate: string;
@@ -32,6 +33,7 @@ const Navigation: React.FC<NavigationProps> = ({
   onRewriteArticleClick,
   onQuestionsClick,
   onExportNotesClick,
+  onDictationClick,
   resultCache = {
     Original: '',
     Translate: '',
@@ -114,6 +116,15 @@ const Navigation: React.FC<NavigationProps> = ({
               className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Questions ? 'text-gray-700' : 'text-gray-500'}`}
             >
               questions
+            </button>
+          </li>
+
+          <li>
+            <button
+              onClick={onDictationClick}
+              className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Questions ? 'text-gray-700' : 'text-gray-500'}`}
+            >
+              dictation
             </button>
           </li>
 

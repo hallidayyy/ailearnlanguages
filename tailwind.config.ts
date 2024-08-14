@@ -92,7 +92,10 @@ const config = {
       backgroundColor: ['hover'], // 确保 hover 变体被启用
     },
   },
-  plugins: [require("tailwindcss-animate"), nextui()],
+  plugins: [require("tailwindcss-animate"), nextui(),
+    require('@tailwindcss/line-clamp'),
+  ],
+  
 } satisfies Config
 
 export default config

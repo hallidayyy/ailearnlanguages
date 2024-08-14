@@ -17,6 +17,7 @@ export default function () {
       url: "https://blog.languepod.fun/",
       target: "_blank",
     },
+    { name: "demo", title: "demo", url: "/demo", target: "_self" },
   ];
 
   return (
@@ -64,10 +65,10 @@ export default function () {
                           href="/pricing"
                           className="hidden md:block mr-8 font-normal text-gray-800 cursor-pointer"
                         >
-                          credit: &nbsp;
+                          {/* cred1it: &nbsp;
                           <span className="text-primary">
                             {user.credits}
-                          </span>
+                          </span> */}
                         </a>
                       )}
 
@@ -84,7 +85,7 @@ export default function () {
               )}
 
 
-              <a href="/showrequest" className="mr-4">
+              <a href="/dashboard" className="mr-4">
                 <Button>dashboard</Button>
               </a>
 

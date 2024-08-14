@@ -31,6 +31,7 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
 
       if (resp.ok) {
         const res = await resp.json();
+        console.log("fetch user info in appcontext: "+res.data.user_id);
         if (res.data) {
           setUser(res.data);
           return;

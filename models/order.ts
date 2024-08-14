@@ -1,5 +1,11 @@
-import { Order } from "@/types/order";
+
+
 import { getDb } from "@/models/db"; // 确保 getDb 返回的是 Supabase 客户端实例
+import { Order } from "@/types/order"; // 确保 Order 类型定义正确
+import { genOrderNo } from "@/lib/order";
+import Stripe from 'stripe';
+
+
 
 export async function insertOrder(order: Order) {
   const supabase = await getDb();
@@ -8,7 +14,11 @@ export async function insertOrder(order: Order) {
   if (!supabase || typeof supabase.from !== 'function') {
     throw new Error("Supabase client is not properly initialized.");
   }
-  const { data, error } = await supabase
+
+  console.error("call insert here");
+
+  // 插入订单
+  const { data: orderData, error: orderError } = await supabase
     .from("orders")
     .insert([
       {
@@ -21,14 +31,73 @@ export async function insertOrder(order: Order) {
         order_status: order.order_status,
         credits: order.credits,
         currency: order.currency,
+        customer_id: order.customer_id
       },
-    ]);
+    ])
+    .select()
+    .single(); // 使用 single() 确保只获取一条数据
 
-  if (error) {
-    throw error;
+  if (orderError) {
+    console.error("Failed to insert order", orderError);
+    throw orderError;
   }
 
-  return data;
+  console.log("Order inserted successfully", orderData);
+
+  // 获取插入订单的 user_email
+  const userEmail = orderData?.user_email;
+
+  if (!userEmail) {
+    throw new Error("User email is missing after order insertion.");
+  }
+
+  // 获取用户 id
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", userEmail)
+    .single();
+
+  if (userError) {
+    console.error("Failed to get user ID", userError);
+    throw userError;
+  }
+
+  const userId = userData?.id;
+
+  if (!userId) {
+    throw new Error("User ID is missing after retrieving user data.");
+  }
+
+  // 根据 plan 插入 quota
+  let accessContentQuota = -1; // 默认值
+  let runAiQuota = 0;
+
+  if (order.plan === "standard") {
+    runAiQuota = 20;
+  } else if (order.plan === "pro") {
+    runAiQuota = 50;
+  }
+
+  if (runAiQuota > 0) {
+    try {
+      await supabase
+        .from("quota")
+        .insert([
+          {
+            user_id: userId,
+            access_content_quota: accessContentQuota,
+            run_ai_quota: runAiQuota,
+          }
+        ]);
+      console.log("Quota inserted successfully for user:", userId);
+    } catch (quotaError) {
+      console.error("Failed to insert quota", quotaError);
+      // 处理配额插入失败的逻辑（可选）
+    }
+  }
+
+  return orderData;
 }
 
 export async function findOrderByOrderNo(
@@ -60,7 +129,10 @@ export async function findOrderByOrderNo(
 export async function updateOrderStatus(
   order_no: string,
   order_status: number,
-  paied_at: string
+  paied_at: string,
+  customer_id: string,
+  subscription_id: string,
+
 ) {
   const supabase = await getDb();
 
@@ -72,9 +144,9 @@ export async function updateOrderStatus(
   // 更新订单状态
   const { data: orderData, error: updateError } = await supabase
     .from("orders")
-    .update({ order_status, paied_at })
+    .update({ order_status, paied_at, customer_id, subscription_id })
     .eq("order_no", order_no)
-    .select('user_email, credits')
+    .select('user_email')
     .single();
 
   if (updateError) {
@@ -85,30 +157,7 @@ export async function updateOrderStatus(
     throw new Error("Order not found or update failed.");
   }
 
-  const { user_email, credits } = orderData;
-  console.log("order useremail:" + user_email);
-  // 更新用户的信用
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .select('credit')
-    .eq('email', user_email)
-    .single();
 
-  if (userError) {
-    throw userError;
-  }
-  console.log("order user old credit:" + userData.credit);
-  console.log("order user add credit:" + credits);
-  const newCredit = userData.credit + credits;
-
-  const { error: updateUserError } = await supabase
-    .from("users")
-    .update({ credit: newCredit })
-    .eq('email', user_email);
-
-  if (updateUserError) {
-    throw updateUserError;
-  }
 
   return orderData;
 }
@@ -118,7 +167,7 @@ export async function updateOrderSession(
   stripe_session_id: string
 ) {
   const supabase = await getDb();
-  console.log("orderno and stripe session id:"+order_no+stripe_session_id);
+  console.log("orderno and stripe session id:" + order_no + stripe_session_id);
   // 验证supabase对象
   if (!supabase || typeof supabase.from !== 'function') {
     throw new Error("Supabase client is not properly initialized.");
@@ -179,4 +228,108 @@ function formatOrder(row: any): Order {
   };
 
   return order;
+}
+
+
+export async function getUserCurrentPlanExpiredDate(user_email: string): Promise<Date | null> {
+  const supabase = await getDb();
+
+  try {
+    // 查询 orders 表，查找 user_email 的最新的一条，且 order_status=2 的记录
+    const { data, error } = await supabase
+      .from('orders')
+      .select('paied_at')
+      .eq('user_email', user_email)
+      .eq('order_status', 2)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.log("Error fetching user plan expiration date: ", error);
+      throw error;
+    }
+
+    if (!data) {
+      console.log("No valid order found for user");
+      return null; // 如果没有找到有效的订单，则返回 null
+    }
+
+    const paid_at = new Date(data.paied_at);
+
+    // 计算 paid_at 加上 1 个月后的日期
+    const expirationDate = new Date(paid_at);
+    expirationDate.setMonth(expirationDate.getMonth() + 1);
+
+    return expirationDate; // 返回到期日期
+
+  } catch (e) {
+    console.log("Get user plan expiration date failed: ", e instanceof Error ? e.message : e);
+    return null; // 发生错误时返回 null
+  }
+}
+
+export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
+  try {
+    // 将订阅设置为在当前计费周期结束时取消
+
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+      apiVersion: "2023-10-16",
+    });
+
+    const subscription = await stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: true,
+    });
+
+    console.log(`Subscription ${subscription.id} set to cancel at period end.`);
+    return subscription;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    console.error(`Error setting subscription ${subscriptionId} to cancel at period end:`, errorMessage);
+    throw new Error(errorMessage);
+  }
+}
+
+
+
+
+export async function getSubscriptionIdByEmail(email: string): Promise<string | null> {
+  // 初始化 Stripe 客户端
+  const stripePrivateKey = process.env.STRIPE_PRIVATE_KEY;
+  if (!stripePrivateKey) {
+    throw new Error("Stripe private key is not defined in environment variables.");
+  }
+
+  const stripe = new Stripe(stripePrivateKey, {
+    apiVersion: '2023-10-16',
+  });
+
+  const supabase = await getDb();
+
+  // 验证 Supabase 对象
+  if (!supabase || typeof supabase.from !== 'function') {
+    throw new Error("Supabase client is not properly initialized.");
+  }
+
+  try {
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .select("subscription_id")
+      .eq("user_email", email)
+      .order("paied_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (orderError) {
+      throw orderError;
+    }
+
+    return orderData ? orderData.subscription_id : null;
+  } catch (error) {
+    // 如果找不到记录，返回 null
+    if (error instanceof Error && error.message.includes('PGRST116')) {
+      return null;
+    }
+    throw error;
+  }
 }
