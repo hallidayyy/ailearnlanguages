@@ -82,12 +82,13 @@ const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavor
   };
 
   const handleRunAIClick = () => {
-    if (audioRef.current) {
-      const duration = audioRef.current.duration;
-      // console.log("duration:" + duration);
+    if (typeof onRunAIClick === 'function' && episodeData && episodeData.id !== undefined) {
       onRunAIClick(episodeData.id);
+    } else {
+      console.error('onRunAIClick is not a function or episodeData.id is undefined');
     }
   };
+
 
   return (
     <div className="flex items-start justify-between bg-white text-black py-4 w-full px-4">

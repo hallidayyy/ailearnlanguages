@@ -39,12 +39,12 @@ const Podcasts: React.FC = () => {
   useEffect(() => {
     const fetchPodcasts = async () => {
       try {
-        console.log("user id:" + user?.user_id);
+        console.log("user id:" + user?.id);
         const supabase = await getDb();
         const { data: podcastsData, error: podcastsError } = await supabase
           .from('user_podcasts_collection')
           .select('podcasts(*)')
-          .eq('user_id', user.user_id);
+          .eq('user_id', user.id);
 
         if (podcastsError) {
           setError(podcastsError.message);
@@ -68,7 +68,7 @@ const Podcasts: React.FC = () => {
     };
 
     fetchPodcasts();
-  }, [user?.user_id]);
+  }, [user?.id]);
 
   if (loading) {
     return <div>Loading...</div>;

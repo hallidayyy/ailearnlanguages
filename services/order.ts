@@ -66,9 +66,9 @@ export async function handleOrderSession(session_id: string) {
       throw new Error(`User not found with email: ${order.user_email}`);
     }
 
-    const userIdAsNumber = Number(user.user_id);
+    const userIdAsNumber = Number(user.id);
     if (isNaN(userIdAsNumber)) {
-      throw new Error(`Invalid user_id: ${user.user_id} cannot be converted to a number.`);
+      throw new Error(`Invalid user_id: ${user.id} cannot be converted to a number.`);
     }
 
     const success = await updateUserQuota(userIdAsNumber, access_content_quota, run_ai_quota);
@@ -146,7 +146,7 @@ export async function getUserQuota(user_email: string): Promise<{ user_id: numbe
     }
 
     // 确保 quota 是一个对象，并且符合 Quota 接口
-    const quota = data.quota as Quota;
+    const quota = data.quota as unknown as Quota;
 
     // 返回用户的 quota 信息
     return {

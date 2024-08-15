@@ -9,6 +9,8 @@ const StyledContent = styled.div`
     }
 `;
 
+
+
 const OriginalParser: React.FC = () => {
     const [content, setContent] = useState<string>('');
     const [error, setError] = useState<string | null>(null);

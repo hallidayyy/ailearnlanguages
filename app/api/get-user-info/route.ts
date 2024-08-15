@@ -18,11 +18,14 @@ export async function POST(req: Request) {
     const nickname = user.firstName;
     const avatarUrl = user.imageUrl;
     const existUser = await findUserByEmail(email);
-    const user_id = existUser?.user_id;
+    const user_id = existUser?.id;
+    
 
+    console.log("user id"+existUser?.id)
+    console.log("existuser is null"+existUser?.avatar_url)
 
     let userInfo: User = {
-      user_id: user_id as number,
+      id: user_id as number,
       email: email,
       nickname: nickname || "",
       avatar_url: avatarUrl,
@@ -33,8 +36,8 @@ export async function POST(req: Request) {
 
     console.error("existUser "+existUser);
     if (existUser) {
-      userInfo.user_id = existUser.user_id;
-      console.error("userInfo id " + userInfo.user_id);
+      userInfo.id = existUser.id;
+      console.error("userInfo id " + userInfo.id);
     } else {
       console.error("get user info insert here.");
       await insertUser(userInfo);

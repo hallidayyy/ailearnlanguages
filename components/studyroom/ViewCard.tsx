@@ -30,6 +30,7 @@ interface CardData {
   questions: string;
   notes: string;
   sentence: string;
+  dictation: string;
   loading: boolean;
   error: Error | null;
 }
@@ -63,6 +64,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       keygrammer: '',
       rewritedarticle: '',
       questions: '',
+      dictation: '',
       notes: '',
       loading: true,
       error: null,
@@ -82,6 +84,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       rewritedarticle: '',
       questions: '',
       notes: '',
+      dictation: '',
       loading: true,
       error: null,
     },
@@ -100,6 +103,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       rewritedarticle: '',
       questions: '',
       notes: '',
+      dictation: '',
       loading: true,
       error: null,
     },
@@ -118,6 +122,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       rewritedarticle: '',
       questions: '',
       notes: '',
+      dictation: '',
       loading: true,
       error: null,
     },
@@ -210,6 +215,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
           notes: data.notes || '',
           loading: false,
           error: null,
+          dictation: data.dication || '',
         };
 
         setCardData(prevState => ({ ...prevState, [key]: updatedCardData }));
@@ -223,10 +229,10 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     if (episodeData.card_id_cn) fetchCardData(episodeData.card_id_cn, 'card_id_cn');
     if (episodeData.card_id_jp) fetchCardData(episodeData.card_id_jp, 'card_id_jp');
 
-    console.log("vc:" + episodeData.card_id);
-    console.log("vc:" + episodeData.card_id_fr);
-    console.log("vc:" + episodeData.card_id_cn);
-    console.log("vc:" + episodeData.card_id_jp);
+    // console.log("vc:" + episodeData.card_id);
+    // console.log("vc:" + episodeData.card_id_fr);
+    // console.log("vc:" + episodeData.card_id_cn);
+    // console.log("vc:" + episodeData.card_id_jp);
 
   }, [episodeData.card_id, episodeData.card_id_fr, episodeData.card_id_cn, episodeData.card_id_jp]);
 
@@ -248,7 +254,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         const { data: favoriteData, error: favoriteError } = await supabase
           .from('user_episodes_collection')
           .select('*')
-          .eq('user_id', user.user_id)
+          .eq('user_id', user.id)
           .eq('episode_id', episodeId)
           .maybeSingle();
 
@@ -277,7 +283,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         const { data: permissionData, error: permissionError } = await supabase
           .from('user_episodes_permissions')
           .select('permission')
-          .eq('user_id', user.user_id)
+          .eq('user_id', user.id)
           .eq('episode_id', episodeId)
           .maybeSingle();
 
@@ -305,12 +311,12 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     if (!user || !episodeId) return;
 
     const supabase = await getDb();
-    console.log("vc:user_id:" + user.user_id);
+    console.log("vc:user_id:" + user.id);
     try {
       const { data: favoriteData, error: favoriteError } = await supabase
         .from('user_episodes_collection')
         .select('*')
-        .eq('user_id', user.user_id)
+        .eq('user_id', user.id)
         .eq('episode_id', episodeId)
         .maybeSingle();
 
@@ -324,7 +330,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         const { error: deleteError } = await supabase
           .from('user_episodes_collection')
           .delete()
-          .eq('user_id', user.user_id)
+          .eq('user_id', user.id)
           .eq('episode_id', episodeId);
 
         if (deleteError) {
@@ -337,7 +343,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         // 添加收藏
         const { error: insertError } = await supabase
           .from('user_episodes_collection')
-          .insert([{ user_id: user.user_id, episode_id: episodeId }]);
+          .insert([{ user_id: user.id, episode_id: episodeId }]);
 
         if (insertError) {
           console.error("Error inserting favorite:", insertError.message);
@@ -431,7 +437,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
 
     const taskData = {
       id: taskId,
-      user_id: user.user_id,
+      user_id: user.id,
       link: episodeData.audioUrl,
       title: "",
       start_time: startTime,
@@ -519,6 +525,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
                 RewriteArticle: selectedCardData ? selectedCardData.rewritedarticle : '',
                 Questions: selectedCardData ? selectedCardData.questions : '',
                 ExportNotes: selectedCardData ? selectedCardData.notes : '',
+                Dictation: selectedCardData ? selectedCardData.dictation : '',
               }}
               className="h-full"
             />
@@ -535,6 +542,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
                   RewriteArticle: selectedCardData ? selectedCardData.rewritedarticle : '',
                   Questions: selectedCardData ? selectedCardData.questions : '',
                   ExportNotes: selectedCardData ? selectedCardData.notes : '',
+                  Dictation: selectedCardData ? selectedCardData.dictation : '',
                 }}
                 audioUrl
                 indexStr={indexStr}
@@ -543,7 +551,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
             ) : (
               <AccessBlock
                 onSubscribeClick={handleSubscribeClick}
-                handleRunAI={() => handleRunAI(user, episodeId)}
+                handleRunAI={() => handleRunAI(episodeId)}
                 user={user}
                 episodeId={episodeId}
                 card_id={episodeData.card_id}

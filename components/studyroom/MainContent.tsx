@@ -21,6 +21,7 @@ interface MainContentProps {
     RewriteArticle: string;
     Questions: string;
     ExportNotes: string;
+    Dictation: string;
   };
   indexStr: keyof MainContentProps['resultCache']; // 明确指定类型
   className?: string; // 添加 className 属性
@@ -45,7 +46,7 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
       case 'Questions':
         return <QuestionsParser content={resultCache.Questions} />;
       case 'ExportNotes':
-        return <OriginalContentParser content={resultCache.ExportNotes} />;
+        return <OriginalParser content={resultCache.ExportNotes} />;
       case 'Dictation':
         return <Dictation />;
       default:

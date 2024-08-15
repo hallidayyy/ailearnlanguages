@@ -22,6 +22,7 @@ interface NavigationProps {
     RewriteArticle: string;
     Questions: string;
     ExportNotes: string;
+    Dictation:string;
   };
   className?: string; // 允许外部传入类名
 }
@@ -46,6 +47,7 @@ const Navigation: React.FC<NavigationProps> = ({
     RewriteArticle: '',
     Questions: '',
     ExportNotes: '',
+    Dictation:'',
   },
   className = '', // 默认值为空字符串
 }) => {
@@ -137,7 +139,7 @@ const Navigation: React.FC<NavigationProps> = ({
           <li>
             <button
               onClick={onDictationClick}
-              className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Questions ? 'text-gray-700' : 'text-gray-500'}`}
+              className={`block w-full px-4 py-2 text-sm font-medium transition-colors text-left duration-200 ease-in-out hover:bg-gray-100 ${resultCache.Dictation ? 'text-gray-700' : 'text-gray-500'}`}
             >
               dictation
             </button>

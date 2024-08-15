@@ -63,14 +63,14 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcastId }) => {
           setEpisodes(episodesData || []);
         }
 
-        console.log("user id:" + user?.user_id);
+        console.log("user id:" + user?.id);
         console.log("lang:" + lang);
         // 检查用户是否收藏了该 podcast
         if (user) {
           const { data: favoriteData, error: favoriteError } = await supabase
             .from('user_podcasts_collection')
             .select('*')
-            .eq('user_id', user.user_id)
+            .eq('user_id', user.id)
             .eq('podcast_id', podcastId)
             .maybeSingle();
 
@@ -104,7 +104,7 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcastId }) => {
       const { error: deleteError } = await supabase
         .from('user_podcasts_collection')
         .delete()
-        .eq('user_id', user.user_id)
+        .eq('user_id', user.id)
         .eq('podcast_id', podcastId);
 
       if (deleteError) {
@@ -116,7 +116,7 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcastId }) => {
       // 添加收藏
       const { error: insertError } = await supabase
         .from('user_podcasts_collection')
-        .insert([{ user_id: user.user_id, podcast_id: podcastId }]);
+        .insert([{ user_id: user.id, podcast_id: podcastId }]);
 
       if (insertError) {
         setError(insertError.message);

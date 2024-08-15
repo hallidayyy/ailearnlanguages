@@ -77,6 +77,8 @@ export async function findUserByEmail(email: string): Promise<User | undefined> 
     .eq("email", email)
     .single();
 
+  console.log(data.id)
+
   if (error) {
     console.error("Error querying user:", error);
     throw error;
@@ -173,7 +175,7 @@ export async function getUserByCustomerID(customerID: string): Promise<User | un
   if (!userData) {
     return undefined; // 如果找不到对应的用户，则返回 undefined
   }
-  
 
-  return userData as User;
+
+  return userData as unknown as User;
 }

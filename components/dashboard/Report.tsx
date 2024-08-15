@@ -19,7 +19,7 @@ const Report: React.FC = () => {
   useEffect(() => {
 
     if (user) {
-      getReport(user.user_id).then(data => {
+      getReport(user.id).then(data => {
         setStats(data);
       }).catch(error => {
         console.error('Error fetching user stats:', error);

@@ -47,13 +47,13 @@ const Episodes: React.FC = () => {
 
         switch (selectedOption) {
           case 'collected':
-            data = await fetchCollectedEpisodes(supabase, user.user_id);
+            data = await fetchCollectedEpisodes(supabase, user.id);
             break;
           case 'access':
-            data = await fetchAccessEpisodes(supabase, user.user_id);
+            data = await fetchAccessEpisodes(supabase, user.id);
             break;
           case 'run':
-            data = await fetchRunEpisodes(supabase, user.user_id);
+            data = await fetchRunEpisodes(supabase, user.id);
             break;
           default:
             console.error('Unknown option:', selectedOption);
