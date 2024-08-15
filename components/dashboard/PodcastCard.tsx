@@ -3,13 +3,12 @@ import React from 'react';
 interface PodcastCardProps {
   imageUrl: string;
   title: string;
-  id: string;
   onClick: () => void; // 添加 onClick 属性
 }
 
-const PodcastCard: React.FC<PodcastCardProps> = ({ imageUrl, title, id, onClick }) => {
+const PodcastCard: React.FC<PodcastCardProps> = ({ imageUrl, title, onClick }) => {
   return (
-    <div 
+    <div
       className="flex flex-col items-center bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
       style={{ width: '8rem', height: 'auto' }}
       onClick={onClick} // 添加点击事件处理函数
@@ -25,7 +24,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({ imageUrl, title, id, onClick 
             minHeight: '2.5rem' // 确保至少两行高度
           }}
         >
-          {title} 
+          {title}
         </h3>
       </div>
     </div>

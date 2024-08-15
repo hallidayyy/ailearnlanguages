@@ -8,8 +8,7 @@ import UsageCard from "./UsageCard";
 import { getUserQuota, getUserPlan } from "@/services/order";
 import PlanStatusCard from "./PlanStatusCard";
 import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
-import { getUserCurrentPlanExpiredDate, cancelSubscriptionAtPeriodEnd,getSubscriptionIdByEmail } from '@/models/order'
-
+import { getUserCurrentPlanExpiredDate, cancelSubscriptionAtPeriodEnd, getSubscriptionIdByEmail } from '@/models/order'
 
 const tiers = [
   {
@@ -76,43 +75,32 @@ function classNames(...classes: string[]) {
 
 const PlanPage: React.FC = () => {
   const router = useRouter();
-  const [username, setUsername] = useState<string>("halliday");
-  const [email, setEmail] = useState<string>("john.doe@example.com");
+  const { user } = useContext(AppContext); // 从 AppContext 中获取 user 信息
   const [loading, setLoading] = useState(false);
-  const { lang, user } = useContext(AppContext); // 从 AppContext 中获取 user 信息
   const [planExpiryDate, setPlanExpiryDate] = useState<string | null>(null);
-
-  const inputClassNames =
-    "rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent";
-  const buttonClassNames =
-    "mt-4 py-2 px-4 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50";
-
-  type Plan = 'free' | 'standard' | 'pro';
-
   const [userQuota, setUserQuota] = useState<{ access_content_quota: number, run_ai_quota: number } | null>(null);
-  const [userPlan, setUserPlan] = useState<Plan | null>(null);
+  const [userPlan, setUserPlan] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserQuotaAndPlan = async () => {
-      const userEmail = user.email; // 替换为实际的用户邮箱
+      if (!user?.email) return;
 
       // 获取用户配额
-      const quota = await getUserQuota(userEmail);
+      const quota = await getUserQuota(user.email);
       setUserQuota(quota);
-      console.log(quota);
 
       // 获取用户计划
-      const plan = await getUserPlan(userEmail);
+      const plan = await getUserPlan(user.email);
       setUserPlan(plan);
 
-      const expiryDate = await getUserCurrentPlanExpiredDate(userEmail);
+      const expiryDate = await getUserCurrentPlanExpiredDate(user.email);
       if (expiryDate) {
         setPlanExpiryDate(expiryDate.toLocaleDateString());
       }
     };
 
     fetchUserQuotaAndPlan();
-  }, []);
+  }, [user?.email]);
 
   const handleCheckout = async (
     plan: string,
@@ -139,7 +127,6 @@ const PlanPage: React.FC = () => {
 
       if (response.status === 401) {
         setLoading(false);
-
         toast.error("need login");
         router.push("/sign-in");
         return;
@@ -148,7 +135,6 @@ const PlanPage: React.FC = () => {
       const { code, message, data } = await response.json();
       if (!data) {
         setLoading(false);
-
         toast.error(message);
         return;
       }
@@ -157,7 +143,6 @@ const PlanPage: React.FC = () => {
       const stripe = await loadStripe(public_key);
       if (!stripe) {
         setLoading(false);
-
         toast.error("checkout failed");
         return;
       }
@@ -169,22 +154,18 @@ const PlanPage: React.FC = () => {
 
       if (result.error) {
         setLoading(false);
-
-        // 处理错误
         toast.error(result.error.message);
       }
     } catch (e) {
       setLoading(false);
-
       console.log("checkout failed: ", e);
-
       toast.error("checkout failed");
     }
   };
 
   const onCancelClick = async () => {
     try {
-      if (!user.email) {
+      if (!user?.email) {
         toast.error("User email is required");
         return;
       }
@@ -212,13 +193,13 @@ const PlanPage: React.FC = () => {
             <h2 className="text-2xl leading-tight">plan</h2>
           </div>
           <hr className="my-4 border-gray-300" /> {/* Horizontal line */}
-          <div className=" space-y-2">
+          <div className="space-y-2">
             {/* Pricing Section */}
             <div className="relative isolate px-6 py-2 md:py-8 lg:px-8">
               <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
-                <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-6xl">
+                {/* <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-6xl">
                   subscribe
-                </h1>
+                </h1> */}
               </div>
               <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-8 sm:mt-12 sm:gap-y-10 lg:max-w-4xl lg:grid-cols-3 lg:gap-x-8">
                 {tiers.map((tier, index) => (
@@ -284,8 +265,8 @@ const PlanPage: React.FC = () => {
           <div className="flex flex-wrap justify-start space-x-6">
             <PlanStatusCard
               title="current plan"
-              value={userPlan}
-              footerText={planExpiryDate}
+              value={userPlan ?? ''} // 提供默认值
+              footerText={planExpiryDate ?? ''} // 提供默认值
               buttonText="cancel"
               onCancelClick={onCancelClick}
             />
@@ -301,7 +282,7 @@ const PlanPage: React.FC = () => {
                 },
                 {
                   name: 'run ai on episodes each month',
-                  used: userQuota?.run_ai_quota,
+                  used: userQuota?.run_ai_quota ?? 0, // 提供默认值 0
                   total: userPlan === 'free' ? 0 : userPlan === 'standard' ? 20 : 50,
                   colorClass: 'bg-green-400',
                 },

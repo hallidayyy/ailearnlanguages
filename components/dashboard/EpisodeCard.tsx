@@ -4,11 +4,10 @@ interface EpisodeCardProps {
   title: string;
   author: string;
   imageUrl: string;
-  id: string;
   onClick: () => void; // 添加 onClick 属性
 }
 
-const EpisodeCard: React.FC<EpisodeCardProps> = ({ title, author, imageUrl, id, onClick }) => {
+const EpisodeCard: React.FC<EpisodeCardProps> = ({ title, author, imageUrl, onClick }) => {
   return (
     <div 
       className="flex items-center bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
@@ -19,7 +18,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({ title, author, imageUrl, id, 
       </div>
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        <p className="text-sm text-gray-500">{author} </p>
+        <p className="text-sm text-gray-500">{author}</p>
       </div>
     </div>
   );

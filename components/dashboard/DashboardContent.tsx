@@ -1,7 +1,7 @@
 import React from 'react';
-import ComponentA from './ComponentA';
-import ComponentB from './ComponentB';
-import ComponentC from './ComponentC';
+import Explore from './Explore';
+import Episodes from './Episodes';
+import Report from './Report';
 import SettingPage from './SettingPage';
 import PlanPage from './PlanPage';
 import PodcastDetails from './PodcastDetails';
@@ -13,18 +13,17 @@ const DashboardContent: React.FC = () => {
   const { activeComponent, selectedPodcastId, selectedEpisodeId } = useActiveComponent();
 
   const componentsMap: { [key: string]: React.ReactNode } = {
-    explore: <ComponentA />,
-    episodes: <ComponentB />,
+    explore: <Explore />,
+    episodes: <Episodes />,
     podcasts: <Podcasts />,
     plan: <PlanPage />,
-    reports: <ComponentC />,
+    reports: <Report />,
     settings: <SettingPage />,
     podcastdetail: <PodcastDetails podcastId={selectedPodcastId} />,
-    viewcard: <ViewCard episodeId={selectedEpisodeId} />, // 添加 viewcard 组件
-    
+    viewcard: <ViewCard episodeId={selectedEpisodeId !== null ? String(selectedEpisodeId) : ''} />, // 将 selectedEpisodeId 转换为字符串类型
   };
 
-  return componentsMap[activeComponent] || <ComponentA />;
+  return componentsMap[activeComponent] || <Explore />;
 };
 
 export default DashboardContent;

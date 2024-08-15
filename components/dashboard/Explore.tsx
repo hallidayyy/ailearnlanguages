@@ -1,16 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPodcast } from '@fortawesome/free-solid-svg-icons';
 import EpisodeCard from './EpisodeCard';
 import PodcastCard from './PodcastCard';
 import Label from './Label';
 import ContentLangChooser from './ContentLangChooser';
-import { getDb } from '@/models/db'; // 替换为你的 getDb 函数路径
+import { getDb } from '@/models/db';
 import { useLanguage } from '@/contexts/LearnLanguageContext';
 import { useActiveComponent } from '@/contexts/ActiveComponentContext';
 
+interface MediaCard {
+    id: number;
+    title: string;
+    author: string;
+    imgurl: string;
+}
+
+interface PodcastCard {
+    id: number;
+    title: string;
+    imageurl: string;
+}
+
 const ComponentA: React.FC = () => {
-    const [data, setData] = useState<{ mediaCards: any[]; podcastCards: any[] }>({ mediaCards: [], podcastCards: [] });
+    const [mediaCards, setMediaCards] = useState<MediaCard[]>([]);
+    const [podcastCards, setPodcastCards] = useState<PodcastCard[]>([]);
     const { selectedLang } = useLanguage();
     const { setActiveComponent, setSelectedPodcastId, setSelectedEpisodeId } = useActiveComponent();
 
@@ -18,39 +32,47 @@ const ComponentA: React.FC = () => {
         const fetchData = async () => {
             const supabase = await getDb();
 
-            // 获取随机的 12 个 episodes
-            const { data: mediaCards, error: mediaError } = await supabase
-                .rpc('random_episodes', { lang_code: selectedLang.code });
+            try {
+                const { data: mediaCardsData, error: mediaError } = await supabase
+                    .rpc('random_episodes', { lang_code: selectedLang.code });
 
-            if (mediaError) {
-                console.error('Error fetching mediaCards:', mediaError);
-                return;
+                if (mediaError) {
+                    console.error('Error fetching mediaCards:', mediaError);
+                    return;
+                }
+
+                setMediaCards(mediaCardsData as MediaCard[]);
+            } catch (error) {
+                console.error('Error fetching mediaCards:', error);
             }
 
-            // 获取随机的 10 个 podcasts
-            const { data: podcastCards, error: podcastError } = await supabase
-                .rpc('random_podcasts', { lang_code: selectedLang.code });
+            try {
+                const { data: podcastCardsData, error: podcastError } = await supabase
+                    .rpc('random_podcasts', { lang_code: selectedLang.code });
 
-            if (podcastError) {
-                console.error('Error fetching podcastCards:', podcastError);
-                return;
+                if (podcastError) {
+                    console.error('Error fetching podcastCards:', podcastError);
+                    return;
+                }
+
+                setPodcastCards(podcastCardsData as PodcastCard[]);
+            } catch (error) {
+                console.error('Error fetching podcastCards:', error);
             }
-
-            setData({ mediaCards, podcastCards });
         };
 
         fetchData();
     }, [selectedLang]);
 
-    const handleEpisodeClick = (episodeId: number) => {
+    const handleEpisodeClick = useCallback((episodeId: number) => {
         setSelectedEpisodeId(episodeId);
         setActiveComponent('viewcard');
-    };
+    }, [setSelectedEpisodeId, setActiveComponent]);
 
-    const handlePodcastClick = (podcastId: number) => {
+    const handlePodcastClick = useCallback((podcastId: number) => {
         setSelectedPodcastId(podcastId);
         setActiveComponent('podcastdetail');
-    };
+    }, [setSelectedPodcastId, setActiveComponent]);
 
     return (
         <div className="p-4">
@@ -62,13 +84,12 @@ const ComponentA: React.FC = () => {
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-6">
-                {data.mediaCards.map((card, index) => (
+                {mediaCards.map((card) => (
                     <EpisodeCard
-                        key={index}
+                        key={card.id}
                         title={card.title}
                         author={card.author}
                         imageUrl={card.imgurl}
-                        id={card.id}
                         onClick={() => handleEpisodeClick(card.id)}
                     />
                 ))}
@@ -81,12 +102,11 @@ const ComponentA: React.FC = () => {
             />
 
             <div className="flex overflow-x-auto gap-8">
-                {data.podcastCards.map((card, index) => (
+                {podcastCards.map((card) => (
                     <PodcastCard
-                        key={index}
+                        key={card.id}
                         imageUrl={card.imageurl}
                         title={card.title}
-                        id={card.id}
                         onClick={() => handlePodcastClick(card.id)}
                     />
                 ))}

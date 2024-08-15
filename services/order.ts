@@ -37,7 +37,7 @@ export async function handleOrderSession(session_id: string) {
     }
 
     // 更新订单状态
-    const order = await updateOrderStatus(order_no, 2, paid_at, customer_id,subscription_id);
+    const order = await updateOrderStatus(order_no, 2, paid_at, customer_id, subscription_id);
     console.log(`Order no: ${order_no}, Paid at: ${paid_at}`);
     console.log(`Customer ID: ${customer_id}`);
     console.log("Update success order status: ", order_no, paid_at);
@@ -116,6 +116,14 @@ export async function handleOrderSession(session_id: string) {
 //   }
 // }
 
+
+
+
+interface Quota {
+  access_content_quota: number;
+  run_ai_quota: number;
+}
+
 export async function getUserQuota(user_email: string): Promise<{ user_id: number, access_content_quota: number, run_ai_quota: number } | null> {
   const supabase = await getDb();
 
@@ -123,34 +131,36 @@ export async function getUserQuota(user_email: string): Promise<{ user_id: numbe
     // 从 users 表和 quota 表中获取用户的 quota 信息
     const { data, error } = await supabase
       .from('users')
-      .select('id, quota!inner(access_content_quota, run_ai_quota)')
+      .select('id, quota:quota!inner(access_content_quota, run_ai_quota)')
       .eq('email', user_email)
       .single();
 
     if (error) {
-      console.log("Error fetching user quota: ", error);
-      throw error;
+      console.error("Error fetching user quota: ", error);
+      return null;
     }
 
-    if (!data || !data.quota || data.quota.length === 0) {
-      console.log("User or quota not found");
+    if (!data || !data.quota || typeof data.quota !== 'object') {
+      console.log("User or quota not found or quota is not an object");
       return null; // 或者返回一个默认值
     }
 
-    // 假设 quota 是数组，从数组中提取第一个元素
-    const userQuota = data.quota[0];
+    // 确保 quota 是一个对象，并且符合 Quota 接口
+    const quota = data.quota as Quota;
 
     // 返回用户的 quota 信息
     return {
       user_id: data.id,
-      access_content_quota: userQuota.access_content_quota,
-      run_ai_quota: userQuota.run_ai_quota
+      access_content_quota: quota.access_content_quota,
+      run_ai_quota: quota.run_ai_quota
     };
   } catch (e) {
-    console.log("get user quota failed: ", e);
+    console.error("get user quota failed: ", e);
     return null; // 或者返回一个默认值
   }
 }
+
+
 export async function decrementAccessContentQuota(user_email: string): Promise<{ success: boolean, message: string }> {
   const userQuota = await getUserQuota(user_email);
 

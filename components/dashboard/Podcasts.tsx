@@ -13,6 +13,17 @@ interface Podcast {
   imageUrl: string;
 }
 
+interface UserPodcastCollection {
+  podcasts: {
+    id: number;
+    title: string;
+    url: string;
+    author: string;
+    description: string;
+    imageurl: string;
+  };
+}
+
 const Podcasts: React.FC = () => {
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +32,6 @@ const Podcasts: React.FC = () => {
   const { lang, user } = useContext(AppContext); // 从 AppContext 中获取 user 信息
 
   const handlePodcastSelect = (id: number) => {
-    console.log("handlepodcastselect" + id);
     setSelectedPodcastId(id);
     setActiveComponent('podcastdetail');
   };
@@ -39,7 +49,7 @@ const Podcasts: React.FC = () => {
         if (podcastsError) {
           setError(podcastsError.message);
         } else {
-          const mappedPodcasts = podcastsData.map(item => ({
+          const mappedPodcasts = (podcastsData as unknown as UserPodcastCollection[]).map(item => ({
             id: item.podcasts.id,
             name: item.podcasts.title,
             url: item.podcasts.url,

@@ -17,13 +17,28 @@ const modelName = 'deepseek-chat';
 export async function POST(req: NextRequest) {
     const { text1, text2, user_lang } = await req.json();
 
-    if (!text1 || !text2 || user_lang) {
+    function getLanguageName(langCode: string): string {
+        const languageMap: { [key: string]: string } = {
+            "zh": "Chinese",
+            "ja": "Japanese",
+            "fr": "French",
+            "en": "English"
+        };
+    
+        return languageMap[langCode] || "Unknown language";
+    }
+
+
+
+    if (!text1 || !text2 || !user_lang) {
         return new Response(JSON.stringify({ error: 'Missing text1 or text2' }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' },
         });
     }
-    console.log("user_lang:"+user_lang)
+
+    const lang_name =getLanguageName(user_lang);
+    
     try {
         // 发送请求给 OpenAI，获取非流式响应
         const response = await openai.chat.completions.create({
@@ -54,7 +69,7 @@ export async function POST(req: NextRequest) {
                 },
                 {
                     role: 'user',
-                    content: `dictation is: ${text2}. original text is: ${text1}. analyze the errors in dictation using ${user_lang}.`,
+                    content: `dictation is: ${text2}. original text is: ${text1}. analyze the errors and reasons in dictation using ${lang_name}.`,
                 },
             ],
             max_tokens: 4000,

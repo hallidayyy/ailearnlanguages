@@ -19,6 +19,11 @@ interface Episode {
   imgurl: string;
   audiourl: string;
   description: string;
+  card_id: string;
+  card_id_fr: string;
+  card_id_cn: string;
+  card_id_jp: string;
+
 }
 
 const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcastId }) => {

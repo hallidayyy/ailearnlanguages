@@ -2,7 +2,7 @@ import React from 'react';
 
 interface PlanStatusCardProps {
     title: string;
-    value: number;
+    value: string;
     buttonText: string;
     onCancelClick: () => void;
     footerText: string;

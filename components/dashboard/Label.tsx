@@ -10,10 +10,9 @@ interface LabelProps {
 const Label: React.FC<LabelProps> = ({ text, linkUrl, Icon }) => {
   return (
     <div className="mt-4 mb-4">
-      <a 
-        href={linkUrl} 
-        className="flex items-center text-gray-800 hover:text-gray-900 group"
-      >
+      <a
+        href={linkUrl}
+        className="flex items-center text-gray-800 hover:text-gray-900 group">
         <span className="mr-2">
           <Icon />
         </span>

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComputer, faHeart, faMeteor, faPodcast, faStar } from '@fortawesome/free-solid-svg-icons';
 import { getReport } from '@/models/report'; // 确保路径正确
 
-const ComponentC: React.FC = () => {
+const Report: React.FC = () => {
   const { lang, user } = useContext(AppContext); // 从 AppContext 中获取 user 信息
   const [stats, setStats] = useState({
     podcastCollectionCount: 0,
@@ -77,4 +77,4 @@ const ComponentC: React.FC = () => {
   );
 };
 
-export default ComponentC;
+export default Report;

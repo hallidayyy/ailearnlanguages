@@ -32,7 +32,7 @@ const PodcastCardVertical: React.FC<PodcastCardVerticalProps> = ({ title, desc, 
               )}
             </button>
           </div>
-          
+
         </div>
       </div>
     </div>

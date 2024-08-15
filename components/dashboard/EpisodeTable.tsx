@@ -64,17 +64,6 @@ const EpisodeTable: React.FC<EpisodeTableProps> = ({ episodes }) => {
         return pages;
     };
 
-
-    const getFlagEmoji = (card_id: string, lang: string) => {
-        console.log("card id:" + card_id)
-
-        if (card_id !== targetId || lang == 'english') return '🇺🇸';
-        if (card_id !== targetId || lang == 'french') return '🇫🇷';
-        if (card_id !== targetId || lang == 'chinese') return '🇨🇳';
-        if (card_id !== targetId || lang == 'japanese') return '🇯🇵';
-        return '';
-    };
-
     return (
         <div className="w-full">
             {selectedEpisodeId ? (

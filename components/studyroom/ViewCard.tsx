@@ -436,7 +436,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       title: "",
       start_time: startTime,
       status: 'pending',
-      lang: episode_lang, 
+      lang: episode_lang,
       card_id: cardId,
       episode_id: episodeId,
       user_lang: lang
@@ -492,7 +492,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
             card_id_cn={episodeData.card_id_cn}
             card_id_jp={episodeData.card_id_jp}
             onFlagClick={handleFlagClick}
-            episode_id = {episodeData.id}
+            episode_id={episodeData.id}
             onRunAIClick={handleRunAI}
           />
         </div>
@@ -547,6 +547,9 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
                 user={user}
                 episodeId={episodeId}
                 card_id={episodeData.card_id}
+                card_id_fr={episodeData.card_id_fr}
+                card_id_cn={episodeData.card_id_cn}
+                card_id_jp={episodeData.card_id_jp}
               />
             )}
           </div>
