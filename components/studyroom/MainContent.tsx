@@ -32,11 +32,11 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
   const renderComponent = () => {
     switch (indexStr) {
       case 'Original':
-        return <OriginalParser content={resultCache.Original} />;
+        return <OriginalParser original_text={resultCache.Original} />;
       case 'Sentence':
-        return <SentenceParser content={resultCache.Sentence} />;
+        return <SentenceParser sentence={resultCache.Sentence} />;
       case 'Translate':
-        return <TranslateParser content={resultCache.Translate} />;
+        return <TranslateParser translation={resultCache.Translate} />;
       case 'KeyWords':
         return <KeywordsParser content={resultCache.KeyWords} />;
       case 'KeyGrammer':
@@ -45,12 +45,12 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
         return <RewritedArticleParser content={resultCache.RewriteArticle} />;
       case 'Questions':
         return <QuestionsParser content={resultCache.Questions} />;
-      case 'ExportNotes':
-        return <OriginalParser content={resultCache.ExportNotes} />;
+      // case 'ExportNotes':
+      //   return <OriginalParser content={resultCache.ExportNotes} />;
       case 'Dictation':
-        return <Dictation />;
+        return <Dictation original_text={resultCache.Original} />;
       default:
-        return <SentenceParser content={resultCache.Sentence} />;
+        return <SentenceParser sentence={resultCache.Sentence} />;
     }
   };
 

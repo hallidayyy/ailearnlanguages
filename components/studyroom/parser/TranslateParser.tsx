@@ -9,33 +9,26 @@ const StyledContent = styled.div`
     }
 `;
 
-const TranslateParser: React.FC = () => {
+interface TranslateParserProps {
+    translation: string;
+}
+
+const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
     const [content, setContent] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const markdownUrl = '/test/translation.md'; // 替换为实际 Markdown 文件的路径
-
     useEffect(() => {
-        fetch(markdownUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(text => {
-                const html = marked(text) as string; // 将 Markdown 转换为 HTML，并断言为字符串
+        try {
+            const html = marked(translation) as string; // 将 Markdown 转换为 HTML，并断言为字符串
                 setContent(html);
+        } catch (error) {
+            console.error('Error parsing translation:', error);
+            setError('Failed to parse translation');
+        } finally {
                 setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching markdown file:', error);
-                setError('Failed to load content');
-                setLoading(false);
-            });
-    }, []);
-
+        }
+    }, [translation]);
     if (loading) {
         return <div>Loading...</div>;
     }

@@ -73,7 +73,11 @@ const LoadingIndicator = styled.div`
     height: 100%;
 `;
 
-const Dictation: React.FC = () => {
+interface DictationProps {
+    original_text: string;
+  }
+
+  const Dictation: React.FC<DictationProps> = ({ original_text }) => {
     const [inputText, setInputText] = useState<string>(''); // 用于存储用户输入
     const [loading, setLoading] = useState<boolean>(false);
     const [isSplit, setIsSplit] = useState<boolean>(false);
@@ -91,7 +95,7 @@ const Dictation: React.FC = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                text1: 'The quick brown fox jumps over the lazy dog. Every morning, the sun rises in the east and sets in the west. She sells seashells by the seashore. This sentence is a common example used to demonstrate typing skills. Practicing typing can help you become more efficient and accurate.',
+                text1: original_text,
                 text2: inputText,
                 user_lang: lang
             }),

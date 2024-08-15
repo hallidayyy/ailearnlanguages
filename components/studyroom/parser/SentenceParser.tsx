@@ -42,27 +42,29 @@ const playAudio = (startTime: number, endTime: number, audioRef: React.RefObject
   }, (endTime - startTime) * 1000);
 };
 
-const SentenceParser: React.FC = () => {
+interface SentenceParserProps {
+  sentence: string;
+}
+
+const SentenceParser: React.FC<SentenceParserProps> = ({ sentence }) => {
+
   const [data, setData] = useState<TranscriptResult[]>([]);
   const [hoverIndex, setHoverIndex] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // 指定 JSON 文件的 URL
-  const jsonUrl = '/test/sentence_offsets_output.json'; // 这里使用 public 文件夹中的路径
-
-  // 获取 JSON 数据
+  // 解析 sentence 变量
   useEffect(() => {
-    fetch(jsonUrl)
-      .then(response => response.json())
-      .then((jsonData: TranscriptData) => {
+    try {
+      const jsonData: TranscriptData = JSON.parse(sentence);
         if (Array.isArray(jsonData.results)) {
           setData(jsonData.results);
         } else {
           console.error('Invalid JSON format');
         }
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
+    } catch (error) {
+      console.error('Error parsing sentence:', error);
+    }
+  }, [sentence]);
 
   // 播放整个 transcript 的音频
   const handlePlayTranscript = (startTime: string, endTime: string) => {

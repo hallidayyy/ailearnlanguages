@@ -3,7 +3,7 @@ import { AppContext } from '@/contexts/AppContext';
 import { getDictionary } from '@/lib/i18n';
 
 interface NavigationProps {
-  onButtonClick: (content: string) => void;
+  // onButtonClick: (content: string) => void;
   onShowOriginalClick: () => void;
   onSentenceClick: () => void;
   onTranslateClick: () => void;
@@ -28,7 +28,7 @@ interface NavigationProps {
 }
 
 const Navigation: React.FC<NavigationProps> = ({
-  onButtonClick,
+  // onButtonClick,
   onShowOriginalClick,
   onSentenceClick,
   onTranslateClick,

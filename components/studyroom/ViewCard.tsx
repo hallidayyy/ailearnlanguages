@@ -11,8 +11,26 @@ import { getUserQuota, decrementRunAIQuota } from "@/services/order";
 import { getLangFromEpisodeID } from "@/models/episode"
 import LongCard from './LongCard';
 
+
 interface ViewCardProps {
   episodeId: string; // 新增 episodeId 属性
+}
+
+interface MainContentProps {
+  resultCache: {
+    Sentence: string;
+    Original: string;
+    Translate: string;
+    KeyWords: string;
+    KeyGrammer: string;
+    RewriteArticle: string;
+    Questions: string;
+    ExportNotes: string;
+    Dictation: string;
+  };
+  indexStr: keyof MainContentProps['resultCache']; // 明确指定类型
+  className?: string; // 添加 className 属性
+  audioUrl: string;
 }
 
 interface CardData {
@@ -33,7 +51,7 @@ interface CardData {
   dictation: string;
   loading: boolean;
   error: Error | null;
-}
+};
 
 interface EpisodeData {
   id: string;
@@ -46,7 +64,7 @@ interface EpisodeData {
   card_id_fr: string;
   card_id_cn: string;
   card_id_jp: string;
-}
+};
 
 const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
   const [cardData, setCardData] = useState<{ [key: string]: CardData }>({
@@ -357,9 +375,12 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     }
   };
 
-  const handleButtonClick = (content: string) => {
+
+  //不确定
+  const handleButtonClick = (content: CardData) => {
     setCardData(prevState => ({ ...prevState, original: content }));
   };
+
 
   const handleShowOriginalClick = () => {
     setIndexStr('Original');
@@ -506,7 +527,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         <div className="flex-1 flex overflow-hidden">
           <div className="flex-none w-1/9">
             <Navigation
-              onButtonClick={handleButtonClick}
+              // onButtonClick={handleButtonClick}
               onShowOriginalClick={handleShowOriginalClick}
               onTranslateClick={handleTranslateClick}
               onKeyWordsClick={handleKeyWordsClick}
@@ -544,9 +565,11 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
                   ExportNotes: selectedCardData ? selectedCardData.notes : '',
                   Dictation: selectedCardData ? selectedCardData.dictation : '',
                 }}
-                audioUrl
                 indexStr={indexStr}
                 className="p-4"
+                audioUrl={audioUrl}
+
+
               />
             ) : (
               <AccessBlock
