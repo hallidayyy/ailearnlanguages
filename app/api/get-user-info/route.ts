@@ -22,11 +22,11 @@ export async function POST(req: Request) {
 
 
     let userInfo: User = {
-      user_id: user_id,
+      user_id: user_id as number,
       email: email,
       nickname: nickname || "",
       avatar_url: avatarUrl,
-
+   
 
     };
     console.error(userInfo);

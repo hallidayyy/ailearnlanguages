@@ -4,7 +4,7 @@ export interface User {
   nickname: string;
   avatar_url: string;
   created_at?: string;
-  credits?: number;
+
   
 
 }

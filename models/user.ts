@@ -224,7 +224,7 @@ export async function getUserByCustomerID(customerID: string): Promise<User | un
 
 // 假设你有一个 User 接口
 interface User {
-  user_id: string;
+  user_id: number;
   email: string;
   nickname: string;
   avatar_url: string;
