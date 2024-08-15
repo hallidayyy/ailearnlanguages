@@ -30,14 +30,14 @@ const KeyGrammerParser: React.FC<KeyGrammerParserProps> = ({ content }) => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Grammar
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
+              grammar
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Description
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
+              description
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Example
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
+              example
             </th>
           </tr>
         </thead>

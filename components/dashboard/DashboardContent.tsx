@@ -7,6 +7,7 @@ import PlanPage from './PlanPage';
 import PodcastDetails from './PodcastDetails';
 import ViewCard from '@/components/studyroom/ViewCard'; // 确保路径正确
 import { useActiveComponent } from '@/contexts/ActiveComponentContext';
+import Podcasts from './Podcasts';
 
 const DashboardContent: React.FC = () => {
   const { activeComponent, selectedPodcastId, selectedEpisodeId } = useActiveComponent();
@@ -14,7 +15,7 @@ const DashboardContent: React.FC = () => {
   const componentsMap: { [key: string]: React.ReactNode } = {
     explore: <ComponentA />,
     episodes: <ComponentB />,
-    podcasts: <ComponentC />,
+    podcasts: <Podcasts />,
     plan: <PlanPage />,
     reports: <ComponentC />,
     settings: <SettingPage />,

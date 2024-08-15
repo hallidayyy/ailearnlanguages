@@ -10,7 +10,7 @@ const navItems = [
     { id: 'episodes', icon: faBoxArchive, label: 'episodes' },
     { id: 'podcasts', icon: faPodcast, label: 'podcasts' },
     { id: 'plan', icon: faReceipt, label: 'plan' },
-    // { id: 'reports', icon: faFlag, label: 'reports' },
+    { id: 'reports', icon: faFlag, label: 'reports' },
     { id: 'settings', icon: faSliders, label: 'settings' },
 ];
 

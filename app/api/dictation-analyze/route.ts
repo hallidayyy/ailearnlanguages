@@ -14,38 +14,59 @@ const openai = new OpenAI({
 // 读取模型名称
 const modelName = 'deepseek-chat';
 
-export async function GET(req: NextRequest) {
-    const text1 = 'The quick brown fox jumps over the lazy dog. Every morning, the sun rises in the east and sets in the west. She sells seashells by the seashore. This sentence is a common example used to demonstrate typing skills. Practicing typing can help you become more efficient and accurate.';
-    const text2 = 'The quick brown fox jump over the lazy dog. Every morning, the sun rise in the east and set in the west. She sells seashels by the seashore. This sentance is a common example used to demostrating typing skills. Practicing typing can helps you become more effecient and accurate.';
+export async function POST(req: NextRequest) {
+    const { text1, text2, user_lang } = await req.json();
 
+    if (!text1 || !text2 || user_lang) {
+        return new Response(JSON.stringify({ error: 'Missing text1 or text2' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
+    console.log("user_lang:"+user_lang)
     try {
-        // 发送请求给 OpenAI，获取完整的响应
+        // 发送请求给 OpenAI，获取非流式响应
         const response = await openai.chat.completions.create({
             model: modelName,
             messages: [
                 {
                     role: 'system',
-                    content: 'You are a master of language education proficient in various languages.',
+                    content: `The user is practicing dictation, please provide the differences between the dictation script and the original text, the reasons for these differences, and a summary of the listening skills, and output them in JSON format.
+                            EXAMPLE INPUT: Dictation: "hello this is my friend tom, i am andy", Original: "hi, that is my friend tommy, and i am and"
+                            EXAMPLE JSON OUTPUT:
+                                                {
+                                                    "differences": {
+                                                        "difference": [
+                                                            {
+                                                                "original": "this is my friend tom",
+                                                                "wrong": "that is my friend tommy",
+                                                                "reason": "Similar pronunciation, confused"
+                                                            },
+                                                            {
+                                                                "original": "i am andy",
+                                                                "wrong": "and i am and",
+                                                                "reason": "Omitted part of the information"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "summary": "Your listening skills are average; you need to improve in pronunciation recognition and information completeness"
+                                                }`,
                 },
                 {
                     role: 'user',
-                    content: `这是我的听写稿：${text2}。这是原文${text1}，请用德语帮我分析一下我听写的错误，以 markdown 方式返回结果。`,
+                    content: `dictation is: ${text2}. original text is: ${text1}. analyze the errors in dictation using ${user_lang}.`,
                 },
             ],
-            max_tokens: 2000,
+            max_tokens: 4000,
             temperature: 0.7,
             stream: false, // 禁用流式处理
+            response_format: {
+                type: 'json_object'
+            }
         });
 
-        // 提取响应内容
-        const analysis = response.choices?.[0]?.message?.content;
-
-        if (!analysis) {
-            throw new Error('No content in OpenAI response');
-        }
-
-        // 返回响应内容
-        return new Response(JSON.stringify({ analysis }), {
+        // 返回非流式响应
+        return new Response(JSON.stringify(response.choices[0].message.content), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',

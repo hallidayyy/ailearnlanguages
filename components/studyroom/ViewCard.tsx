@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import SubHeader from '@/components/studyroom/SubHeaderForView';
 import Navigation from '@/components/studyroom/Navigation';
 import MainContent from '@/components/studyroom/MainContent';
-import AccessBlock from '@/components/dashboard/AccessBlock'; 
-import { getDb } from '@/models/db'; 
-import { AppContext } from '@/contexts/AppContext'; 
-import { useActiveComponent } from '@/contexts/ActiveComponentContext'; 
+import AccessBlock from '@/components/dashboard/AccessBlock';
+import { getDb } from '@/models/db';
+import { AppContext } from '@/contexts/AppContext';
+import { useActiveComponent } from '@/contexts/ActiveComponentContext';
 import { v4 as uuidv4 } from 'uuid';
 import { getUserQuota, decrementRunAIQuota } from "@/services/order";
 import { getLangFromEpisodeID } from "@/models/episode"
@@ -45,28 +45,82 @@ interface EpisodeData {
   card_id_fr: string;
   card_id_cn: string;
   card_id_jp: string;
-
 }
 
 const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
-  const [cardData, setCardData] = useState<CardData>({
-    id: '',
-    userid: 0,
-    uuid: '',
-    link: '',
-    likes: 0,
-    create_at: '',
-    original: '',
-    sentence: '',
-    translation: '',
-    keywords: '',
-    keygrammer: '',
-    rewritedarticle: '',
-    questions: '',
-    notes: '',
-
-    loading: true,
-    error: null,
+  const [cardData, setCardData] = useState<{ [key: string]: CardData }>({
+    card_id: {
+      id: '',
+      userid: 0,
+      uuid: '',
+      link: '',
+      likes: 0,
+      create_at: '',
+      original: '',
+      sentence: '',
+      translation: '',
+      keywords: '',
+      keygrammer: '',
+      rewritedarticle: '',
+      questions: '',
+      notes: '',
+      loading: true,
+      error: null,
+    },
+    card_id_fr: {
+      id: '',
+      userid: 0,
+      uuid: '',
+      link: '',
+      likes: 0,
+      create_at: '',
+      original: '',
+      sentence: '',
+      translation: '',
+      keywords: '',
+      keygrammer: '',
+      rewritedarticle: '',
+      questions: '',
+      notes: '',
+      loading: true,
+      error: null,
+    },
+    card_id_cn: {
+      id: '',
+      userid: 0,
+      uuid: '',
+      link: '',
+      likes: 0,
+      create_at: '',
+      original: '',
+      sentence: '',
+      translation: '',
+      keywords: '',
+      keygrammer: '',
+      rewritedarticle: '',
+      questions: '',
+      notes: '',
+      loading: true,
+      error: null,
+    },
+    card_id_jp: {
+      id: '',
+      userid: 0,
+      uuid: '',
+      link: '',
+      likes: 0,
+      create_at: '',
+      original: '',
+      sentence: '',
+      translation: '',
+      keywords: '',
+      keygrammer: '',
+      rewritedarticle: '',
+      questions: '',
+      notes: '',
+      loading: true,
+      error: null,
+    },
   });
 
   const [episodeData, setEpisodeData] = useState<EpisodeData>({
@@ -80,15 +134,14 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     card_id_fr: '',
     card_id_cn: '',
     card_id_jp: '',
-
   });
 
   const [indexStr, setIndexStr] = useState<keyof MainContentProps['resultCache']>('Original');
   const [isFavorited, setIsFavorited] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
   const [selectedFlag, setSelectedFlag] = useState<string | null>(null);
-  const { lang, user } = useContext(AppContext); 
-  const { setActiveComponent } = useActiveComponent(); 
+  const { lang, user } = useContext(AppContext);
+  const { setActiveComponent } = useActiveComponent();
 
   useEffect(() => {
     const fetchEpisodeData = async () => {
@@ -114,8 +167,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
           card_id: data.card_id,
           card_id_fr: data.card_id_fr,
           card_id_cn: data.card_id_cn,
-          card_id_jp: data.card_id_jp
-
+          card_id_jp: data.card_id_jp,
         };
 
         setEpisodeData(updatedEpisodeData);
@@ -126,42 +178,21 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
 
     fetchEpisodeData();
   }, [episodeId]);
-
   useEffect(() => {
-    const fetchCardData = async () => {
-      // if (!(episodeData.card_id || episodeData.card_id_fr || episodeData.card_id_cn || episodeData.card_id_jp) { return; }
-
-
+    const fetchCardData = async (cardId: string, key: string) => {
       try {
+        console.log("vc fetch card data:" + cardId);
         const supabase = await getDb();
-
-        //加入根据点击国旗选择 card_id
-
-        // const card_ids = {
-        //   card_id: episodeData.card_id,
-        //   card_id_fr: episodeData.card_id_fr,
-        //   card_id_cn: episodeData.card_id_cn,
-        //   card_id_jp: episodeData.card_id_jp
-        // };
-
         const { data, error } = await supabase
           .from('cards')
           .select('*')
-          .eq('id', episodeData.card_id)
+          .eq('id', cardId)
           .single();
-
-
-        const card_ids = [
-          episodeData.card_id,
-          episodeData.card_id_fr,
-          episodeData.card_id_cn,
-          episodeData.card_id_jp
-        ].filter(id => id); // 过滤掉空值
 
         if (error) {
           throw error;
         }
-
+        console.log("vc fetch card data:" + data.id);
         const updatedCardData: CardData = {
           id: data.id,
           userid: data.userid,
@@ -181,21 +212,38 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
           error: null,
         };
 
-        setCardData(updatedCardData);
+        setCardData(prevState => ({ ...prevState, [key]: updatedCardData }));
       } catch (error) {
-        setCardData(prevState => ({ ...prevState, error: error as Error, loading: false }));
+        setCardData(prevState => ({ ...prevState, [key]: { ...prevState[key], error: error as Error, loading: false } }));
       }
     };
 
-    fetchCardData();
+    if (episodeData.card_id) fetchCardData(episodeData.card_id, 'card_id');
+    if (episodeData.card_id_fr) fetchCardData(episodeData.card_id_fr, 'card_id_fr');
+    if (episodeData.card_id_cn) fetchCardData(episodeData.card_id_cn, 'card_id_cn');
+    if (episodeData.card_id_jp) fetchCardData(episodeData.card_id_jp, 'card_id_jp');
+
+    console.log("vc:" + episodeData.card_id);
+    console.log("vc:" + episodeData.card_id_fr);
+    console.log("vc:" + episodeData.card_id_cn);
+    console.log("vc:" + episodeData.card_id_jp);
+
   }, [episodeData.card_id, episodeData.card_id_fr, episodeData.card_id_cn, episodeData.card_id_jp]);
+
+  // 在 useEffect 外部添加日志，确保 cardData 更新后访问
+  useEffect(() => {
+    console.log("vc another useeffect:" + cardData.card_id.id);
+    console.log("vc another useeffect:" + cardData.card_id_fr.id);
+    console.log("vc another useeffect:" + cardData.card_id_cn.id);
+    console.log("vc another useeffect:" + cardData.card_id_jp.id);
+  }, [cardData]);
 
   useEffect(() => {
     const checkIfFavorited = async () => {
       if (!user || !episodeId) return;
 
       const supabase = await getDb();
-      console.log("vc:user_id:" + user.user_id);
+
       try {
         const { data: favoriteData, error: favoriteError } = await supabase
           .from('user_episodes_collection')
@@ -219,7 +267,6 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
   }, [user, episodeId]);
 
   useEffect(() => {
-
     const checkUserPermission = async () => {
       console.log("episode status:" + episodeData.card_id);
       if (!user || !episodeId) return;
@@ -240,7 +287,6 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         }
 
         setHasPermission(permissionData?.permission || false);
-        // setHasPermission(true);
       } catch (error) {
         console.error("Error checking permission:", error);
       }
@@ -254,7 +300,6 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     console.log(`Flag clicked: ${flag}`);
     // 在这里处理点击事件，例如切换语言或执行其他操作
   };
-
 
   const handleFavoriteClick = async (episodeId: string) => {
     if (!user || !episodeId) return;
@@ -373,19 +418,16 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       return; // 如果扣减失败，直接返回，不插入任务
     }
 
-    const lang = await getLangFromEpisodeID(episodeId);
-    if (lang) {
-      console.log("Language for the episode:", lang);
+    const episode_lang = await getLangFromEpisodeID(episodeId);
+    if (episode_lang) {
+      console.log("Language for the episode:", episode_lang);
     } else {
       console.error("Failed to retrieve language information.");
     }
 
-
     const taskId = uuidv4();
     const cardId = uuidv4();
     const startTime = new Date().toISOString();
-
-
 
     const taskData = {
       id: taskId,
@@ -394,12 +436,12 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       title: "",
       start_time: startTime,
       status: 'pending',
-      lang: lang, // 假设语言为英语，根据实际情况调整
+      lang: episode_lang, 
       card_id: cardId,
-      episode_id: episodeId
+      episode_id: episodeId,
+      user_lang: lang
     };
     console.log(taskData);
-
 
     try {
       const supabase = await getDb();
@@ -409,17 +451,16 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         // 你可能需要在这里处理插入任务失败的情况，例如回滚配额扣减操作
         return;
       }
-
     } catch (error) {
       console.error("Error inserting task: ", error);
     }
   };
 
-
   const { title, description, published_at, imageUrl, audioUrl } = episodeData;
 
-  return (
+  const selectedCardData = selectedFlag ? cardData[selectedFlag] : cardData['card_id'];
 
+  return (
     <div className="flex justify-center items-start h-screen">
       <div className="bg-white shadow-lg rounded-lg p-4 w-7/8 h-5/6 flex flex-col overflow-hidden mt-0 mx-auto">
         <div className="flex-none">
@@ -431,16 +472,15 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               published_at,
               imageUrl,
               audioUrl,
-              card_id: episodeData.card_id, 
+              card_id: episodeData.card_id,
               card_id_fr: episodeData.card_id_fr,
               card_id_cn: episodeData.card_id_cn,
               card_id_jp: episodeData.card_id_jp,
             }}
             isFavorited={isFavorited}
             onFavoriteClick={handleFavoriteClick}
-            onRunAIClick={handleRunAI} 
+            onRunAIClick={handleRunAI}
           />
-
         </div>
 
         {/* LongBar Component */}
@@ -452,6 +492,8 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
             card_id_cn={episodeData.card_id_cn}
             card_id_jp={episodeData.card_id_jp}
             onFlagClick={handleFlagClick}
+            episode_id = {episodeData.id}
+            onRunAIClick={handleRunAI}
           />
         </div>
 
@@ -468,16 +510,15 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               onExportNotesClick={handleExportNotesClick}
               onDictationClick={handleDictationClick}
               onSentenceClick={handleSentenceClick}
-
               resultCache={{
-                Original: cardData.original,
-                Sentence: cardData.sentence,
-                Translate: cardData.translation,
-                KeyWords: cardData.keywords,
-                KeyGrammer: cardData.keygrammer,
-                RewriteArticle: cardData.rewritedarticle,
-                Questions: cardData.questions,
-                ExportNotes: cardData.notes,
+                Original: selectedCardData ? selectedCardData.original : '',
+                Sentence: selectedCardData ? selectedCardData.sentence : '',
+                Translate: selectedCardData ? selectedCardData.translation : '',
+                KeyWords: selectedCardData ? selectedCardData.keywords : '',
+                KeyGrammer: selectedCardData ? selectedCardData.keygrammer : '',
+                RewriteArticle: selectedCardData ? selectedCardData.rewritedarticle : '',
+                Questions: selectedCardData ? selectedCardData.questions : '',
+                ExportNotes: selectedCardData ? selectedCardData.notes : '',
               }}
               className="h-full"
             />
@@ -486,14 +527,14 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
             {(hasPermission) ? (
               <MainContent
                 resultCache={{
-                  Original: cardData.original,
-                  Sentence: cardData.sentence,
-                  Translate: cardData.translation,
-                  KeyWords: cardData.keywords,
-                  KeyGrammer: cardData.keygrammer,
-                  RewriteArticle: cardData.rewritedarticle,
-                  Questions: cardData.questions,
-                  ExportNotes: cardData.notes,
+                  Original: selectedCardData ? selectedCardData.original : '',
+                  Sentence: selectedCardData ? selectedCardData.sentence : '',
+                  Translate: selectedCardData ? selectedCardData.translation : '',
+                  KeyWords: selectedCardData ? selectedCardData.keywords : '',
+                  KeyGrammer: selectedCardData ? selectedCardData.keygrammer : '',
+                  RewriteArticle: selectedCardData ? selectedCardData.rewritedarticle : '',
+                  Questions: selectedCardData ? selectedCardData.questions : '',
+                  ExportNotes: selectedCardData ? selectedCardData.notes : '',
                 }}
                 audioUrl
                 indexStr={indexStr}
