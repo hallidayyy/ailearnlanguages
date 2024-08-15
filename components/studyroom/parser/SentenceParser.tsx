@@ -1,8 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+// 定义 JSON 数据的接口
+interface TranscriptAlternative {
+  startOffset: string;
+  endOffset: string;
+  confidence?: number;
+  transcript: string;
+}
+
+interface TranscriptResult {
+  alternatives: TranscriptAlternative[];
+}
+
+interface TranscriptData {
+  results: TranscriptResult[];
+}
+
 // 音频播放函数
-const playAudio = (startTime, endTime, audioRef) => {
-  if (audioRef.current && !audioRef.current.paused) {
+const playAudio = (startTime: number, endTime: number, audioRef: React.RefObject<HTMLAudioElement>) => {
+  if (!audioRef.current) {
+    console.error('Audio element is not available');
+    return;
+  }
+
+  if (!audioRef.current.paused) {
     audioRef.current.pause();
   }
 
@@ -21,10 +42,10 @@ const playAudio = (startTime, endTime, audioRef) => {
   }, (endTime - startTime) * 1000);
 };
 
-const SentenceParser = () => {
-  const [data, setData] = useState([]);
-  const [hoverIndex, setHoverIndex] = useState(null);
-  const audioRef = useRef(null);
+const SentenceParser: React.FC = () => {
+  const [data, setData] = useState<TranscriptResult[]>([]);
+  const [hoverIndex, setHoverIndex] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // 指定 JSON 文件的 URL
   const jsonUrl = '/test/sentence_offsets_output.json'; // 这里使用 public 文件夹中的路径
@@ -33,7 +54,7 @@ const SentenceParser = () => {
   useEffect(() => {
     fetch(jsonUrl)
       .then(response => response.json())
-      .then(jsonData => {
+      .then((jsonData: TranscriptData) => {
         if (Array.isArray(jsonData.results)) {
           setData(jsonData.results);
         } else {
@@ -44,7 +65,7 @@ const SentenceParser = () => {
   }, []);
 
   // 播放整个 transcript 的音频
-  const handlePlayTranscript = (startTime, endTime) => {
+  const handlePlayTranscript = (startTime: string, endTime: string) => {
     const startTimeFloat = parseFloat(startTime);
     const endTimeFloat = parseFloat(endTime);
 

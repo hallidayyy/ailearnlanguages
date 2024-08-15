@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface ActiveComponentContextProps {
   activeComponent: string;
@@ -20,7 +20,11 @@ const ActiveComponentContext = createContext<ActiveComponentContextProps>({
 
 export const useActiveComponent = () => useContext(ActiveComponentContext);
 
-export const ActiveComponentProvider: React.FC = ({ children }) => {
+interface ActiveComponentProviderProps {
+  children: ReactNode;
+}
+
+export const ActiveComponentProvider: React.FC<ActiveComponentProviderProps> = ({ children }) => {
   const [activeComponent, setActiveComponent] = useState('explore');
   const [selectedPodcastId, setSelectedPodcastId] = useState<number | null>(null);
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<number | null>(null);

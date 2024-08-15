@@ -4,7 +4,6 @@
 
 import React from 'react';
 import Sidebar from '@/components/dashboard/Sidebar';
-import Header from '@/components/dashboard/Header';
 import DashboardContent from '@/components/dashboard/DashboardContent';
 import MainLayout from "@/components/MainLayout";
 import { ActiveComponentProvider } from '@/contexts/ActiveComponentContext';

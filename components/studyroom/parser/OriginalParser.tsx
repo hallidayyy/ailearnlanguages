@@ -25,7 +25,7 @@ const OriginalParser: React.FC = () => {
                 return response.text();
             })
             .then(text => {
-                const html = marked(text); // 将 Markdown 转换为 HTML
+                const html = marked(text) as string; // 将 Markdown 转换为 HTML，并断言为字符串
                 setContent(html);
                 setLoading(false);
             })

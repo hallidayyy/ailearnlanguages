@@ -1,24 +1,29 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 const languages = [
   { code: '1', name: 'english', flag: '🇺🇸' },
+  { code: '2', name: 'french', flag: '🇫🇷' },
   { code: '3', name: 'chinese', flag: '🇨🇳' },
   { code: '4', name: 'japanese', flag: '🇯🇵' },
-  { code: '2', name: 'french', flag: '🇫🇷' },
-  { code: '5', name: 'german', flag: '🇩🇪' },
 ];
 
-const LanguageContext = createContext<{
+interface LanguageContextType {
   selectedLang: typeof languages[0];
   setSelectedLang: (lang: typeof languages[0]) => void;
-}>({
+}
+
+const LanguageContext = createContext<LanguageContextType>({
   selectedLang: languages[0],
-  setSelectedLang: () => {},
+  setSelectedLang: () => { },
 });
 
 export const useLanguage = () => useContext(LanguageContext);
 
-export const LanguageProvider: React.FC = ({ children }) => {
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [selectedLang, setSelectedLang] = useState(languages[0]);
 
   return (
