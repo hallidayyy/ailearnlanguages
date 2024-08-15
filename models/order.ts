@@ -273,8 +273,14 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
   try {
     // 将订阅设置为在当前计费周期结束时取消
 
-    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
-      apiVersion: "2023-10-16",
+    // 初始化 Stripe 客户端
+    const stripePrivateKey = process.env.STRIPE_PRIVATE_KEY;
+    if (!stripePrivateKey) {
+      throw new Error("Stripe private key is not defined in environment variables.");
+    }
+
+    const stripe = new Stripe(stripePrivateKey, {
+      apiVersion: '2023-10-16',
     });
 
     const subscription = await stripe.subscriptions.update(subscriptionId, {

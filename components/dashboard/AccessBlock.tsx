@@ -69,7 +69,7 @@ const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI
   };
 
   return (
-    <div className="flex flex-col items-center bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-lg shadow-md">
+    <div className="flex flex-col items-center bg-white p-6 rounded-lg">
       {card_id && (
         <button
           className="bg-black text-white px-4 py-2 rounded-md font-medium hover:bg-gray-800 transition-colors"
@@ -78,7 +78,7 @@ const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI
           ✨ Access AI Contents
         </button>
       )}
-      <div className="text-center text-gray-700 mt-4">
+      {/* <div className="text-center text-gray-700 mt-4">
         <p>4 episodes per month for free.</p>
         <p>2 episodes left this month.</p>
       </div>
@@ -90,7 +90,7 @@ const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI
         >
           👑 Subscribe
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

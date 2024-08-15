@@ -83,7 +83,7 @@ const EpisodeTable: React.FC<EpisodeTableProps> = ({ episodes }) => {
                 <div className="container max-w-8xl px-4 mx-auto sm:px-8 py-8">
                     <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
                         <h2 className="text-2xl leading-tight">
-                            Episodes
+                            episodes
                         </h2>
                         <hr className="my-4 border-gray-300" /> {/* Horizontal line */}
                     </div>
