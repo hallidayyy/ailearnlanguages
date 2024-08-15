@@ -149,10 +149,10 @@ export async function POST(req: Request) {
         const { access_content_quota, run_ai_quota } = quotaByPlan[current_plan] || { access_content_quota: 0, run_ai_quota: 0 };
 
         // 调用 updateUserQuota 更新用户的 quota
-        const userIdAsNumber = Number(user.user_id);
+        const userIdAsNumber = Number(user.id);
 
         if (isNaN(userIdAsNumber)) {
-          throw new Error(`Invalid user_id: ${user.user_id} cannot be converted to a number.`);
+          throw new Error(`Invalid user_id: ${user.id} cannot be converted to a number.`);
         }
 
         const success = await updateUserQuota(userIdAsNumber, access_content_quota, run_ai_quota);
