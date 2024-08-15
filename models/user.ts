@@ -2,9 +2,7 @@ import { getDb } from "@/models/db"; // 确保 getDb 返回的是 Supabase 客�
 import { User } from "@/types/user"; // 确保 User 类型定义正确
 import { genOrderNo } from "@/lib/order";
 
-
-
-export async function insertUser(user: User) {
+export async function insertUser(user: User): Promise<User> {
   const createdAt: string = new Date().toISOString();
   const supabase = await getDb();
 
@@ -63,15 +61,10 @@ export async function insertUser(user: User) {
     // 处理配额插入失败的逻辑（可选）
   }
 
-
-  return userData;
+  return userData as User;
 }
 
-
-
-export async function findUserByEmail(
-  email: string
-): Promise<User | undefined> {
+export async function findUserByEmail(email: string): Promise<User | undefined> {
   const supabase = await getDb();
 
   if (!supabase || typeof supabase.from !== 'function') {
@@ -81,38 +74,30 @@ export async function findUserByEmail(
   const { data, error } = await supabase
     .from("users")
     .select("*")
-    .eq("email", email);
+    .eq("email", email)
+    .single();
 
   if (error) {
     console.error("Error querying user:", error);
     throw error;
   }
 
-  if (!data || data.length === 0) {
+  if (!data) {
     console.log("No user found with email:", email);
     return undefined;
   }
 
-  // 假设查询结果只有一条记录
-  const user: User = {
-    email: data[0].email,
-    nickname: data[0].nickname,
-    avatar_url: data[0].avatar_url,
-    created_at: data[0].created_at,
-    user_id: data[0].id
 
-  };
-
-  return user;
+  return data as User;
 }
 
-export async function findUserByID(user_id: string): Promise<User | undefined> {
+export async function findUserByID(user_id: number): Promise<User | undefined> {
   const supabase = await getDb();
 
-  // 验证supabase对象
   if (!supabase || typeof supabase.from !== 'function') {
     throw new Error("Supabase client is not properly initialized.");
   }
+
   const { data, error } = await supabase
     .from("users")
     .select("*")
@@ -127,30 +112,17 @@ export async function findUserByID(user_id: string): Promise<User | undefined> {
     return undefined;
   }
 
-  const user: User = {
-    user_id: data.id,
-    email: data.email,
-    nickname: data.nickname,
-    avatar_url: data.avatar_url,
-    created_at: data.created_at,
-
-  };
-
-  return user;
+  return data as User;
 }
 
-
-export async function updateUserNicknameByEmail(
-  email: string,
-  newNickname: string
-): Promise<void> {
+export async function updateUserNicknameByEmail(email: string, newNickname: string): Promise<void> {
   const supabase = await getDb();
 
   if (!supabase || typeof supabase.from !== 'function') {
     throw new Error("Supabase client is not properly initialized.");
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("users")
     .update({ nickname: newNickname })
     .eq("email", email);
@@ -160,18 +132,12 @@ export async function updateUserNicknameByEmail(
     throw error;
   }
 
-  if (!data || data.length === 0) {
-    console.log("No user found with email:", email);
-    return;
-  }
-
   console.log("User nickname updated successfully.");
 }
 
 export async function getUserByCustomerID(customerID: string): Promise<User | undefined> {
   const supabase = await getDb();
 
-  // 验证 supabase 对象
   if (!supabase || typeof supabase.from !== 'function') {
     throw new Error("Supabase client is not properly initialized.");
   }
@@ -207,24 +173,7 @@ export async function getUserByCustomerID(customerID: string): Promise<User | un
   if (!userData) {
     return undefined; // 如果找不到对应的用户，则返回 undefined
   }
+  
 
-  // 将查询结果映射为 User 对象
-  const user: User = {
-    user_id: userData.id,
-    email: userData.email,
-    nickname: userData.nickname, // 假设 nickname 对应 name
-    avatar_url: userData.avatar_url,
-    created_at: userData.created_at,
-  };
-
-  return user;
-}
-
-// 假设你有一个 User 接口
-interface User {
-  user_id: number;
-  email: string;
-  nickname: string;
-  avatar_url: string;
-  created_at: string;
+  return userData as User;
 }
