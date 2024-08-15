@@ -225,6 +225,8 @@ function formatOrder(row: any): Order {
     stripe_session_id: row.stripe_session_id,
     credits: row.credits,
     currency: row.currency,
+    customer_id: row.customer_id,
+    subscription_id: row.subscription_id
   };
 
   return order;

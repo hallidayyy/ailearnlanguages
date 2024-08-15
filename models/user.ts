@@ -63,8 +63,6 @@ export async function insertUser(user: User) {
     // 处理配额插入失败的逻辑（可选）
   }
 
-  //为免费用户创建一个长期的 order
-  // createFreeOrder(user.email);
 
   return userData;
 }
