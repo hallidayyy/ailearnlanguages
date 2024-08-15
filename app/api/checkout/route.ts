@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       credits: credits,
       currency: currency,
       customer_id: "",
-      subscription_id:"",
+      subscription_id: "",
     };
     await insertOrder(order); // 使用 await 确保订单插入完成
     console.log("create new order: ", order);
