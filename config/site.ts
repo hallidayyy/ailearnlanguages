@@ -3,25 +3,32 @@ import { BsGithub, BsTwitterX, BsWechat } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 import { SiBuymeacoffee, SiJuejin } from "react-icons/si";
 
-const OPEN_SOURCE_URL = 'https://github.com/weijunext/landing-page-boilerplate'
+const OPEN_SOURCE_URL = ''
+
+// title: "languepod",
+//   description:
+//     "flexible, immersive audio lessons for language skills and cultural insights on-the-go.",
+//   keywords: "language learning podcasts, podcast for language learners, learn languages online, audio language lessons, podcast immersion, language podcast subscription, cultural language podcast, podcast language practice, multilingual podcasts, podcast language acquisition",
+// };
+
 
 const baseSiteConfig = {
-  name: "Landing page boilerplate",
+  name: "languepod",
   description:
-    "A free, open-source, and powerful landing page boilerplate, ideal for various projects, enabling you to create a landing page in under an hour.",
-  url: "https://landingpage.weijunext.com",
-  ogImage: "https://landingpage.weijunext.com/og.png",
+    "flexible, immersive audio lessons for language skills and cultural insights on-the-go.",
+  url: "https://languepod.fun",
+  ogImage: "https://languepod.fun/og.jpg",
   metadataBase: '/',
-  keywords: ["landing page boilerplate", "landing page template", "awesome landing page", "next.js landing page"],
+  keywords: ["anguage learning podcasts", "podcast for language learners", "learn languages online", "podcast language practice"],
   authors: [
     {
       name: "halliday",
-      url: "https://twitter.com/languepod",
+      url: "https://blog.languepod.fun",
       twitter: 'https://twitter.com/languepod',
     }
   ],
-  creator: '@weijunext',
-  openSourceURL: 'https://github.com/weijunext/landing-page-boilerplate',
+  creator: '@halliday',
+  openSourceURL: '',
   themeColors: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' },
@@ -40,9 +47,8 @@ const baseSiteConfig = {
   footerLinks: [
     { name: 'email', href: "mailto:luchao62@gmail.com", icon: MdEmail },
     { name: 'twitter', href: "https://twitter.com/languepod", icon: BsTwitterX },
-    { name: 'github', href: "https://github.com/hallidayyy/", icon: BsGithub },
     { name: 'buyMeCoffee', href: "https://www.buymeacoffee.com/hallidayyy", icon: SiBuymeacoffee },
-   
+
   ],
   footerProducts: [
     { url: 'https://www.aiapp.icu/', name: 'AI app: I SEE YOU' },

@@ -75,9 +75,9 @@ const LoadingIndicator = styled.div`
 
 interface DictationProps {
     original_text: string;
-  }
+}
 
-  const Dictation: React.FC<DictationProps> = ({ original_text }) => {
+const Dictation: React.FC<DictationProps> = ({ original_text }) => {
     const [inputText, setInputText] = useState<string>(''); // 用于存储用户输入
     const [loading, setLoading] = useState<boolean>(false);
     const [isSplit, setIsSplit] = useState<boolean>(false);
