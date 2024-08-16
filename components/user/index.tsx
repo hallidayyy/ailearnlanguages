@@ -37,9 +37,6 @@ export default function ({ user }: Props) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        <DropdownMenuCheckboxItem className="md:hidden text-center">
-          credi1t: {user.credits}
-        </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator className="md:hidden" />
 
         <DropdownMenuCheckboxItem className="md:hidden">
