@@ -36,6 +36,7 @@
     "google-auth-library": "^9.13.0",
     "google-gax": "^4.3.9",
     "lucide-react": "^0.316.0",
+    "marked": "^14.0.0",
     "negotiator": "^0.6.3",
     "next": "^14.1.0",
     "openai": "^4.55.0",
