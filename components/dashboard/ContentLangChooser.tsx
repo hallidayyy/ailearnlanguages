@@ -1,5 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LearnLanguageContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const languages = [
   { code: '1', name: 'english', flag: '🇺🇸' },
@@ -34,6 +37,8 @@ const ContentLangChooser: React.FC = () => {
   const handleLanguageSelect = (lang: typeof languages[0]) => {
     setSelectedLang(lang);
     setIsOpen(false);
+
+    toast.success("display podcasts in " + lang.name);
   };
 
   return (
@@ -82,9 +87,14 @@ const ContentLangChooser: React.FC = () => {
                 <span className="flex flex-col">{lang.name}</span>
               </a>
             ))}
+
           </div>
+
+
         </div>
       )}
+
+      <ToastContainer />
     </div>
   );
 };

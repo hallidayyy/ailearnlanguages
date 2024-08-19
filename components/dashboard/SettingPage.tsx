@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { findUserByEmail, findUserByID, updateUserNicknameByEmail } from '@/models/user'; // 假设 findUserByEmail 和 updateUserNicknameByEmail 函数在你的 userService 模块中定义
 import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SettingPage: React.FC = () => {
     const [username, setUsername] = useState<string>('halliday');
@@ -25,10 +27,12 @@ const SettingPage: React.FC = () => {
     const handleUpdateProfile = async () => {
         try {
             await updateUserNicknameByEmail(email, username);
-            alert("Profile updated successfully!");
+            // alert("Profile updated successfully!");
+            toast.success("profile updated successfully");
         } catch (error) {
-            console.error("Error updating profile:", error);
-            alert("Failed to update profile. Please try again.");
+            // console.error("Error updating profile:", error);
+            // alert("Failed to update profile. Please try again.");
+            toast.error("failed to update profile. please try again");
         }
     };
 
@@ -85,6 +89,7 @@ const SettingPage: React.FC = () => {
                         </button>
                     </div>
                 </div>
+                <ToastContainer />
             </div>
         </div>
     );

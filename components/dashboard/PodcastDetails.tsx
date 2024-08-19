@@ -5,6 +5,8 @@ import PodcastCardvertical from './PodcastCardVertical'; // 确保路径正确
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface PodcastDetailProps {
   podcastId: number | null;
@@ -111,6 +113,8 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcastId }) => {
         setError(deleteError.message);
       } else {
         setIsFavorited(false);
+
+        toast.success("removed from collection");
       }
     } else {
       // 添加收藏
@@ -122,6 +126,8 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcastId }) => {
         setError(insertError.message);
       } else {
         setIsFavorited(true);
+
+        toast.success("added to collection");
       }
     }
   };
@@ -149,6 +155,7 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcastId }) => {
       />
 
       <EpisodeTable episodes={episodes} />
+      <ToastContainer />
     </div>
   );
 };

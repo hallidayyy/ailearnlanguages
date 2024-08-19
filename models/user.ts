@@ -77,8 +77,6 @@ export async function findUserByEmail(email: string): Promise<User | undefined> 
     .eq("email", email)
     .single();
 
-  console.log(data.id)
-
   if (error) {
     console.error("Error querying user:", error);
     throw error;
@@ -88,7 +86,6 @@ export async function findUserByEmail(email: string): Promise<User | undefined> 
     console.log("No user found with email:", email);
     return undefined;
   }
-
 
   return data as User;
 }

@@ -3,6 +3,8 @@ import EpisodeTable from './EpisodeTable';
 import { getDb } from '@/models/db';
 import { AppContext } from '@/contexts/AppContext';
 import EpisodeTypeChooser from '@/components/dashboard/EpisodeTypeChooser';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Episode {
   id: string;
@@ -30,6 +32,8 @@ const Episodes: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { lang, user } = useContext(AppContext);
 
+
+
   useEffect(() => {
     if (!user) {
       console.error('User is undefined');
@@ -47,16 +51,25 @@ const Episodes: React.FC = () => {
 
         switch (selectedOption) {
           case 'collected':
+            toast.success("show collection");
             data = await fetchCollectedEpisodes(supabase, user.id);
+            // console.log("1")
             break;
           case 'access':
+            toast.success("show accessible");
             data = await fetchAccessEpisodes(supabase, user.id);
+
+            // console.log("2")
             break;
           case 'run':
             data = await fetchRunEpisodes(supabase, user.id);
+            toast.success("show episodes ran");
+            // console.log("3")
             break;
           default:
             console.error('Unknown option:', selectedOption);
+            toast.success("unknown option");
+            // console.log("4")
             return;
         }
 
@@ -127,11 +140,16 @@ const Episodes: React.FC = () => {
   }
 
   return (
+
     <div className="p-1 flex justify-center">
+      <ToastContainer />
       <div className="w-full">
         <EpisodeTypeChooser onOptionChange={setSelectedOption} />
         <EpisodeTable episodes={episodes} />
+
+
       </div>
+
     </div>
   );
 };

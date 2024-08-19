@@ -276,7 +276,7 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
     // 将订阅设置为在当前计费周期结束时取消
 
     // 初始化 Stripe 客户端
-    console.log("hello")
+    // console.log("hello")
     const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
       apiVersion: '2023-10-16',
     });
@@ -295,12 +295,60 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
 }
 
 
+export async function getSubscriptionStatus(subscriptionId: string) {
+  try {
+    // 初始化 Stripe 客户端
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+      apiVersion: '2023-10-16',
+    });
+
+    // 获取订阅详情
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+    // 返回订阅状态
+    console.log(`Subscription ${subscription.id} status: ${subscription.status}`);
+    return subscription.status;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    console.error(`Error retrieving subscription ${subscriptionId} status:`, errorMessage);
+    throw new Error(errorMessage);
+  }
+}
+
+
+export async function getSubscriptionStatusByEmail(email: string) {
+  try {
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+      apiVersion: '2023-10-16',
+    });
+
+    // 获取订阅 ID
+    const subID = await getSubscriptionIdByEmail(email);
+
+    // 检查 subID 是否为 null
+    if (subID === null) {
+      console.error(`No subscription found for email: ${email}`);
+      return null;
+    }
+
+    // 获取订阅详情
+    const subscription = await stripe.subscriptions.retrieve(subID);
+
+    // 返回订阅状态
+    console.log(`Subscription ${subscription.id} status: ${subscription.status}`);
+    return subscription.status;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    console.error(`Error retrieving subscription status for email ${email}:`, errorMessage);
+    throw new Error(errorMessage);
+  }
+}
+
+
 
 
 export async function getSubscriptionIdByEmail(email: string): Promise<string | null> {
-  // // 初始化 Stripe 客户端
-  // console.log("hello")
-  // console.log(process.env.STRIPE_PRIVATE_KEY)
+
   const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
     apiVersion: '2023-10-16',
   });

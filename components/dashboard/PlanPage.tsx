@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { loadStripe } from "@stripe/stripe-js";
-import { toast } from "sonner";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useContext } from 'react';
 import UsageCard from "./UsageCard";
 import { getUserQuota, getUserPlan } from "@/models/quota";
 import PlanStatusCard from "./PlanStatusCard";
 import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
-import { getUserCurrentPlanExpiredDate, cancelSubscriptionAtPeriodEnd, getSubscriptionIdByEmail } from '@/models/order'
+import { getUserCurrentPlanExpiredDate, cancelSubscriptionAtPeriodEnd, getSubscriptionIdByEmail, getSubscriptionStatusByEmail } from '@/models/order'
+import { subscribe } from "diagnostics_channel";
 
 const tiers = [
   {
@@ -48,7 +50,7 @@ const tiers = [
     price_id: "prod_QeAHtLsVc15D6z", // Stripe 为 Standard 计划生成的 price_id
   },
   {
-    name: "Pro",
+    name: "pro",
     id: "pro",
     priceMonthly: "$11.9",
     unit: "Per Month",
@@ -80,6 +82,7 @@ const PlanPage: React.FC = () => {
   const [planExpiryDate, setPlanExpiryDate] = useState<string | null>(null);
   const [userQuota, setUserQuota] = useState<{ access_content_quota: number, run_ai_quota: number } | null>(null);
   const [userPlan, setUserPlan] = useState<string | null>(null);
+  const [subStatus, setSubStatus] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserQuotaAndPlan = async () => {
@@ -92,6 +95,16 @@ const PlanPage: React.FC = () => {
       // 获取用户计划
       const plan = await getUserPlan(user.email);
       setUserPlan(plan);
+
+
+      // 获取用户订阅状态
+      try {
+        const subscriptionStatus = await getSubscriptionStatusByEmail(user.email);
+        setSubStatus(subscriptionStatus);
+      } catch (error) {
+        console.error('Error fetching subscription status:', error);
+      }
+
 
       const expiryDate = await getUserCurrentPlanExpiredDate(user.email);
       if (expiryDate) {
@@ -166,20 +179,20 @@ const PlanPage: React.FC = () => {
   const onCancelClick = async () => {
     try {
       if (!user?.email) {
-        toast.error("User email is required");
+        toast.error("user email is required");
         return;
       }
 
       const subscriptionId = await getSubscriptionIdByEmail(user.email);
-      console.log("sub id: "+subscriptionId)
+      // console.log("sub id: "+subscriptionId)
 
       if (!subscriptionId) {
-        toast.error("Subscription ID not found for this user");
+        toast.error("subscription id not found for this user");
         return;
       }
 
       await cancelSubscriptionAtPeriodEnd(subscriptionId);
-      toast.success("Subscription set to cancel at period end");
+      toast.success("subscription set to cancel at period end");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       toast.error(errorMessage);
@@ -270,19 +283,19 @@ const PlanPage: React.FC = () => {
               footerText={planExpiryDate ?? ''} // 提供默认值
               buttonText="cancel"
               onCancelClick={onCancelClick}
+              status={subStatus ?? 'unknown'} // 提供默认值
             />
-
             <UsageCard
               title="remaining quota"
               usage={[
                 {
-                  name: 'access to ai-enhanced episodes',
+                  name: 'access to episodes',
                   used: userQuota?.access_content_quota === -1 ? 9999 : userQuota?.access_content_quota ?? 0,
                   total: userPlan === 'free' ? 4 : 9999,
                   colorClass: 'bg-indigo-400',
                 },
                 {
-                  name: 'run ai on episodes each month',
+                  name: 'run ai on episodes',
                   used: userQuota?.run_ai_quota ?? 0, // 提供默认值 0
                   total: userPlan === 'free' ? 0 : userPlan === 'standard' ? 20 : 50,
                   colorClass: 'bg-green-400',
@@ -291,6 +304,8 @@ const PlanPage: React.FC = () => {
             />
           </div>
         </div>
+
+        <ToastContainer />
       </div>
     </div>
   );

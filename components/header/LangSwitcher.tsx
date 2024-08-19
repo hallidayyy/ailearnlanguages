@@ -13,6 +13,7 @@ import { useEffect, useState, useContext } from "react";
 import { defaultLocale, localeNames } from "@/lib/i18n";
 import { AppContext } from "@/contexts/AppContext"; // 替换为你的 AppContext 路径
 
+
 export const LangSwitcher = () => {
   const router = useRouter();
   const { lang: contextLang, setLang } = useContext(AppContext);
@@ -54,5 +55,6 @@ export const LangSwitcher = () => {
         })}
       </SelectContent>
     </Select>
+    
   );
 };

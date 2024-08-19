@@ -355,7 +355,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         } else {
           setIsFavorited(false);
           console.log("Episode removed from favorites");
-          toast.success("取消收藏");
+          toast.success("removed from collection");
         }
       } else {
         // 添加收藏
@@ -368,7 +368,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         } else {
           setIsFavorited(true);
           console.log("Episode added to favorites");
-          toast.success("加入收藏");
+          toast.success("added to collection");
         }
       }
     } catch (error) {

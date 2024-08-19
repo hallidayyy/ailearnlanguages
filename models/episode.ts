@@ -1,6 +1,6 @@
 // @/models/episode.ts
 
-import { getDb } from '@/models/db'; // 确保路径正确
+import { getDb } from '@/models/db'; 
 
 const getLangFromEpisodeID = async (episodeId: string): Promise<string | null> => {
   try {

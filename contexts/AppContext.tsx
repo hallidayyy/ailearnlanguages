@@ -57,7 +57,7 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
   // 获取用户配额
   const fetchUserQuota = async (userEmail: string) => {
     try {
-      const uri = "/api/get-user-quota";
+      const uri = "/api/get-uesr-quota";
       const params = new URLSearchParams({ user_email: userEmail }).toString();
 
       const resp = await fetch(`${uri}?${params}`, {
