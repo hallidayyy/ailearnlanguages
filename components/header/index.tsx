@@ -1,23 +1,22 @@
 import { AppContext } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Nav } from "@/types/nav";
-import Social from "@/components/social";
 import User from "@/components/user";
 import { useContext } from "react";
 import { LangSwitcher } from "@/components/header/LangSwitcher";
 
 export default function () {
-  const { user } = useContext(AppContext);
+  const { user, userQuota } = useContext(AppContext);
 
   const navigations: Nav[] = [
     { name: "pricing", title: "pricing", url: "/pricing", target: "_self" },
     {
-      name: "doc",
+      name: "blog",
       title: "blogs",
       url: "https://blog.languepod.fun/",
       target: "_blank",
     },
-    { name: "demo", title: "demo", url: "/demo", target: "_self" },
+    { name: "demo", title: "try for free", url: "/demo", target: "_self" },
   ];
 
   return (
@@ -52,7 +51,7 @@ export default function () {
             <div className="flex-1"></div>
 
             <div className="flex flex-row items-center lg:flex lg:flex-row lg:space-x-3 lg:space-y-0">
-              <div className="hidden md:block mr-4">{/* <Social /> */}</div>
+          
 
               {user === undefined ? (
                 <>loading...</>
@@ -60,16 +59,22 @@ export default function () {
                 <>
                   {user ? (
                     <>
-                      {user.credits && (
-                        <a
-                          href="/pricing"
-                          className="hidden md:block mr-8 font-normal text-gray-800 cursor-pointer"
-                        >
-                          {/* cred1it: &nbsp;
-                          <span className="text-primary">
-                            {user.credits}
-                          </span> */}
-                        </a>
+                      {/* 显示 userQuota 的两个值 */}
+                      {userQuota && (
+                        <div className="hidden md:flex items-center mr-8">
+                          <span className="text-gray-800 mr-4">
+                            Access Content Quota: &nbsp;
+                            <span className="text-primary">
+                              {userQuota.access_content_quota}
+                            </span>
+                          </span>
+                          <span className="text-gray-800">
+                            Run AI Quota: &nbsp;
+                            <span className="text-primary">
+                              {userQuota.run_ai_quota}
+                            </span>
+                          </span>
+                        </div>
                       )}
 
                       <User user={user} />
@@ -78,26 +83,19 @@ export default function () {
                     <a className="cursor-pointer" href="/sign-in">
                       <Button>Login</Button>
                     </a>
-
                   )}
-
                 </>
               )}
-
 
               <a href="/dashboard" className="mr-4">
                 <Button>dashboard</Button>
               </a>
-
-
-
 
               <LangSwitcher />
             </div>
 
             <a href="#" className="absolute right-5 lg:hidden"></a>
           </div>
-
         </nav>
       </div>
     </header>

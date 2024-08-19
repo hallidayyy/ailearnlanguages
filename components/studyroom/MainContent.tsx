@@ -34,7 +34,7 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
       case 'Original':
         return <OriginalParser original_text={resultCache.Original} />;
       case 'Sentence':
-        return <SentenceParser sentence={resultCache.Sentence} />;
+        return <SentenceParser sentence={resultCache.Sentence} audio_url={audioUrl} />;
       case 'Translate':
         return <TranslateParser translation={resultCache.Translate} />;
       case 'KeyWords':
@@ -42,7 +42,7 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
       case 'KeyGrammer':
         return <KeyGrammerParser content={resultCache.KeyGrammer} />;
       case 'RewriteArticle':
-        return <RewritedArticleParser content={resultCache.RewriteArticle} />;
+        return <RewritedArticleParser rewrited_article={resultCache.RewriteArticle} />;
       case 'Questions':
         return <QuestionsParser content={resultCache.Questions} />;
       // case 'ExportNotes':
@@ -50,7 +50,7 @@ const MainContent: React.FC<MainContentProps> = ({ resultCache, indexStr, classN
       case 'Dictation':
         return <Dictation original_text={resultCache.Original} />;
       default:
-        return <SentenceParser sentence={resultCache.Sentence} />;
+        return <SentenceParser sentence={resultCache.Sentence} audio_url={audioUrl} />;
     }
   };
 

@@ -12,6 +12,8 @@ export default {
     GCS_BUCKET_NAME: process.env.GCS_BUCKET_NAME,
     GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     PROJECT_ID: process.env.PROJECT_ID,
+    STRIPE_PRIVATE_KEY:process.env.STRIPE_PRIVATE_KEY,
+
   },
 
   experimental: {

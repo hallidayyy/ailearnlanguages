@@ -7,9 +7,11 @@ import { getDb } from '@/models/db';
 import { AppContext } from '@/contexts/AppContext';
 import { useActiveComponent } from '@/contexts/ActiveComponentContext';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserQuota, decrementRunAIQuota } from "@/services/order";
+import { getUserQuota, decrementRunAIQuota } from "@/models/quota";
 import { getLangFromEpisodeID } from "@/models/episode"
 import LongCard from './LongCard';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface ViewCardProps {
@@ -47,7 +49,7 @@ interface CardData {
   rewritedarticle: string;
   questions: string;
   notes: string;
-  sentence: string;
+  original_json: string;
   dictation: string;
   loading: boolean;
   error: Error | null;
@@ -76,7 +78,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       likes: 0,
       create_at: '',
       original: '',
-      sentence: '',
+      original_json: '',
       translation: '',
       keywords: '',
       keygrammer: '',
@@ -95,7 +97,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       likes: 0,
       create_at: '',
       original: '',
-      sentence: '',
+      original_json: '',
       translation: '',
       keywords: '',
       keygrammer: '',
@@ -114,7 +116,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       likes: 0,
       create_at: '',
       original: '',
-      sentence: '',
+      original_json: '',
       translation: '',
       keywords: '',
       keygrammer: '',
@@ -133,7 +135,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
       likes: 0,
       create_at: '',
       original: '',
-      sentence: '',
+      original_json: '',
       translation: '',
       keywords: '',
       keygrammer: '',
@@ -224,7 +226,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
           likes: data.likes,
           create_at: data.create_at,
           original: data.original || '',
-          sentence: data.sentence || '',
+          original_json: data.original_json || '',
           translation: data.translation || '',
           keywords: data.keywords || '',
           keygrammer: data.keygrammer || '',
@@ -233,7 +235,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
           notes: data.notes || '',
           loading: false,
           error: null,
-          dictation: data.dication || '',
+          dictation: data.original || '',
         };
 
         setCardData(prevState => ({ ...prevState, [key]: updatedCardData }));
@@ -247,20 +249,17 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     if (episodeData.card_id_cn) fetchCardData(episodeData.card_id_cn, 'card_id_cn');
     if (episodeData.card_id_jp) fetchCardData(episodeData.card_id_jp, 'card_id_jp');
 
-    // console.log("vc:" + episodeData.card_id);
-    // console.log("vc:" + episodeData.card_id_fr);
-    // console.log("vc:" + episodeData.card_id_cn);
-    // console.log("vc:" + episodeData.card_id_jp);
+
 
   }, [episodeData.card_id, episodeData.card_id_fr, episodeData.card_id_cn, episodeData.card_id_jp]);
 
-  // 在 useEffect 外部添加日志，确保 cardData 更新后访问
-  useEffect(() => {
-    console.log("vc another useeffect:" + cardData.card_id.id);
-    console.log("vc another useeffect:" + cardData.card_id_fr.id);
-    console.log("vc another useeffect:" + cardData.card_id_cn.id);
-    console.log("vc another useeffect:" + cardData.card_id_jp.id);
-  }, [cardData]);
+  // // 在 useEffect 外部添加日志，确保 cardData 更新后访问
+  // useEffect(() => {
+  //   console.log("vc another useeffect:" + cardData.card_id.id);
+  //   console.log("vc another useeffect:" + cardData.card_id_fr.id);
+  //   console.log("vc another useeffect:" + cardData.card_id_cn.id);
+  //   console.log("vc another useeffect:" + cardData.card_id_jp.id);
+  // }, [cardData]);
 
   useEffect(() => {
     const checkIfFavorited = async () => {
@@ -356,6 +355,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         } else {
           setIsFavorited(false);
           console.log("Episode removed from favorites");
+          toast.success("取消收藏");
         }
       } else {
         // 添加收藏
@@ -368,6 +368,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
         } else {
           setIsFavorited(true);
           console.log("Episode added to favorites");
+          toast.success("加入收藏");
         }
       }
     } catch (error) {
@@ -435,6 +436,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     // 检查 run_ai_quota 是否大于等于1
     if (userQuota.run_ai_quota < 1) {
       console.error("Run AI quota is insufficient.");
+      toast.error("quota不够");
       return;
     }
 
@@ -442,6 +444,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     const decrementResult = await decrementRunAIQuota(user.email);
     if (!decrementResult.success) {
       console.error(decrementResult.message);
+      toast.error("扣减quota失败");
       return; // 如果扣减失败，直接返回，不插入任务
     }
 
@@ -539,7 +542,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               onSentenceClick={handleSentenceClick}
               resultCache={{
                 Original: selectedCardData ? selectedCardData.original : '',
-                Sentence: selectedCardData ? selectedCardData.sentence : '',
+                Sentence: selectedCardData ? selectedCardData.original_json : '',
                 Translate: selectedCardData ? selectedCardData.translation : '',
                 KeyWords: selectedCardData ? selectedCardData.keywords : '',
                 KeyGrammer: selectedCardData ? selectedCardData.keygrammer : '',
@@ -556,7 +559,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               <MainContent
                 resultCache={{
                   Original: selectedCardData ? selectedCardData.original : '',
-                  Sentence: selectedCardData ? selectedCardData.sentence : '',
+                  Sentence: selectedCardData ? selectedCardData.original_json : '',
                   Translate: selectedCardData ? selectedCardData.translation : '',
                   KeyWords: selectedCardData ? selectedCardData.keywords : '',
                   KeyGrammer: selectedCardData ? selectedCardData.keygrammer : '',
@@ -575,7 +578,6 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
               <AccessBlock
                 onSubscribeClick={handleSubscribeClick}
                 handleRunAI={() => handleRunAI(episodeId)}
-                user={user}
                 episodeId={episodeId}
                 card_id={episodeData.card_id}
                 card_id_fr={episodeData.card_id_fr}
@@ -583,7 +585,9 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
                 card_id_jp={episodeData.card_id_jp}
               />
             )}
+            <ToastContainer />
           </div>
+
         </div>
       </div>
     </div>

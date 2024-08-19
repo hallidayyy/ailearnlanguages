@@ -13,22 +13,34 @@ interface OriginalParserProps {
     original_text: string;
 }
 
-  const OriginalParser: React.FC<OriginalParserProps> = ({ original_text }) => {
+const OriginalParser: React.FC<OriginalParserProps> = ({ original_text }) => {
     const [content, setContent] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        setLoading(true);
         try {
-            const html = marked(original_text) as string; // 将 Markdown 转换为 HTML，并断言为字符串
-                setContent(html);
+            // 解析 JSON 字符串
+            const jsonObject = JSON.parse(original_text);
+
+            // 提取 content 的值
+            const jsonContent = jsonObject['content'];
+            if (typeof jsonContent !== 'string') {
+                throw new Error('Content is not a valid string');
+            }
+
+            // 将 Markdown 转换为 HTML
+            const html = marked(jsonContent);
+            setContent(html);
         } catch (error) {
-            console.error('Error parsing markdown:', error);
-            setError('Failed to parse content');
+            console.error('Error processing the content:', error);
+            setError('Failed to parse and convert content');
         } finally {
-                setLoading(false);
+            setLoading(false);
         }
     }, [original_text]);
+
     if (loading) {
         return <div>Loading...</div>;
     }

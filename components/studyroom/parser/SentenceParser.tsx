@@ -44,9 +44,10 @@ const playAudio = (startTime: number, endTime: number, audioRef: React.RefObject
 
 interface SentenceParserProps {
   sentence: string;
+  audio_url: string;
 }
 
-const SentenceParser: React.FC<SentenceParserProps> = ({ sentence }) => {
+const SentenceParser: React.FC<SentenceParserProps> = ({ sentence, audio_url }) => {
 
   const [data, setData] = useState<TranscriptResult[]>([]);
   const [hoverIndex, setHoverIndex] = useState<string | null>(null);
@@ -56,11 +57,11 @@ const SentenceParser: React.FC<SentenceParserProps> = ({ sentence }) => {
   useEffect(() => {
     try {
       const jsonData: TranscriptData = JSON.parse(sentence);
-        if (Array.isArray(jsonData.results)) {
-          setData(jsonData.results);
-        } else {
-          console.error('Invalid JSON format');
-        }
+      if (Array.isArray(jsonData.results)) {
+        setData(jsonData.results);
+      } else {
+        console.error('Invalid JSON format');
+      }
     } catch (error) {
       console.error('Error parsing sentence:', error);
     }
@@ -82,7 +83,7 @@ const SentenceParser: React.FC<SentenceParserProps> = ({ sentence }) => {
   // 渲染 JSON 数据
   return (
     <div>
-      <audio ref={audioRef} src="/test/LearningEasyEnglish-20240809-RealEasyEnglishTalkingAboutSchool.mp3"></audio>
+      <audio ref={audioRef} src={audio_url}></audio>
       {data.map((result, resultIndex) => (
         <div key={resultIndex} className="mb-4">
           {Array.isArray(result.alternatives) && result.alternatives.length > 0 ? (

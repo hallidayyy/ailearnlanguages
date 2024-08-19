@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import EpisodeTable from './EpisodeTable';
-import { getDb } from '@/models/db'; 
-import { AppContext } from '@/contexts/AppContext'; 
+import { getDb } from '@/models/db';
+import { AppContext } from '@/contexts/AppContext';
 import EpisodeTypeChooser from '@/components/dashboard/EpisodeTypeChooser';
 
 interface Episode {

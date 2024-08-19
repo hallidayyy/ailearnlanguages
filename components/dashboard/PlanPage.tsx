@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useContext } from 'react';
 import UsageCard from "./UsageCard";
-import { getUserQuota, getUserPlan } from "@/services/order";
+import { getUserQuota, getUserPlan } from "@/models/quota";
 import PlanStatusCard from "./PlanStatusCard";
 import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
 import { getUserCurrentPlanExpiredDate, cancelSubscriptionAtPeriodEnd, getSubscriptionIdByEmail } from '@/models/order'
@@ -171,6 +171,7 @@ const PlanPage: React.FC = () => {
       }
 
       const subscriptionId = await getSubscriptionIdByEmail(user.email);
+      console.log("sub id: "+subscriptionId)
 
       if (!subscriptionId) {
         toast.error("Subscription ID not found for this user");

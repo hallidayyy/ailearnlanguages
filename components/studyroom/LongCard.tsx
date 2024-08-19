@@ -3,6 +3,7 @@
 import { AppContext } from '@/contexts/AppContext';
 import React, { useState, useEffect, useContext } from 'react';
 import { localeNames } from '@/lib/i18n'
+import { toast, ToastContainer } from 'react-toastify';
 
 interface LongCardProps {
     labels: string[];
@@ -38,14 +39,15 @@ const LongCard: React.FC<LongCardProps> = ({ labels, card_id, card_id_fr, card_i
     const handleRunAIClick = () => {
 
         onRunAIClick(episode_id);
+        
 
     };
 
     return (
         <div className="flex flex-col bg-white shadow-md rounded-lg p-4 w-full">
-            {/* First Row */}
-            <div className="flex justify-between items-center mb-4">
-                <div className="text-lg font-semibold">This episode is available in the following languages:</div>
+
+            <div className="flex justify-start items-start mb-4">
+                <div className="text-lg font-semibold text-gray-600">this episode is available in the following languages:</div>
                 <div className="flex space-x-2">
                     {card_id && (
                         <button
@@ -80,21 +82,24 @@ const LongCard: React.FC<LongCardProps> = ({ labels, card_id, card_id_fr, card_i
                         </button>
                     )}
                 </div>
+                <div className="flex space-x-2 text-lg font-semibold text-gray-600">
+                    , you can click on the language dropdown menu at the top of the screen to select your native language.
+                </div>
             </div>
 
-            {/* Third Row */}
-            <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600">
+
+            <div className="flex justify-start items-center">
+                <div className="text-lg font-semibold text-gray-600 ">
 
                     {isLanguageAvailable(lang) ? (
-                        `Your language ${localeNames[lang]} is available`
+                        `your language ${localeNames[lang]} is available`
                     ) : (
-                        `So you wanna run AI on your native language ${localeNames[lang]}`
+                        `you wanna run ai on your native language ${localeNames[lang]} , you can click the "run ai" button to generate podcast learning materials in your native language `
                     )}
                 </div>
                 {!isLanguageAvailable(lang) && (
                     <button onClick={handleRunAIClick} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Run AI
+                        run ai
                     </button>
                 )}
             </div>

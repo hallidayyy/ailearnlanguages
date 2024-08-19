@@ -276,12 +276,8 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
     // 将订阅设置为在当前计费周期结束时取消
 
     // 初始化 Stripe 客户端
-    const stripePrivateKey = process.env.STRIPE_PRIVATE_KEY;
-    if (!stripePrivateKey) {
-      throw new Error("Stripe private key is not defined in environment variables.");
-    }
-
-    const stripe = new Stripe(stripePrivateKey, {
+    console.log("hello")
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
       apiVersion: '2023-10-16',
     });
 
@@ -302,13 +298,10 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
 
 
 export async function getSubscriptionIdByEmail(email: string): Promise<string | null> {
-  // 初始化 Stripe 客户端
-  const stripePrivateKey = process.env.STRIPE_PRIVATE_KEY;
-  if (!stripePrivateKey) {
-    throw new Error("Stripe private key is not defined in environment variables.");
-  }
-
-  const stripe = new Stripe(stripePrivateKey, {
+  // // 初始化 Stripe 客户端
+  // console.log("hello")
+  // console.log(process.env.STRIPE_PRIVATE_KEY)
+  const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
     apiVersion: '2023-10-16',
   });
 

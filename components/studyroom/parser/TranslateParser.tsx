@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { marked } from 'marked'; // Markdown 转换库
 import styled from 'styled-components';
+import { marked } from 'marked'; // Markdown 转换库
 
 const StyledContent = styled.div`
     h1 {
@@ -19,16 +19,28 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        setLoading(true);
         try {
-            const html = marked(translation) as string; // 将 Markdown 转换为 HTML，并断言为字符串
-                setContent(html);
+            // 解析 JSON 字符串
+            const jsonObject = JSON.parse(translation);
+
+            // 提取 content 的值
+            const jsonContent = jsonObject['content'];
+            if (typeof jsonContent !== 'string') {
+                throw new Error('Content is not a valid string');
+            }
+
+            // 将 Markdown 转换为 HTML
+            const html = marked(jsonContent);
+            setContent(html);
         } catch (error) {
-            console.error('Error parsing translation:', error);
-            setError('Failed to parse translation');
+            console.error('Error processing the content:', error);
+            setError('Failed to parse and convert content');
         } finally {
-                setLoading(false);
+            setLoading(false);
         }
     }, [translation]);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -39,5 +51,6 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
 
     return <StyledContent dangerouslySetInnerHTML={{ __html: content }} />;
 };
+
 
 export default TranslateParser;

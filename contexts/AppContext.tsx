@@ -1,16 +1,21 @@
 // @/path-to-your-context-file.tsx
 import { ContextProviderProps, ContextProviderValue } from "@/types/context";
 import { createContext, useEffect, useState } from "react";
-
-import { Cover } from "@/types/cover";
 import { User } from "@/types/user";
 import { toast } from "sonner";
+
+// 这里定义 userQuota 的类型
+interface UserQuota {
+  user_id: number;
+  access_content_quota: number;
+  run_ai_quota: number;
+}
 
 export const AppContext = createContext({} as ContextProviderValue);
 
 export const AppContextProvider = ({ children }: ContextProviderProps) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
-  const [covers, setCovers] = useState<Cover[] | null>(null);
+  const [userQuota, setUserQuota] = useState<UserQuota | null>(null); // 添加 userQuota 状态
   const [lang, setLang] = useState<string>(() => {
     // 从本地存储读取语言设置，默认为 "en"
     if (typeof window !== "undefined") {
@@ -19,6 +24,7 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
     return "en";
   });
 
+  // 获取用户信息
   const fetchUserInfo = async function () {
     try {
       const uri = "/api/get-user-info";
@@ -31,9 +37,12 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
 
       if (resp.ok) {
         const res = await resp.json();
-        console.log("fetch user info in appcontext: "+res.data.user_id);
         if (res.data) {
           setUser(res.data);
+          if (res.data.email) {
+            // 获取用户配额信息
+            fetchUserQuota(res.data.email);
+          }
           return;
         }
       }
@@ -41,9 +50,32 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
       setUser(null);
     } catch (e) {
       setUser(null);
-
-      console.log("get user info failed: ", e);
       toast.error("get user info failed");
+    }
+  };
+
+  // 获取用户配额
+  const fetchUserQuota = async (userEmail: string) => {
+    try {
+      const uri = "/api/get-user-quota";
+      const params = new URLSearchParams({ user_email: userEmail }).toString();
+
+      const resp = await fetch(`${uri}?${params}`, {
+        method: "GET",
+      });
+
+      if (resp.ok) {
+        const res = await resp.json();
+        if (res.data) {
+          setUserQuota(res.data);
+          return;
+        }
+      }
+
+      setUserQuota(null);
+    } catch (e) {
+      setUserQuota(null);
+      toast.error("get user quota failed");
     }
   };
 
@@ -59,7 +91,7 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
   }, [lang]);
 
   return (
-    <AppContext.Provider value={{ user, fetchUserInfo, covers, setCovers, lang, setLang }}>
+    <AppContext.Provider value={{ user, userQuota, fetchUserInfo, lang, setLang }}>
       {children}
     </AppContext.Provider>
   );

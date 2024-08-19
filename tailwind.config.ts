@@ -93,7 +93,7 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate"), nextui(),
-    require('@tailwindcss/line-clamp'),
+    // require('@tailwindcss/line-clamp'),
   ],
   
 } satisfies Config

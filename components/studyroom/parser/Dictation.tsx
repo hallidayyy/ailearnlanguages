@@ -85,7 +85,7 @@ const Dictation: React.FC<DictationProps> = ({ original_text }) => {
     const { lang, user } = useContext(AppContext);
 
     const handleCheck = () => {
-        console.log("user_lang:" + lang)
+
         setLoading(true);
         setContent(''); // 清空之前的内容
 
@@ -147,7 +147,7 @@ const Dictation: React.FC<DictationProps> = ({ original_text }) => {
                 <Textarea
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    placeholder="press the spacebar on your keyboard to play/pause, enter your dictation here and click check"
+                    placeholder="press the F1 on your keyboard to play/pause, enter your dictation here and click check"
                     isSplit={isSplit}
                 />
                 <Button onClick={handleCheck} disabled={loading}>

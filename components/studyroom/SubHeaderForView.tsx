@@ -38,7 +38,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavor
     const handleKeyDown = (event: KeyboardEvent) => {
       if (audioRef.current) {
         switch (event.key) {
-          case ' ': // 空格键
+          case 'F1': // F1
             event.preventDefault();
             if (audioRef.current.paused) {
               audioRef.current.play();

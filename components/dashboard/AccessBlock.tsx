@@ -1,17 +1,14 @@
-import React from 'react';
-import { getUserQuota } from '@/services/order';
+import React, { useState, useEffect, useContext } from 'react';
+import { getUserQuota } from '@/models/quota';
 import { getDb } from '@/models/db';
 import { v4 as uuidv4 } from 'uuid';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AppContext } from '@/contexts/AppContext';
 
 interface AccessBlockProps {
   onSubscribeClick: () => void;
   handleRunAI: () => void;
-  user: {
-    user_id: number;
-    email: string;
-  };
   episodeId: string;
   card_id: string;
   card_id_fr: string;
@@ -19,10 +16,22 @@ interface AccessBlockProps {
   card_id_jp: string;
 }
 
-const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI, user, episodeId, card_id, card_id_fr, card_id_cn, card_id_jp }) => {
+
+const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI, episodeId, card_id, card_id_fr, card_id_cn, card_id_jp }) => {
+  const { lang, user } = useContext(AppContext);
+  const isLanguageAvailable = (lang: string) => {
+    return (
+      (lang === 'en' && card_id) ||
+      (lang === 'fr' && card_id_fr) ||
+      (lang === 'zh' && card_id_cn) ||
+      (lang === 'ja' && card_id_jp)
+    );
+  };
   const handleAccessAIContent = async () => {
     try {
       const userQuota = await getUserQuota(user.email);
+      console.log("user email: "+ user.email);
+      console.log("user id"+ user.id);
 
       if (!userQuota || (userQuota.access_content_quota < 1 && userQuota.access_content_quota !== -1)) {
         console.error("User not found, quota information missing, or access content quota is insufficient.");
@@ -34,7 +43,7 @@ const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI
 
       const permissionData = {
         id: permissionId,
-        user_id: user.user_id,
+        user_id: user.id,
         episode_id: episodeId,
         permission: true,
       };

@@ -12,8 +12,10 @@ interface ViewCardPageProps {
 const ViewCardPage: React.FC<ViewCardPageProps> = ({ params }) => {
     return (
         <MainLayout>
-            <div className="flex justify-center items-start h-screen w-screen bg-gray-100 mt-4">
-                <ViewCard episodeId={params.id} />
+            <div className="flex justify-center items-start h-screen bg-gray-100 mt-4">
+                <div className="w-4/5">
+                    <ViewCard episodeId={params.id} />
+                </div>
             </div>
         </MainLayout>
     );
