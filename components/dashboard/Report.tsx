@@ -28,51 +28,66 @@ const Report: React.FC = () => {
   }, [user]);
 
   return (
+
     <div className="flex flex-wrap gap-6 p-4">
-      <InfoCard
-        title={stats.podcastCollectionCount.toString()}
-        description="collected so many podcasts"
-        icon={<FontAwesomeIcon icon={faStar} size="2x" className="text-blue-500" />}
-        iconColor="bg-blue-200"
-        titleColor="text-blue-800"
-        descriptionColor="text-blue-400"
-      />
+      <div className="w-full">
+        <div className="container max-w-8xl px-4 mx-auto sm:px-8">
+          <div className="py-8">
+            <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
+              <h2 className="text-2xl leading-tight">
+                your languepod report
+              </h2>
+            </div>
+            <hr className="my-4 border-gray-300" /> {/* Horizontal line */}
+            <div className="flex flex-wrap gap-6 p-4">
+              <InfoCard
+                title={stats.podcastCollectionCount.toString()}
+                description="collected so many podcasts"
+                icon={<FontAwesomeIcon icon={faStar} size="2x" className="text-blue-500" />}
+                iconColor="bg-blue-200"
+                titleColor="text-blue-800"
+                descriptionColor="text-blue-400"
+              />
 
-      <InfoCard
-        title={stats.episodeCollectionCount.toString()}
-        description="saved so many episodes"
-        icon={<FontAwesomeIcon icon={faHeart} size="2x" className="text-blue-500" />}
-        iconColor="bg-blue-200"
-        titleColor="text-blue-800"
-        descriptionColor="text-blue-400"
-      />
+              <InfoCard
+                title={stats.episodeCollectionCount.toString()}
+                description="collectedd so many episodes"
+                icon={<FontAwesomeIcon icon={faHeart} size="2x" className="text-blue-500" />}
+                iconColor="bg-blue-200"
+                titleColor="text-blue-800"
+                descriptionColor="text-blue-400"
+              />
 
-      <InfoCard
-        title={stats.registrationDate}
-        description="first time signing up"
-        icon={<FontAwesomeIcon icon={faMeteor} size="2x" className="text-blue-500" />}
-        iconColor="bg-blue-200"
-        titleColor="text-blue-800"
-        descriptionColor="text-blue-400"
-      />
+              <InfoCard
+                title={stats.registrationDate}
+                description="first time signing up"
+                icon={<FontAwesomeIcon icon={faMeteor} size="2x" className="text-blue-500" />}
+                iconColor="bg-blue-200"
+                titleColor="text-blue-800"
+                descriptionColor="text-blue-400"
+              />
 
-      <InfoCard
-        title={stats.podcastListenCount.toString()}
-        description="listened to so many podcasts"
-        icon={<FontAwesomeIcon icon={faPodcast} size="2x" className="text-blue-500" />}
-        iconColor="bg-blue-200"
-        titleColor="text-blue-800"
-        descriptionColor="text-blue-400"
-      />
+              <InfoCard
+                title={stats.podcastListenCount.toString()}
+                description="listened to so many episodes"
+                icon={<FontAwesomeIcon icon={faPodcast} size="2x" className="text-blue-500" />}
+                iconColor="bg-blue-200"
+                titleColor="text-blue-800"
+                descriptionColor="text-blue-400"
+              />
 
-      <InfoCard
-        title={stats.aiRunCount.toString()}
-        description="ran the ai so many times"
-        icon={<FontAwesomeIcon icon={faComputer} size="2x" className="text-blue-500" />}
-        iconColor="bg-blue-200"
-        titleColor="text-blue-800"
-        descriptionColor="text-blue-400"
-      />
+              <InfoCard
+                title={stats.aiRunCount.toString()}
+                description="ran ai so many times"
+                icon={<FontAwesomeIcon icon={faComputer} size="2x" className="text-blue-500" />}
+                iconColor="bg-blue-200"
+                titleColor="text-blue-800"
+                descriptionColor="text-blue-400"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

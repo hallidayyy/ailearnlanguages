@@ -5,9 +5,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SettingPage: React.FC = () => {
-    const [username, setUsername] = useState<string>('halliday');
-    const [email, setEmail] = useState<string>('abc@abc.com');
-    const { lang, user } = useContext(AppContext); // 从 AppContext 中获取 user 信息
+    const { lang, user } = useContext(AppContext);
+    const [username, setUsername] = useState<string>(user.nickname);
+    const [email, setEmail] = useState<string>(user.email);
+
 
     const inputClassNames = "rounded-lg border-gray-300 shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-500 focus:ring-opacity-50 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent";
     const buttonClassNames = "mt-4 py-2 px-4 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50";
@@ -21,7 +22,7 @@ const SettingPage: React.FC = () => {
         };
 
         fetchUser();
-        console.log("user id:" + user?.user_id);
+        // console.log("user id:" + user?.id);
     }, [email]);
 
     const handleUpdateProfile = async () => {
@@ -61,7 +62,7 @@ const SettingPage: React.FC = () => {
                                     className={inputClassNames}
                                 />
                                 <span className="text-gray-700">
-                                    your publicly displayed name. it can be your real name or a pseudonym.
+                                    your name that will be shown publicly; it can be your real name or a pseudonym.
                                 </span>
                             </div>
 
@@ -78,7 +79,7 @@ const SettingPage: React.FC = () => {
                                     className={inputClassNames + " bg-gray-100 cursor-not-allowed"} // Disabled style
                                 />
                                 <span className="text-gray-700">
-                                    email is your login credential and cannot be changed.
+                                    your email serves as your login credential and cannot be altered.
                                 </span>
                             </div>
                         </div>

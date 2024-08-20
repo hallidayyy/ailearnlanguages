@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
   try {
     const email = user.emailAddresses[0].emailAddress;
-    const nickname = user.firstName;
+    const nickname = user.username;
     const avatarUrl = user.imageUrl;
     const existUser = await findUserByEmail(email);
     const user_id = existUser?.id;
