@@ -1,12 +1,11 @@
-
 import styled from 'styled-components';
 import { marked } from 'marked';
 import { TailSpin } from 'react-loader-spinner';
 import { AppContext } from '@/contexts/AppContext';
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import ConfirmDialog from '@/components/dashboard/ConfirmDialog'; // 确保路径正确
 
 const Container = styled.div<{ isSplit: boolean }>`
-
     display: flex;
     flex-direction: ${({ isSplit }) => (isSplit ? 'row' : 'column')};
     align-items: ${({ isSplit }) => (isSplit ? 'flex-start' : 'center')};
@@ -83,9 +82,14 @@ const Dictation: React.FC<DictationProps> = ({ original_text }) => {
     const [isSplit, setIsSplit] = useState<boolean>(false);
     const [content, setContent] = useState<string>('');
     const { lang, user } = useContext(AppContext);
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
     const handleCheck = () => {
+        setIsConfirmDialogOpen(true);
+    };
 
+    const handleConfirmCheck = () => {
+        setIsConfirmDialogOpen(false);
         setLoading(true);
         setContent(''); // 清空之前的内容
 
@@ -166,6 +170,16 @@ const Dictation: React.FC<DictationProps> = ({ original_text }) => {
                     )}
                 </RightPane>
             )}
+
+            <ConfirmDialog
+                isOpen={isConfirmDialogOpen}
+                onClose={() => setIsConfirmDialogOpen(false)}
+                onConfirm={handleConfirmCheck}
+                title="confirm check"
+                message="this will take approximately 1 minute. please do not close or leave this window."
+                confirmText="yes, check"
+                cancelText="no, cancel"
+            />
         </Container>
     );
 };

@@ -22,6 +22,11 @@ const RewritedArticleParser: React.FC<RewritedArticleParserProps> = ({ rewrited_
     setLoading(true);
     try {
       // 解析 JSON 字符串
+      if (!rewrited_article) {
+        setContent('no content');
+        setLoading(false);
+        return;
+      }
       const jsonObject = JSON.parse(rewrited_article);
 
       // 提取 content 的值

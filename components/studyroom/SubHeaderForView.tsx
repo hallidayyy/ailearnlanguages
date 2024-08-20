@@ -46,22 +46,22 @@ const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavor
               audioRef.current.pause();
             }
             break;
-          case 'k': // 'k' 键
-            event.preventDefault();
-            if (audioRef.current.paused) {
-              audioRef.current.play();
-            } else {
-              audioRef.current.pause();
-            }
-            break;
-          case 'ArrowRight': // 右箭头键
-            event.preventDefault();
-            audioRef.current.currentTime += 10; // 快进 10 秒
-            break;
-          case 'ArrowLeft': // 左箭头键
-            event.preventDefault();
-            audioRef.current.currentTime -= 10; // 后退 10 秒
-            break;
+          // case 'k': // 'k' 键
+          //   event.preventDefault();
+          //   if (audioRef.current.paused) {
+          //     audioRef.current.play();
+          //   } else {
+          //     audioRef.current.pause();
+          //   }
+          //   break;
+          // case 'ArrowRight': // 右箭头键
+          //   event.preventDefault();
+          //   audioRef.current.currentTime += 10; // 快进 10 秒
+          //   break;
+          // case 'ArrowLeft': // 左箭头键
+          //   event.preventDefault();
+          //   audioRef.current.currentTime -= 10; // 后退 10 秒
+          //   break;
           default:
             break;
         }

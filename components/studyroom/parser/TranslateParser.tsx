@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { marked } from 'marked'; // Markdown 转换库
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import { marked } from 'marked';
 
 const StyledContent = styled.div`
     h1 {
         font-size: 1.2em;
-        line-height: 1.5; /* 调整行间距 */
+        line-height: 1.5;
     }
 `;
 
@@ -23,16 +21,16 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
     useEffect(() => {
         setLoading(true);
         try {
-            // 解析 JSON 字符串
+            if (!translation) {
+                setContent('no content');
+                setLoading(false);
+                return;
+            }
             const jsonObject = JSON.parse(translation);
-
-            // 提取 content 的值
             const jsonContent = jsonObject['content'];
             if (typeof jsonContent !== 'string') {
                 throw new Error('Content is not a valid string');
             }
-
-            // 将 Markdown 转换为 HTML
             const html = marked(jsonContent);
             if (typeof html !== 'string') {
                 throw new Error('Content is not a valid string');
@@ -46,21 +44,6 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
         }
     }, [translation]);
 
-    const exportAsPDF = () => {
-        const input = document.getElementById('content-to-export');
-        if (input) {
-            html2canvas(input).then((canvas) => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save('translation.pdf');
-            });
-        }
-    };
-
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -70,10 +53,7 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
     }
 
     return (
-        <div>
-            <button onClick={exportAsPDF}>Export as PDF</button>
-            <StyledContent id="content-to-export" dangerouslySetInnerHTML={{ __html: content }} />
-        </div>
+        <StyledContent dangerouslySetInnerHTML={{ __html: content }} />
     );
 };
 

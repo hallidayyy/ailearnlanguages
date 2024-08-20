@@ -13,6 +13,10 @@ interface KeyGrammerParserProps {
 const KeyGrammerParser: React.FC<KeyGrammerParserProps> = ({ content }) => {
   let json;
   try {
+    if (!content) {
+
+      return <div>no content</div>;
+    }
     json = JSON.parse(content);
   } catch (e) {
     console.error('JSON Parsing Error:', e);

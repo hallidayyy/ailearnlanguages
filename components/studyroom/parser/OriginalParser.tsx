@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { marked } from 'marked'; // Markdown 转换库
 import styled from 'styled-components';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 
 const StyledContent = styled.div`
     h1 {
@@ -24,6 +22,13 @@ const OriginalParser: React.FC<OriginalParserProps> = ({ original_text }) => {
         const processContent = async () => {
             setLoading(true);
             try {
+                // 检查 original_text 是否为空
+                if (!original_text) {
+                    setContent('no content');
+                    setLoading(false);
+                    return;
+                }
+
                 // 解析 JSON 字符串
                 const jsonObject = JSON.parse(original_text);
 
@@ -51,21 +56,6 @@ const OriginalParser: React.FC<OriginalParserProps> = ({ original_text }) => {
         processContent();
     }, [original_text]);
 
-    const exportAsPDF = () => {
-        const input = document.getElementById('content-to-export');
-        if (input) {
-            html2canvas(input).then((canvas) => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save('content.pdf');
-            });
-        }
-    };
-
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -75,10 +65,7 @@ const OriginalParser: React.FC<OriginalParserProps> = ({ original_text }) => {
     }
 
     return (
-        <div>
-            <button onClick={exportAsPDF}>export as pdf</button>
-            <StyledContent id="content-to-export" dangerouslySetInnerHTML={{ __html: content }} />
-        </div>
+        <StyledContent id="content-to-export" dangerouslySetInnerHTML={{ __html: content }} />
     );
 };
 

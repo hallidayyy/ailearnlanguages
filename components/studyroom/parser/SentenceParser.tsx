@@ -56,6 +56,7 @@ const SentenceParser: React.FC<SentenceParserProps> = ({ sentence, audio_url }) 
   // 解析 sentence 变量
   useEffect(() => {
     try {
+
       const jsonData: TranscriptData = JSON.parse(sentence);
       if (Array.isArray(jsonData.results)) {
         setData(jsonData.results);

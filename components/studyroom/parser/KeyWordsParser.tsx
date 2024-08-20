@@ -15,7 +15,10 @@ const KeywordsParser: React.FC<KeywordsParserProps> = ({ content }) => {
     json = JSON.parse(content);
   } catch (e) {
     console.error('JSON Parsing Error:', e);
-    return <div>Invalid JSON</div>;
+    if (!content) {
+      return <div>no content</div>;
+    }
+
   }
 
   if (!json || !Array.isArray(json.keywords)) {

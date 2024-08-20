@@ -51,12 +51,12 @@ const LongCard: React.FC<LongCardProps> = ({ labels, card_id, card_id_fr, card_i
                 {/* Display language buttons if at least one variable is present */}
                 {(card_id || card_id_fr || card_id_cn || card_id_jp) ? (
                     <>
-                        <div className="flex items-start mb-2">
+                        <div className="flex items-center space-x-2">
                             <div className="text-lg font-semibold text-gray-600">This episode is available in the following languages:</div>
-                            <div className="flex space-x-2 ml-2">
+                            <div className="flex space-x-2">
                                 {card_id && (
                                     <button
-                                        className="px-2 py-1 bg-gray-200 text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="px-2 py-1  text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         onClick={() => onFlagClick('card_id')}
                                     >
                                         🇺🇸
@@ -64,7 +64,7 @@ const LongCard: React.FC<LongCardProps> = ({ labels, card_id, card_id_fr, card_i
                                 )}
                                 {card_id_fr && (
                                     <button
-                                        className="px-2 py-1 bg-gray-200 text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="px-2 py-1  text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         onClick={() => onFlagClick('card_id_fr')}
                                     >
                                         🇫🇷
@@ -72,7 +72,7 @@ const LongCard: React.FC<LongCardProps> = ({ labels, card_id, card_id_fr, card_i
                                 )}
                                 {card_id_cn && (
                                     <button
-                                        className="px-2 py-1 bg-gray-200 text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="px-2 py-1 text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         onClick={() => onFlagClick('card_id_cn')}
                                     >
                                         🇨🇳
@@ -80,7 +80,7 @@ const LongCard: React.FC<LongCardProps> = ({ labels, card_id, card_id_fr, card_i
                                 )}
                                 {card_id_jp && (
                                     <button
-                                        className="px-2 py-1 bg-gray-200 text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="px-2 py-1  text-sm rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         onClick={() => onFlagClick('card_id_jp')}
                                     >
                                         🇯🇵
@@ -88,9 +88,9 @@ const LongCard: React.FC<LongCardProps> = ({ labels, card_id, card_id_fr, card_i
                                 )}
                             </div>
                         </div>
-                        <div className="flex space-x-2 text-lg font-semibold text-gray-600">
-                            , you can click on the language dropdown menu at the top of the screen to select your native language.
-                        </div>
+                        {/* <div className="flex items-center text-lg font-semibold text-gray-600">
+                            <span>, you can click on the language dropdown menu at the top of the screen to select your native language.</span>
+                        </div> */}
                     </>
                 ) : (
                     <div className="text-lg font-semibold text-gray-600">
