@@ -4,7 +4,6 @@ import Hero from "@/components/home/Hero";
 
 import FAQ from "@/components/home/FAQ";
 import Features from "@/components/home/Features";
-import Pricing from "@/components/home/Pricing";
 import CTA from "@/components/home/CTA";
 import { defaultLocale, getDictionary } from "@/lib/i18n";
 
