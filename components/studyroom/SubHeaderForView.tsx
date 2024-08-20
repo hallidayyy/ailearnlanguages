@@ -94,7 +94,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavor
     <div className="flex items-start justify-between bg-white text-black py-4 w-full px-4">
       {episodeData && (
         <>
-          <div className="w-1/4 flex flex-col items-center justify-center">
+          <div className="w-1/6 flex flex-col items-center justify-center">
             <img
               src={episodeData.imageUrl}
               alt={episodeData.title}
@@ -124,7 +124,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ episodeData, isFavorited, onFavor
               </button>
             )} */}
           </div>
-          <div className="w-3/4 flex flex-col justify-between pl-4 h-48">
+          <div className="w-5/6 flex flex-col justify-between pl-4 h-48">
             <div className="flex-none">
               <h2 className="text-xl font-bold">{episodeData.title}</h2>
             </div>

@@ -436,7 +436,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     // 检查 run_ai_quota 是否大于等于1
     if (userQuota.run_ai_quota < 1) {
       console.error("Run AI quota is insufficient.");
-      toast.error("quota不够");
+      toast.error("run ai quota is insufficient");
       return;
     }
 
@@ -444,7 +444,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     const decrementResult = await decrementRunAIQuota(user.email);
     if (!decrementResult.success) {
       console.error(decrementResult.message);
-      toast.error("扣减quota失败");
+      toast.error("failed to deduct quota");
       return; // 如果扣减失败，直接返回，不插入任务
     }
 
@@ -484,6 +484,7 @@ const ViewCard: React.FC<ViewCardProps> = ({ episodeId }) => {
     } catch (error) {
       console.error("Error inserting task: ", error);
     }
+    toast.success("ai run on episode has been successfully submitted. please check the episodes - run section later.");
   };
 
   const { title, description, published_at, imageUrl, audioUrl } = episodeData;

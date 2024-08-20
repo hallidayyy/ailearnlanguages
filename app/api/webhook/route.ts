@@ -74,8 +74,8 @@ export async function POST(req: Request) {
         const productIdArray = Array.from(productIds);
 
         // 取得所有 order 所需信息，因为是续费客户，所以首充是存入了 stripe_customer_id,调用 getUserByCustomer，获取 user
-        //const user = await getUserByCustomerID(invoice.customer as string);
-        const user = await getUserByCustomerID("cus_QeYyRRLU9VpCZU");
+        const user = await getUserByCustomerID(invoice.customer as string);
+        // const user = await getUserByCustomerID("cus_QeYyRRLU9VpCZU");
         if (!user) {
           console.error('User not found for customer ID:', invoice.customer);
           return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
           plan: current_plan, // Determine the plan from invoice lines or other sources
           expired_at: expired_at, // Convert timestamp
           order_status: 2, // Assuming 2 means paid
-          paied_at: new Date().toISOString(),
+          paied_at: new Date(invoice.created * 1000).toISOString(),
           stripe_session_id: invoice.payment_intent, // Or another relevant ID
           currency: invoice.currency,
           customer_id: invoice.customer as string,
@@ -135,7 +135,7 @@ export async function POST(req: Request) {
         const quotaByPlan: { [key: string]: { access_content_quota: number, run_ai_quota: number } } = {
           'standard': { access_content_quota: -1, run_ai_quota: 20 },
           'pro': { access_content_quota: -1, run_ai_quota: 50 },
-          'unknown': { access_content_quota: 999, run_ai_quota: 999 } //仅用于测试
+          'unknown': { access_content_quota: 0, run_ai_quota: 0 } //仅用于测试
         };
 
         // 获取对应的 quota

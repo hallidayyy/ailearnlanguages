@@ -60,7 +60,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       onAfterOpen={() => confirmButtonRef.current?.focus()}
       shouldCloseOnOverlayClick={true}
       shouldCloseOnEsc={true}
-      onKeyDown={handleKeyDown}
+    //   onKeyDown={handleKeyDown}
     >
       <h2 className="text-lg font-semibold">{title}</h2>
       <p className="mt-2 text-gray-600">{message}</p>

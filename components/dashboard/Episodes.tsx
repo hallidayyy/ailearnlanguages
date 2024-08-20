@@ -19,8 +19,8 @@ interface Episode {
   card_id_fr: string;
   card_id_cn: string;
   card_id_jp: string;
-
 }
+
 interface Task {
   episode_id: number;
 }
@@ -31,8 +31,6 @@ const Episodes: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { lang, user } = useContext(AppContext);
-
-
 
   useEffect(() => {
     if (!user) {
@@ -53,23 +51,18 @@ const Episodes: React.FC = () => {
           case 'collected':
             toast.success("show collection");
             data = await fetchCollectedEpisodes(supabase, user.id);
-            // console.log("1")
             break;
           case 'access':
             toast.success("show accessible");
             data = await fetchAccessEpisodes(supabase, user.id);
-
-            // console.log("2")
             break;
           case 'run':
             data = await fetchRunEpisodes(supabase, user.id);
             toast.success("show episodes ran");
-            // console.log("3")
             break;
           default:
             console.error('Unknown option:', selectedOption);
             toast.success("unknown option");
-            // console.log("4")
             return;
         }
 
@@ -83,7 +76,7 @@ const Episodes: React.FC = () => {
     };
 
     fetchEpisodes();
-  }, [selectedOption, user?.user_id]);
+  }, [selectedOption, user?.id]);
 
   const fetchCollectedEpisodes = async (supabase: any, userId: number) => {
     const { data, error } = await supabase
@@ -140,16 +133,15 @@ const Episodes: React.FC = () => {
   }
 
   return (
-
     <div className="p-1 flex justify-center">
       <ToastContainer />
       <div className="w-full">
-        <EpisodeTypeChooser onOptionChange={setSelectedOption} />
+        <EpisodeTypeChooser
+          selectedOption={selectedOption}
+          onOptionChange={setSelectedOption}
+        />
         <EpisodeTable episodes={episodes} />
-
-
       </div>
-
     </div>
   );
 };

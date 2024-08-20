@@ -1,18 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react';
 
 const options = [
-
   { value: 'collected', label: 'collected' },
   { value: 'access', label: 'access' },
   { value: 'run', label: 'run' },
 ];
 
 interface EpisodeTypeChooserProps {
+  selectedOption: string;
   onOptionChange: (option: string) => void;
 }
 
-const EpisodeTypeChooser: React.FC<EpisodeTypeChooserProps> = ({ onOptionChange }) => {
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+const EpisodeTypeChooser: React.FC<EpisodeTypeChooserProps> = ({ selectedOption, onOptionChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -34,10 +33,11 @@ const EpisodeTypeChooser: React.FC<EpisodeTypeChooserProps> = ({ onOptionChange 
   };
 
   const handleOptionSelect = (option: typeof options[0]) => {
-    setSelectedOption(option);
     onOptionChange(option.value);
     setIsOpen(false);
   };
+
+  const selectedLabel = options.find(option => option.value === selectedOption)?.label || 'Select an option';
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -48,7 +48,7 @@ const EpisodeTypeChooser: React.FC<EpisodeTypeChooserProps> = ({ onOptionChange 
           id="options-menu"
           onClick={toggleDropdown}
         >
-          {selectedOption.label}
+          {selectedLabel}
           <svg
             width="20"
             height="20"
@@ -77,7 +77,7 @@ const EpisodeTypeChooser: React.FC<EpisodeTypeChooserProps> = ({ onOptionChange 
                   e.preventDefault();
                   handleOptionSelect(option);
                 }}
-                className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 ${selectedOption.value === option.value ? 'bg-gray-200 dark:bg-gray-700' : ''
+                className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 ${selectedOption === option.value ? 'bg-gray-200 dark:bg-gray-700' : ''
                   }`}
                 role="menuitem"
               >

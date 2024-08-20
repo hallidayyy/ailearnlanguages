@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AppContext } from '@/contexts/AppContext';
+import ConfirmDialog from './ConfirmDialog'; // 确保路径正确
 
 interface AccessBlockProps {
   onSubscribeClick: () => void;
@@ -16,9 +17,10 @@ interface AccessBlockProps {
   card_id_jp: string;
 }
 
-
 const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI, episodeId, card_id, card_id_fr, card_id_cn, card_id_jp }) => {
   const { lang, user } = useContext(AppContext);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+
   const isLanguageAvailable = (lang: string) => {
     return (
       (lang === 'en' && card_id) ||
@@ -27,11 +29,12 @@ const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI
       (lang === 'ja' && card_id_jp)
     );
   };
+
   const handleAccessAIContent = async () => {
     try {
       const userQuota = await getUserQuota(user.email);
-      console.log("user email: "+ user.email);
-      console.log("user id"+ user.id);
+      console.log("user email: " + user.email);
+      console.log("user id" + user.id);
 
       if (!userQuota || (userQuota.access_content_quota < 1 && userQuota.access_content_quota !== -1)) {
         console.error("User not found, quota information missing, or access content quota is insufficient.");
@@ -78,17 +81,32 @@ const AccessBlock: React.FC<AccessBlockProps> = ({ onSubscribeClick, handleRunAI
     }
   };
 
+  const handleConfirmAccessAIContent = () => {
+    setIsConfirmDialogOpen(false);
+    handleAccessAIContent();
+  };
+
   return (
     <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md">
       {(card_id || card_id_fr || card_id_cn || card_id_jp) && (
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-600 transition-colors"
-          onClick={handleAccessAIContent}
+          onClick={() => setIsConfirmDialogOpen(true)}
         >
-          ✨ Access AI Contents
+          ✨ access ai contents
         </button>
       )}
       <ToastContainer />
+
+      <ConfirmDialog
+        isOpen={isConfirmDialogOpen}
+        onClose={() => setIsConfirmDialogOpen(false)}
+        onConfirm={handleConfirmAccessAIContent}
+        title="Confirm Access AI Content"
+        message="Are you sure you want to access this AI content?"
+        confirmText="Yes, access"
+        cancelText="No, cancel"
+      />
     </div>
   );
 };
