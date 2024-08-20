@@ -32,6 +32,9 @@ const RewritedArticleParser: React.FC<RewritedArticleParserProps> = ({ rewrited_
 
       // 将 Markdown 转换为 HTML
       const html = marked(jsonContent);
+      if (typeof html !== 'string') {
+        throw new Error('Content is not a valid string');
+      }
       setContent(html);
     } catch (error) {
       console.error('Error processing the content:', error);

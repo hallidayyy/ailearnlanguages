@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { marked } from 'marked'; // Markdown 转换库
 import styled from 'styled-components';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 const StyledContent = styled.div`
     h1 {
@@ -19,27 +21,50 @@ const OriginalParser: React.FC<OriginalParserProps> = ({ original_text }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        setLoading(true);
-        try {
-            // 解析 JSON 字符串
-            const jsonObject = JSON.parse(original_text);
+        const processContent = async () => {
+            setLoading(true);
+            try {
+                // 解析 JSON 字符串
+                const jsonObject = JSON.parse(original_text);
 
-            // 提取 content 的值
-            const jsonContent = jsonObject['content'];
-            if (typeof jsonContent !== 'string') {
-                throw new Error('Content is not a valid string');
+                // 提取 content 的值
+                const jsonContent = jsonObject['content'];
+                if (typeof jsonContent !== 'string') {
+                    throw new Error('Content is not a valid string');
+                }
+
+                // 将 Markdown 转换为 HTML
+                const html = marked(jsonContent); // Assuming marked returns a string synchronously
+                if (typeof html !== 'string') {
+                    throw new Error('Content is not a valid string');
+                }
+
+                setContent(html);
+            } catch (error) {
+                console.error('Error processing the content:', error);
+                setError('Failed to parse and convert content');
+            } finally {
+                setLoading(false);
             }
+        };
 
-            // 将 Markdown 转换为 HTML
-            const html = marked(jsonContent);
-            setContent(html);
-        } catch (error) {
-            console.error('Error processing the content:', error);
-            setError('Failed to parse and convert content');
-        } finally {
-            setLoading(false);
-        }
+        processContent();
     }, [original_text]);
+
+    const exportAsPDF = () => {
+        const input = document.getElementById('content-to-export');
+        if (input) {
+            html2canvas(input).then((canvas) => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('content.pdf');
+            });
+        }
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -49,7 +74,12 @@ const OriginalParser: React.FC<OriginalParserProps> = ({ original_text }) => {
         return <div>{error}</div>;
     }
 
-    return <StyledContent dangerouslySetInnerHTML={{ __html: content }} />;
+    return (
+        <div>
+            <button onClick={exportAsPDF}>export as pdf</button>
+            <StyledContent id="content-to-export" dangerouslySetInnerHTML={{ __html: content }} />
+        </div>
+    );
 };
 
 export default OriginalParser;

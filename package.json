@@ -35,6 +35,8 @@
     "franc": "^6.2.0",
     "google-auth-library": "^9.13.0",
     "google-gax": "^4.3.9",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "lucide-react": "^0.316.0",
     "markdown-to-jsx": "^7.5.0",
     "marked": "^14.0.0",

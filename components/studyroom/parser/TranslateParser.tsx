@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { marked } from 'marked'; // Markdown 转换库
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 const StyledContent = styled.div`
     h1 {
@@ -32,6 +34,9 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
 
             // 将 Markdown 转换为 HTML
             const html = marked(jsonContent);
+            if (typeof html !== 'string') {
+                throw new Error('Content is not a valid string');
+            }
             setContent(html);
         } catch (error) {
             console.error('Error processing the content:', error);
@@ -41,6 +46,21 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
         }
     }, [translation]);
 
+    const exportAsPDF = () => {
+        const input = document.getElementById('content-to-export');
+        if (input) {
+            html2canvas(input).then((canvas) => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('translation.pdf');
+            });
+        }
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -49,8 +69,12 @@ const TranslateParser: React.FC<TranslateParserProps> = ({ translation }) => {
         return <div>{error}</div>;
     }
 
-    return <StyledContent dangerouslySetInnerHTML={{ __html: content }} />;
+    return (
+        <div>
+            <button onClick={exportAsPDF}>Export as PDF</button>
+            <StyledContent id="content-to-export" dangerouslySetInnerHTML={{ __html: content }} />
+        </div>
+    );
 };
-
 
 export default TranslateParser;
