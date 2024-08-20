@@ -4,6 +4,8 @@ import { Order } from "@/types/order";
 import Stripe from "stripe";
 import { currentUser } from "@clerk/nextjs";
 import { genOrderNo } from "@/lib/order";
+import { findCustomerIdByEmail } from "@/models/order";
+import { getDb } from "@/models/db";
 
 export const maxDuration = 60;
 
@@ -16,13 +18,52 @@ export async function POST(req: Request) {
   const user_email = user.emailAddresses[0].emailAddress;
   console.log("user email: ", user_email);
 
+  const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+    apiVersion: "2023-10-16",
+  });
+
+  let customerId: string | undefined = await findCustomerIdByEmail(user_email);
+
+  // 如果没有找到 customer_id，则创建新的 customer
+  if (!customerId) {
+    try {
+      const customer = await stripe.customers.create({
+        email: user_email,
+        description: 'Customer for ' + user_email,
+      });
+
+      customerId = customer.id;
+
+      // // 存储 customer_id
+      // const supabase = await getDb();
+      // if (!supabase || typeof supabase.from !== 'function') {
+      //   throw new Error("Supabase client is not properly initialized.");
+      // }
+      // const { error } = await supabase
+      //   .from("orders")
+      //   .update({ customer_id: customerId })
+      //   .eq("user_email", user_email);
+
+      // if (error) {
+      //   throw error;
+      // }
+
+      console.log("Created new customer:", customerId);
+    } catch (error) {
+      console.error("Failed to create Stripe customer:", error);
+      return respErr("Failed to create Stripe customer");
+    }
+  } else {
+    console.log("Existing customer ID:", customerId);
+  }
+
   try {
-    const { credits, currency, amount, plan } = await req.json();
-    if (!credits || !amount || !plan || !currency) {
+    const { currency, amount, plan } = await req.json();
+    if (!amount || !plan || !currency) {
       return respErr("invalid params");
     }
 
-    if (!["monthly"].includes(plan)) {
+    if (!["pro", "standard"].includes(plan)) {
       return respErr("invalid plan");
     }
 
@@ -38,22 +79,18 @@ export async function POST(req: Request) {
       amount: amount,
       plan: plan,
       expired_at: oneMonthLater.toISOString(),
-      order_status: 1,
-      credits: credits,
+      order_status: 1, // 尚未完成支付
+      credits: 0,
       currency: currency,
-      customer_id: "",
+      customer_id: customerId || "", // 确保 customer_id 被设置
       subscription_id: "",
     };
 
-    await insertOrder(order); // Ensure the order is inserted before proceeding
-    console.log("create new order: ", order);
-
-    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
-      apiVersion: "2023-10-16",
-    });
+    await insertOrder(order); // 确保订单被插入到数据库中
+    console.log("Created new order: ", order);
 
     let options: Stripe.Checkout.SessionCreateParams = {
-      customer_email: user_email,
+      customer: customerId, // 使用已有的 customer_id
       payment_method_types: ["card"],
       line_items: [
         {
@@ -63,7 +100,7 @@ export async function POST(req: Request) {
               name: "languepod subscription Plan",
             },
             unit_amount: amount,
-            recurring: plan === "monthly" ? { interval: "month" } : undefined,
+            recurring: ["pro", "standard"].includes(plan) ? { interval: "month" } : undefined,
           },
           quantity: 1,
         },
@@ -74,9 +111,8 @@ export async function POST(req: Request) {
         pay_scene: "subscription",
         order_no: order_no.toString(),
         user_email: user_email,
-        credits: credits,
       },
-      mode: plan === "monthly" ? "subscription" : "payment",
+      mode: ["pro", "standard"].includes(plan) ? "subscription" : "payment",
       success_url: `${process.env.WEB_BASE_URI}/pay-success/{CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.WEB_BASE_URI}/pricing`,
     };
@@ -93,8 +129,8 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create(options);
     const stripe_session_id = session.id;
 
-    await updateOrderSession(order_no, stripe_session_id); // Ensure the order session is updated
-    console.log("update order session: ", order_no, stripe_session_id);
+    await updateOrderSession(order_no, stripe_session_id); // 确保订单会话被更新
+    console.log("Updated order session: ", order_no, stripe_session_id);
 
     return respData({
       public_key: process.env.STRIPE_PUBLIC_KEY,
@@ -102,7 +138,7 @@ export async function POST(req: Request) {
       session_id: stripe_session_id,
     });
   } catch (e) {
-    console.error("checkout failed: ", e);
-    return respErr("checkout failed");
+    console.error("Checkout failed: ", e);
+    return respErr("Checkout failed");
   }
 }

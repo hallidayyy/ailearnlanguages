@@ -61,12 +61,12 @@ const PlanPage: React.FC = () => {
     plan: string,
     amount: number,
     currency: string,
-    credits: number
+
   ) => {
     try {
       const params = {
         plan: plan,
-        credits: credits,
+
         amount: amount,
         currency: currency,
       };
@@ -198,7 +198,7 @@ const PlanPage: React.FC = () => {
                           tier.plan,
                           tier.amount,
                           tier.currency,
-                          tier.credits
+   
                         );
                       }}
                     >

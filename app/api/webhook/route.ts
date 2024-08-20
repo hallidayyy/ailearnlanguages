@@ -92,19 +92,12 @@ export async function POST(req: Request) {
         const currentDate = new Date();
         const oneMonthLater = new Date(currentDate);
         oneMonthLater.setMonth(currentDate.getMonth() + 1);
-
-
         const expired_at = oneMonthLater.toISOString();
-
-
         const subscription_id = invoice.subscription;
-
-
 
         if (subscription_id === null || typeof subscription_id !== 'string') {
           throw new Error("Invalid subscription ID");
         }
-
 
         // Prepare order details
         const orderDetails = {

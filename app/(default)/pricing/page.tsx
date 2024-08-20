@@ -6,65 +6,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { tiers } from "@/config/tiers"
 
-const tiers = [
-  {
-    name: "Free",
-    id: "free",
-    priceMonthly: "$0",
-    unit: "Free Plan",
-    plan: "free",
-    amount: 0,
-    currency: "usd",
-    credits: 0,
-    description: "",
-    features: [
-      "Limited transcription features",
-      "Access to basic tools",
-      "Community support",
-    ],
-    featured: false,
-  },
-  {
-    name: "Standard",
-    id: "standard",
-    priceMonthly: "$5.9",
-    unit: "Per Month",
-    plan: "monthly",
-    amount: 590,
-    currency: "usd",
-    credits: 100,
-    description: "",
-    features: [
-      "100 minutes of transcription per month",
-      "High-speed transcription",
-      "High-quality transcription",
-      "AI-assisted learning",
-    ],
-    featured: true,
-    price_id: "prod_QeAHtLsVc15D6z", // Stripe 为 Standard 计划生成的 price_id
-  },
-  {
-    name: "Pro",
-    id: "pro",
-    priceMonthly: "$11.9",
-    unit: "Per Month",
-    plan: "monthly",
-    amount: 1190,
-    currency: "usd",
-    credits: 200,
-    description: "",
-    features: [
-      "200 minutes of transcription per month",
-      "Priority transcription",
-      "High-quality transcription",
-      "AI-assisted learning",
-      "Premium support",
-    ],
-    featured: false,
-    price_id: "prod_QeAIUDZnh17m6A", // Stripe 为 Standard 计划生成的 price_id
-  },
-];
+
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -78,12 +22,10 @@ export default function PricingPage() {
     plan: string,
     amount: number,
     currency: string,
-    credits: number
   ) => {
     try {
       const params = {
         plan: plan,
-        credits: credits,
         amount: amount,
         currency: currency,
       };
@@ -145,20 +87,13 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="relative isolate bg-white px-6 py-8 md:py-16 lg:px-8">
-      <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-6xl">
-          Pricing
-        </h1>
-      </div>
-      <h2 className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600">
-        Choose a payment plan, and after completing the payment, you will receive credits for learning
-      </h2>
-      <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-8 sm:mt-20 sm:gap-y-10 lg:max-w-4xl lg:grid-cols-3 lg:gap-x-8">
-        {tiers.map((tier) => (
+    <div className="relative isolate px-6 py-2 md:py-8 lg:px-8">
+
+      <div className="mx-auto mt-8 grid max-w-xl grid-cols-1 gap-y-8 sm:mt-12 sm:gap-y-10 lg:max-w-5xl lg:grid-cols-3 lg:gap-x-8">
+        {tiers.map((tier, index) => (
           <div
             key={tier.id}
-            className="relative bg-white shadow-2xl rounded-3xl p-8 ring-1 ring-gray-900/10 sm:p-10"
+            className="relative shadow-2xl rounded-3xl p-8 ring-1 ring-gray-900/10 sm:p-10"
           >
             <p
               id={tier.id}
@@ -170,7 +105,9 @@ export default function PricingPage() {
               <span className="text-5xl font-bold tracking-tight text-gray-900">
                 {tier.priceMonthly}
               </span>
-              <span className="text-base text-gray-500">{tier.unit}</span>
+              <span className="text-base text-gray-500">
+                {tier.unit}
+              </span>
             </p>
             <p className="mt-6 text-base leading-7 text-gray-600">
               {tier.description}
@@ -191,17 +128,17 @@ export default function PricingPage() {
             </ul>
             <Button
               className="mt-8 w-full"
-              disabled={loading}
+              disabled={loading || index === 0} // 如果是 tier[0]，则禁用按钮
               onClick={() => {
                 handleCheckout(
                   tier.plan,
                   tier.amount,
                   tier.currency,
-                  tier.credits
+
                 );
               }}
             >
-              {loading ? "Processing..." : "Purchase"}
+              {loading ? "processing..." : "purchase"}
             </Button>
           </div>
         ))}

@@ -35,7 +35,7 @@ const Report: React.FC = () => {
           <div className="py-8">
             <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
               <h2 className="text-2xl leading-tight">
-                your languepod report
+                report
               </h2>
             </div>
             <hr className="my-4 border-gray-300" /> {/* Horizontal line */}
