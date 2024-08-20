@@ -12,6 +12,7 @@ export async function POST(req: Request) {
   if (!user || !user.emailAddresses || user.emailAddresses.length === 0) {
     return respErr("not login");
   }
+
   const user_email = user.emailAddresses[0].emailAddress;
   console.log("user email: ", user_email);
 
@@ -26,28 +27,25 @@ export async function POST(req: Request) {
     }
 
     const order_no = genOrderNo();
-
     const currentDate = new Date();
     const oneMonthLater = new Date(currentDate);
     oneMonthLater.setMonth(currentDate.getMonth() + 1);
 
-    const created_at = currentDate.toISOString();
-    const expired_at = oneMonthLater.toISOString();
-
     const order: Order = {
       order_no: order_no,
-      created_at: created_at,
+      created_at: currentDate.toISOString(),
       user_email: user_email,
       amount: amount,
       plan: plan,
-      expired_at: expired_at,
+      expired_at: oneMonthLater.toISOString(),
       order_status: 1,
       credits: credits,
       currency: currency,
       customer_id: "",
       subscription_id: "",
     };
-    await insertOrder(order); // 使用 await 确保订单插入完成
+
+    await insertOrder(order); // Ensure the order is inserted before proceeding
     console.log("create new order: ", order);
 
     const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
@@ -62,15 +60,10 @@ export async function POST(req: Request) {
           price_data: {
             currency: currency,
             product_data: {
-              name: "languepod Credits Plan",
+              name: "languepod subscription Plan",
             },
             unit_amount: amount,
-            recurring:
-              plan === "monthly"
-                ? {
-                  interval: "month",
-                }
-                : undefined,
+            recurring: plan === "monthly" ? { interval: "month" } : undefined,
           },
           quantity: 1,
         },
@@ -98,9 +91,9 @@ export async function POST(req: Request) {
     }
 
     const session = await stripe.checkout.sessions.create(options);
-
     const stripe_session_id = session.id;
-    await updateOrderSession(order_no, stripe_session_id); // 使用 await 确保订单更新完成
+
+    await updateOrderSession(order_no, stripe_session_id); // Ensure the order session is updated
     console.log("update order session: ", order_no, stripe_session_id);
 
     return respData({
@@ -109,7 +102,7 @@ export async function POST(req: Request) {
       session_id: stripe_session_id,
     });
   } catch (e) {
-    console.log("checkout failed: ", e);
+    console.error("checkout failed: ", e);
     return respErr("checkout failed");
   }
 }

@@ -19,21 +19,25 @@ const UsageCard: React.FC<UsageCardProps> = ({ title, usage }) => {
         <p className="mb-4 text-2xl font-light text-gray-700 dark:text-white">
           {title}
         </p>
-        
+
         {usage.map((usage, index) => (
           <div key={index} className="mb-4">
             <div className="flex items-center justify-between text-sm text-gray-400">
               <p>{usage.name}</p>
               <p>{usage.used}/{usage.total}</p>
             </div>
-            <div className="w-full h-2 bg-gray-100 rounded-full">
+            <div className="w-full h-2 bg-gray-100 rounded-full mb-6">
               <div
                 className={`h-full text-xs text-center text-white rounded-full ${usage.colorClass}`}
                 style={{ width: `${(usage.used / usage.total) * 100}%` }}
               ></div>
             </div>
+
           </div>
         ))}
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          if it shows you have 9999 quotas, it means your quota is unlimited.
+        </div>
       </div>
     </div>
   );

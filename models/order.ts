@@ -271,6 +271,65 @@ export async function getUserCurrentPlanExpiredDate(user_email: string): Promise
   }
 }
 
+
+export async function getUserCurrentPlanExpiredDateFromStripe(user_email: string): Promise<string | null> {
+  const supabase = await getDb();
+  try {
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+      apiVersion: "2023-10-16",
+    });
+    const { data, error } = await supabase
+      .from('orders')
+      .select('subscription_id')
+      .eq('user_email', user_email)
+      .eq('order_status', 2)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.log("Error fetching user subscription ID: ", error);
+      throw error;
+    }
+
+    if (!data) {
+      console.log("No valid subscription found for user");
+      return null; // 如果没有找到有效的订阅 ID，则返回 null
+    }
+
+    const subscriptionId = data.subscription_id;
+
+    // 从 Stripe 获取订阅信息
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+    // 获取订阅的当前周期结束时间
+    const currentPeriodEnd = subscription.current_period_end;
+
+    // 检查是否有有效的过期时间
+    if (currentPeriodEnd) {
+      // 转换 Unix 时间戳为 ISO 字符串
+      // 将 Unix 时间戳（秒）转换为 `YYYY-MM-DD` 格式的日期字符串
+      const date = new Date(currentPeriodEnd * 1000); // 将秒转换为毫秒
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从 0 开始，所以要加 1
+      const day = String(date.getDate()).padStart(2, '0');
+      // 拼接成 `YYYY-MM-DD` 格式
+      const formattedDate = `${year}-${month}-${day}`;
+      return formattedDate;
+    } else {
+      // 如果没有有效的过期时间，返回 null
+      return null;
+    }
+  } catch (error) {
+    console.error("Error retrieving subscription: ", error);
+    return null;
+  }
+}
+
+export default getUserCurrentPlanExpiredDateFromStripe;
+
+
+
 export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string) {
   try {
     // 将订阅设置为在当前计费周期结束时取消
@@ -314,6 +373,96 @@ export async function getSubscriptionStatus(subscriptionId: string) {
     throw new Error(errorMessage);
   }
 }
+
+
+export async function getSubscriptionStatusWithPeriodEnd(subscriptionId: string): Promise<string> {
+  try {
+    // 初始化 Stripe 客户端
+    const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+      apiVersion: '2023-10-16',
+    });
+
+    // 获取订阅详情
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+    // 获取当前状态和取消标志
+    const { status, cancel_at_period_end } = subscription;
+
+    // 根据取消标志构建状态字符串
+    let statusMessage = `Subscription status: ${status}`;
+    if (cancel_at_period_end) {
+      statusMessage += " (This subscription will be canceled at the end of the current billing period.)";
+    }
+
+    // 打印和返回状态信息
+    console.log(statusMessage);
+    return statusMessage;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    console.error(`Error retrieving subscription ${subscriptionId} status:`, errorMessage);
+    throw new Error(errorMessage);
+  }
+}
+
+export async function getSubscriptionStatusWithPeriodEndByEmail(email: string): Promise<string> {
+  const supabase = await getDb();
+  const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY || "", {
+    apiVersion: "2023-10-16",
+  });
+
+  try {
+    // 查询 database 中与 email 相关的订阅记录
+    const { data, error } = await supabase
+      .from('orders')
+      .select('subscription_id')
+      .eq('user_email', email) // 修正为 email
+      .eq('order_status', 2)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.log("Error fetching user subscription ID: ", error);
+      throw error;
+    }
+
+    if (!data) {
+      console.log("No valid subscription found for user");
+      return "No valid subscription found for user"; // 确保返回字符串
+    }
+
+    const subscriptionId = data.subscription_id;
+
+    try {
+      // 获取订阅详情
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+      // 获取当前状态和取消标志
+      const { status, cancel_at_period_end } = subscription;
+
+      // 根据取消标志构建状态字符串
+      let statusMessage = `${status}`;
+      if (cancel_at_period_end) {
+        statusMessage += " (subscription will be canceled at the end of the current billing period)";
+      }
+
+      // 打印和返回状态信息
+      console.log(statusMessage);
+      return statusMessage;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      console.error(`Error retrieving subscription ${subscriptionId} status:`, errorMessage);
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';
+    console.error(`Error processing subscription for email ${email}:`, errorMessage);
+    return `Error processing subscription: ${errorMessage}`; // 确保返回字符串
+  }
+}
+
+
+
 
 
 export async function getSubscriptionStatusByEmail(email: string) {

@@ -9,67 +9,9 @@ import UsageCard from "./UsageCard";
 import { getUserQuota, getUserPlan } from "@/models/quota";
 import PlanStatusCard from "./PlanStatusCard";
 import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
-import { getUserCurrentPlanExpiredDate, cancelSubscriptionAtPeriodEnd, getSubscriptionIdByEmail, getSubscriptionStatusByEmail } from '@/models/order'
-import { subscribe } from "diagnostics_channel";
-
-const tiers = [
-  {
-    name: "free",
-    id: "free",
-    priceMonthly: "$0",
-    unit: "Free Plan",
-    plan: "free",
-    amount: 0,
-    currency: "usd",
-    credits: 0,
-    description: "",
-    features: [
-      "enjoy 4 AI-enhanced episodes",
-      "no credit card required",
-    ],
-    featured: false,
-  },
-  {
-    name: "standard",
-    id: "standard",
-    priceMonthly: "$5.9",
-    unit: "Per Month",
-    plan: "monthly",
-    amount: 590,
-    currency: "usd",
-    credits: 100,
-    description: "",
-    features: [
-      "Unlimited access to AI-enhanced episodes",
-      "Run AI on 20 episodes each month",
-      "High-speed transcription",
-      "High-quality transcription",
-      "AI-assisted learning",
-    ],
-    featured: true,
-    price_id: "prod_QeAHtLsVc15D6z", // Stripe 为 Standard 计划生成的 price_id
-  },
-  {
-    name: "pro",
-    id: "pro",
-    priceMonthly: "$11.9",
-    unit: "Per Month",
-    plan: "monthly",
-    amount: 1190,
-    currency: "usd",
-    credits: 200,
-    description: "",
-    features: [
-      "Everything in Standard",
-      "Run AI on 50 episodes each month",
-      "Priority transcription",
-      "High-quality transcription",
-      "AI-assisted learning",
-    ],
-    featured: false,
-    price_id: "prod_QeAIUDZnh17m6A", // Stripe 为 Standard 计划生成的 price_id
-  },
-];
+import { getUserCurrentPlanExpiredDate, cancelSubscriptionAtPeriodEnd, getSubscriptionIdByEmail, getSubscriptionStatusByEmail, getUserCurrentPlanExpiredDateFromStripe, getSubscriptionStatusWithPeriodEndByEmail } from '@/models/order'
+import { tiers } from "@/config/tiers"
+import ConfirmDialog from './ConfirmDialog'; // 确保路径正确
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -83,6 +25,7 @@ const PlanPage: React.FC = () => {
   const [userQuota, setUserQuota] = useState<{ access_content_quota: number, run_ai_quota: number } | null>(null);
   const [userPlan, setUserPlan] = useState<string | null>(null);
   const [subStatus, setSubStatus] = useState<string | null>(null);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserQuotaAndPlan = async () => {
@@ -96,19 +39,18 @@ const PlanPage: React.FC = () => {
       const plan = await getUserPlan(user.email);
       setUserPlan(plan);
 
-
       // 获取用户订阅状态
       try {
-        const subscriptionStatus = await getSubscriptionStatusByEmail(user.email);
+        const subscriptionStatus = await getSubscriptionStatusWithPeriodEndByEmail(user.email);
         setSubStatus(subscriptionStatus);
       } catch (error) {
         console.error('Error fetching subscription status:', error);
       }
 
-
-      const expiryDate = await getUserCurrentPlanExpiredDate(user.email);
+      // 获取用户过期时间
+      const expiryDate = await getUserCurrentPlanExpiredDateFromStripe(user.email);
       if (expiryDate) {
-        setPlanExpiryDate(expiryDate.toLocaleDateString());
+        setPlanExpiryDate(expiryDate);
       }
     };
 
@@ -282,7 +224,7 @@ const PlanPage: React.FC = () => {
               value={userPlan ?? ''} // 提供默认值
               footerText={planExpiryDate ?? ''} // 提供默认值
               buttonText="cancel"
-              onCancelClick={onCancelClick}
+              onCancelClick={() => setIsConfirmDialogOpen(true)}
               status={subStatus ?? 'unknown'} // 提供默认值
             />
             <UsageCard
@@ -307,6 +249,19 @@ const PlanPage: React.FC = () => {
 
         <ToastContainer />
       </div>
+
+      <ConfirmDialog
+        isOpen={isConfirmDialogOpen}
+        onClose={() => setIsConfirmDialogOpen(false)}
+        onConfirm={() => {
+          setIsConfirmDialogOpen(false);
+          onCancelClick();
+        }}
+        title="confirm cancellation"
+        message="are you sure you want to cancel your subscription?"
+        confirmText="yes, cancel"
+        cancelText="no, keep it"
+      />
     </div>
   );
 };

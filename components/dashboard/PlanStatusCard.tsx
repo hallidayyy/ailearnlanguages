@@ -6,7 +6,7 @@ interface PlanStatusCardProps {
     buttonText: string;
     onCancelClick: () => void;
     footerText: string;
-    status:string;
+    status: string;
 }
 
 const PlanStatusCard: React.FC<PlanStatusCardProps> = ({
@@ -36,10 +36,13 @@ const PlanStatusCard: React.FC<PlanStatusCardProps> = ({
             </div>
             <div className="flex flex-col justify-start">
                 <p className="my-4 text-2xl font-bold text-left text-gray-700 dark:text-gray-100">
-                    {value} : {status}
+                    {value}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    {status}
                 </p>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{footerText}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Expired at: {footerText}</p>
             <button
                 onClick={onCancelClick}
                 className="mt-4 px-4 py-2 text-sm font-semibold text-white bg-purple-500 rounded-lg hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700"
