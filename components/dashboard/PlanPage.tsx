@@ -148,16 +148,12 @@ const PlanPage: React.FC = () => {
           <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
             <h2 className="text-2xl leading-tight">plan</h2>
           </div>
-          <hr className="my-4 border-gray-300" /> {/* Horizontal line */}
-          <div className="space-y-2">
+          <hr className="border-gray-300" /> {/* Horizontal line */}
+          <div>
             {/* Pricing Section */}
             <div className="relative isolate px-6 py-2 md:py-8 lg:px-8">
-              <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
-                {/* <h1 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-6xl">
-                  subscribe
-                </h1> */}
-              </div>
-              <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-8 sm:mt-12 sm:gap-y-10 lg:max-w-4xl lg:grid-cols-3 lg:gap-x-8">
+
+              <div className="mx-auto mt-8 grid max-w-xl grid-cols-1 gap-y-8 sm:mt-12 sm:gap-y-10 lg:max-w-5xl lg:grid-cols-3 lg:gap-x-8">
                 {tiers.map((tier, index) => (
                   <div
                     key={tier.id}
@@ -206,7 +202,7 @@ const PlanPage: React.FC = () => {
                         );
                       }}
                     >
-                      {loading ? "Processing..." : "Purchase"}
+                      {loading ? "processing..." : "purchase"}
                     </Button>
                   </div>
                 ))}

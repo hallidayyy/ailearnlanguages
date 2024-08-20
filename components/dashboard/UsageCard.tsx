@@ -1,3 +1,5 @@
+import { faPercentage } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 interface Usage {
@@ -14,11 +16,17 @@ interface UsageCardProps {
 
 const UsageCard: React.FC<UsageCardProps> = ({ title, usage }) => {
   return (
-    <div className="relative p-4 overflow-hidden text-gray-700 bg-white shadow-lg rounded-xl w-60 md:w-72 dark:bg-gray-800 dark:text-gray-100">
+    <div className="relative p-4 overflow-hidden text-gray-700 bg-white shadow-2xl rounded-xl w-60 md:w-72 dark:bg-gray-800 dark:text-gray-100">
       <div className="w-full">
-        <p className="mb-4 text-2xl font-light text-gray-700 dark:text-white">
-          {title}
-        </p>
+        {/* Flexbox container for icon and title */}
+        <div className="flex items-center mb-6">
+          <span className="p-2 text-2xl text-purple-500">
+            <FontAwesomeIcon icon={faPercentage} />
+          </span>
+          <p className="ml-2 text-black text-md dark:text-white">
+            {title}
+          </p>
+        </div>
 
         {usage.map((usage, index) => (
           <div key={index} className="mb-4">
@@ -32,7 +40,6 @@ const UsageCard: React.FC<UsageCardProps> = ({ title, usage }) => {
                 style={{ width: `${(usage.used / usage.total) * 100}%` }}
               ></div>
             </div>
-
           </div>
         ))}
         <div className="text-sm text-gray-500 dark:text-gray-400">
