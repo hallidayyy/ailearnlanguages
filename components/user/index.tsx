@@ -1,3 +1,4 @@
+"use client";
 
 
 
@@ -14,7 +15,8 @@ import {
 import { SignOutButton } from "@clerk/nextjs";
 import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
+
+
 import React, { useState, useEffect, useContext } from 'react';
 
 interface Props {
@@ -48,8 +50,6 @@ export default function ({ currentUser }: Props) {
 
         <DropdownMenuCheckboxItem>
           <SignOutButton signOutCallback={() => {
-            // setUser(null);
-            // setLang(null);
             location.reload()
           }}>
             log out
