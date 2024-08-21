@@ -24,6 +24,7 @@ export async function POST(req: Request) {
 
   let customerId: string | undefined = await findCustomerIdByEmail(user_email);
 
+  console.log(customerId);
   // 如果没有找到 customer_id，则创建新的 customer
   if (!customerId) {
     try {

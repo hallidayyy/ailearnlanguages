@@ -8,7 +8,7 @@ import { MdCloudUpload } from "react-icons/md";
 export const FEATURES_EN = [
   {
     title: "Podcast Transcription",
-    content: "Transcribe podcasts into text in over 125 languages.",
+    content: "Support transcribing podcasts in English, French, German, Italian, and Spanish into text.",
     icon: BsGithub,
   },
   {
@@ -24,9 +24,9 @@ export const FEATURES_EN = [
     icon: FaToolbox,
   },
   {
-    title: "Supports Learning 9 Languages",
+    title: "AI-assisted dictation practice",
     content:
-      "Currently supports learning 9 languages, including English, French, Spanish, German, Russian, and Japanese, with plans to support 125 languages in the future.",
+      "With the assistance of AI, check your dictation results, receive an evaluation of your listening level along with constructive suggestions for improving your listening skills.",
     icon: MagnetIcon,
   },
   {
@@ -36,9 +36,9 @@ export const FEATURES_EN = [
     icon: MdCloudUpload,
   },
   {
-    title: "AI assistance",
+    title: "Treat each podcast as a reading comprehension exercise",
     content:
-      "Use the latest AI to help you learn a new language.",
+      "Use AI assistance to organize each article into a reading comprehension test, helping you better understand the words and grammar that appear in the podcast.",
     icon: FaEarthAsia,
   },
 ];

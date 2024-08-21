@@ -16,7 +16,7 @@ export default function () {
       url: "https://blog.languepod.fun/",
       target: "_blank",
     },
-    { name: "demo", title: "try for free", url: "/demo", target: "_self" },
+    // { name: "demo", title: "try for free", url: "/demo", target: "_self" },
   ];
 
   return (

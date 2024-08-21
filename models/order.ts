@@ -534,30 +534,35 @@ export async function getSubscriptionIdByEmail(email: string): Promise<string | 
 
 
 export async function findCustomerIdByEmail(user_email: string): Promise<string | undefined> {
-  const supabase = await getDb();
+  try {
+    const supabase = await getDb();
 
-  // 验证supabase对象
-  if (!supabase || typeof supabase.from !== 'function') {
-    throw new Error("Supabase client is not properly initialized.");
-  }
+    // 验证supabase对象
+    if (!supabase || typeof supabase.from !== 'function') {
+      throw new Error("Supabase client is not properly initialized.");
+    }
 
-  // 查询 customer_id
-  const { data, error } = await supabase
-    .from("orders")
-    .select("customer_id")
-    .eq("user_email", user_email)
-    .eq("order_status", 2) // 添加 order_status=2 的条件
-    .order("created_at", { ascending: false }) // 按时间降序排序
-    .limit(1) // 只取最新的一条记录
-    .single(); // 确保只返回一条记录
+    // 查询 customer_id
+    const { data, error } = await supabase
+      .from("orders")
+      .select("customer_id")
+      .eq("user_email", user_email)
+      .eq("order_status", 2) // 添加 order_status=2 的条件
+      .order("created_at", { ascending: false }) // 按时间降序排序
+      .limit(1) // 只取最新的一条记录
+      .single(); // 确保只返回一条记录
 
-  if (error) {
-    throw error;
-  }
+    if (error) {
+      throw error;
+    }
 
-  if (!data) {
+    if (!data) {
+      return undefined;
+    }
+
+    return data.customer_id;
+  } catch (error) {
+    console.error("Error finding customer ID by email:", error);
     return undefined;
   }
-
-  return data.customer_id;
 }

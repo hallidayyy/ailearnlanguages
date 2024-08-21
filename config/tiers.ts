@@ -33,7 +33,7 @@ export const tiers = [
       "AI-assisted learning",
     ],
     featured: true,
-    price_id: "prod_QeAHtLsVc15D6z", // Stripe 为 Standard 计划生成的 price_id
+    price_id: "prod_QeAF66o9ZPOXdg", // Stripe 为 Standard 计划生成的 price_id
   },
   {
     name: "pro",
@@ -53,6 +53,6 @@ export const tiers = [
       "AI-assisted learning",
     ],
     featured: false,
-    price_id: "prod_QeAIUDZnh17m6A", // Stripe 为 Pro 计划生成的 price_id
+    price_id: "prod_QeAFJJU5zI7I5Y", // Stripe 为 Pro 计划生成的 price_id
   },
 ];
