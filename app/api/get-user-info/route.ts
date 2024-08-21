@@ -7,7 +7,8 @@ import { currentUser } from "@clerk/nextjs";
 
 export async function POST(req: Request) {
   const user = await currentUser();
-  if (!user || !user.emailAddresses || user.emailAddresses.length === 0) {
+  console.log("get-user-info:" + user?.emailAddresses[0].emailAddress)
+  if (!user || !user.emailAddresses[0].emailAddress || user.emailAddresses.length === 0) {
     return respErr("not login");
   }
 
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
       nickname: nickname || "",
       avatar_url: avatarUrl,
     };
+    console.log("existUser:" + existUser?.email)
 
     if (existUser) {
       userInfo.id = existUser.id;

@@ -37,48 +37,20 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
 
       if (resp.ok) {
         const res = await resp.json();
+        console.log("fetch res: " + res.data.email)
         if (res.data) {
           setUser(res.data);
-          if (res.data.email) {
-            // 获取用户配额信息
-            fetchUserQuota(res.data.email);
-          }
           return;
         }
       }
-
       setUser(null);
     } catch (e) {
       setUser(null);
-      toast.error("get user info failed");
+      // toast.error("get user info failed");
     }
   };
 
   // 获取用户配额
-  const fetchUserQuota = async (userEmail: string) => {
-    try {
-      const uri = "/api/get-uesr-quota";
-      const params = new URLSearchParams({ user_email: userEmail }).toString();
-
-      const resp = await fetch(`${uri}?${params}`, {
-        method: "GET",
-      });
-
-      if (resp.ok) {
-        const res = await resp.json();
-        if (res.data) {
-          setUserQuota(res.data);
-          return;
-        }
-      }
-
-      setUserQuota(null);
-    } catch (e) {
-      setUserQuota(null);
-      toast.error("get user quota failed");
-    }
-  };
-
   useEffect(() => {
     fetchUserInfo();
   }, []);
@@ -91,7 +63,7 @@ export const AppContextProvider = ({ children }: ContextProviderProps) => {
   }, [lang]);
 
   return (
-    <AppContext.Provider value={{ user, userQuota, fetchUserInfo, lang, setLang }}>
+    <AppContext.Provider value={{ user, fetchUserInfo, lang, setLang }}>
       {children}
     </AppContext.Provider>
   );

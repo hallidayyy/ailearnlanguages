@@ -1,6 +1,5 @@
-"use client";
 
-import * as React from "react";
+
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -15,25 +14,28 @@ import {
 import { SignOutButton } from "@clerk/nextjs";
 import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
+import { AppContext } from '@/contexts/AppContext'; // 确保路径正确
+import React, { useState, useEffect, useContext } from 'react';
 
 interface Props {
-  user: User;
+  currentUser: User;
 }
 
-export default function ({ user }: Props) {
+export default function ({ currentUser }: Props) {
   const router = useRouter();
+
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
-          <AvatarImage src={user.avatar_url} alt={user.nickname} />
-          <AvatarFallback>{user.nickname}</AvatarFallback>
+          <AvatarImage src={currentUser.avatar_url} alt={currentUser.nickname} />
+          <AvatarFallback>{currentUser.nickname}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mx-4">
         <DropdownMenuLabel className="text-center truncate">
-          {user.nickname ? user.nickname : user.email}
+          {currentUser.nickname ? currentUser.nickname : currentUser.email}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
@@ -45,7 +47,11 @@ export default function ({ user }: Props) {
         <DropdownMenuSeparator className="md:hidden" />
 
         <DropdownMenuCheckboxItem>
-          <SignOutButton signOutCallback={() => location.reload()}>
+          <SignOutButton signOutCallback={() => {
+            // setUser(null);
+            // setLang(null);
+            location.reload()
+          }}>
             log out
           </SignOutButton>
         </DropdownMenuCheckboxItem>

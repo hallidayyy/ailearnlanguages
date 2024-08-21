@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { LangSwitcher } from "@/components/header/LangSwitcher";
 
 export default function () {
-  const { user, userQuota } = useContext(AppContext);
+  const { user } = useContext(AppContext);
 
   const navigations: Nav[] = [
     { name: "pricing", title: "pricing", url: "/pricing", target: "_self" },
@@ -51,7 +51,7 @@ export default function () {
             <div className="flex-1"></div>
 
             <div className="flex flex-row items-center lg:flex lg:flex-row lg:space-x-3 lg:space-y-0">
-          
+
 
               {user === undefined ? (
                 <>loading...</>
@@ -59,29 +59,11 @@ export default function () {
                 <>
                   {user ? (
                     <>
-                      {/* 显示 userQuota 的两个值 */}
-                      {userQuota && (
-                        <div className="hidden md:flex items-center mr-8">
-                          <span className="text-gray-800 mr-4">
-                            Access Content Quota: &nbsp;
-                            <span className="text-primary">
-                              {userQuota.access_content_quota}
-                            </span>
-                          </span>
-                          <span className="text-gray-800">
-                            Run AI Quota: &nbsp;
-                            <span className="text-primary">
-                              {userQuota.run_ai_quota}
-                            </span>
-                          </span>
-                        </div>
-                      )}
-
-                      <User user={user} />
+                      <User currentUser={user} />
                     </>
                   ) : (
                     <a className="cursor-pointer" href="/sign-in">
-                      <Button>Login</Button>
+                      <Button>login</Button>
                     </a>
                   )}
                 </>

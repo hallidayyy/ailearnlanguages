@@ -1,6 +1,7 @@
 import { getDb } from "@/models/db"; // 确保 getDb 返回的是 Supabase 客户端实例
 import { User } from "@/types/user"; // 确保 User 类型定义正确
 import { genOrderNo } from "@/lib/order";
+import { v4 as uuidv4 } from 'uuid';
 
 export async function insertUser(user: User): Promise<User> {
   const createdAt: string = new Date().toISOString();
@@ -10,7 +11,7 @@ export async function insertUser(user: User): Promise<User> {
   if (!supabase || typeof supabase.from !== 'function') {
     throw new Error("Supabase client is not properly initialized.");
   }
-
+  const newUuid = uuidv4();
   // 插入用户
   const { data: userData, error: userError } = await supabase
     .from("users")
@@ -20,6 +21,7 @@ export async function insertUser(user: User): Promise<User> {
         nickname: user.nickname,
         avatar_url: user.avatar_url,
         created_at: createdAt,
+        uuid: newUuid
       },
     ])
     .select()
@@ -65,30 +67,35 @@ export async function insertUser(user: User): Promise<User> {
 }
 
 export async function findUserByEmail(email: string): Promise<User | undefined> {
-  const supabase = await getDb();
+  try {
+    const supabase = await getDb();
 
-  if (!supabase || typeof supabase.from !== 'function') {
-    throw new Error("Supabase client is not properly initialized.");
-  }
+    if (!supabase || typeof supabase.from !== 'function') {
+      throw new Error("Supabase client is not properly initialized.");
+    }
 
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("email", email)
-    .single();
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
 
-  if (error) {
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      console.log("No user found with email:", email);
+      return undefined;
+    }
+
+    return data as User;
+  } catch (error) {
     console.error("Error querying user:", error);
-    throw error;
-  }
-
-  if (!data) {
-    console.log("No user found with email:", email);
     return undefined;
   }
-
-  return data as User;
 }
+
 
 export async function findUserByID(user_id: number): Promise<User | undefined> {
   const supabase = await getDb();
