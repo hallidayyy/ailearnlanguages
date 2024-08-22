@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.languepod.fun
+
+# Sitemaps
+Sitemap: https://www.languepod.fun/sitemap.xml

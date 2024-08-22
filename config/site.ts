@@ -15,11 +15,11 @@ const OPEN_SOURCE_URL = ''
 const baseSiteConfig = {
   name: "languepod",
   description:
-    "flexible, immersive audio lessons for language skills and cultural insights on-the-go.",
+    "With AI assistance, help users learn languages through podcasts, including podcast audio transcription, translation, key vocabulary and grammar explanations, dictation, and other features.",
   url: "https://languepod.fun",
   ogImage: "https://languepod.fun/og.jpg",
   metadataBase: '/',
-  keywords: ["anguage learning podcasts", "podcast for language learners", "learn languages online", "podcast language practice"],
+  keywords: ["language learning podcasts", "podcast for language learners", "learn languages online", "podcast language practice"],
   authors: [
     {
       name: "halliday",
