@@ -80,6 +80,9 @@ importers:
       franc:
         specifier: ^6.2.0
         version: 6.2.0
+      globby:
+        specifier: ^14.0.2
+        version: 14.0.2
       google-auth-library:
         specifier: ^9.13.0
         version: 9.14.0
@@ -110,6 +113,9 @@ importers:
       next:
         specifier: ^14.1.0
         version: 14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next-sitemap:
+        specifier: ^4.2.3
+        version: 4.2.3(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       openai:
         specifier: ^4.55.0
         version: 4.56.0
@@ -252,6 +258,9 @@ packages:
     resolution: {integrity: sha512-q2BvCBK3H9SxLyoSsybAFTcbW6s50JPY8JACFqzenBbByOyolgIXPJNE0MStUUnNc7lRrPDkoLuZZf71X7JqIw==}
     engines: {node: '>=14'}
 
+  '@corex/deepmerge@4.0.43':
+    resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
+
   '@emotion/is-prop-valid@1.2.2':
     resolution: {integrity: sha512-uNsoYd37AFmaCdXlg6EYD1KaPOaRWRByMCYzbKUX4+hhMfrxdVSelShywL4JVaAeM/eHUOSprYBQls+/neX3pw==}
 
@@ -383,6 +392,9 @@ packages:
 
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
+
+  '@next/env@13.5.6':
+    resolution: {integrity: sha512-Yac/bV5sBGkkEXmAX5FWPS9Mmo2rthrOPRQQNfycJPkjUAUclomCPH7QFVCDQ4Mp2k2K1SSM6m0zrxYrOwtFQw==}
 
   '@next/env@14.2.5':
     resolution: {integrity: sha512-/zZGkrTOsraVfYjGP8uM0p6r0BDT6xWpkjdVbcz66PJVSpwXX3yNiRycxAuDfBKGWBrZBXRuK/YVlkNgxHGwmA==}
@@ -1855,6 +1867,10 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
 
+  '@sindresorhus/merge-streams@2.3.0':
+    resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
+    engines: {node: '>=18'}
+
   '@stripe/stripe-js@2.4.0':
     resolution: {integrity: sha512-WFkQx1mbs2b5+7looI9IV1BLa3bIApuN3ehp9FP58xGg7KL9hCHDECgW3BwO9l9L+xBPVAD7Yjn1EhGe6EDTeA==}
 
@@ -2496,6 +2512,10 @@ packages:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
     hasBin: true
 
+  globby@14.0.2:
+    resolution: {integrity: sha512-s3Fq41ZVh7vbbe2PN3nrW7yC7U7MFVc5c98/iTl9c2GawNMKx/J648KQRW6WKkuU8GIbbh2IXfIRQjOZnXcTnw==}
+    engines: {node: '>=18'}
+
   google-auth-library@9.14.0:
     resolution: {integrity: sha512-Y/eq+RWVs55Io/anIsm24sDS8X79Tq948zVLGaa7+KlJYYqaGwp1YI37w48nzrNi12RgnzMrQD4NzdmCowT90g==}
     engines: {node: '>=14'}
@@ -2566,6 +2586,10 @@ packages:
 
   ieee754@1.1.13:
     resolution: {integrity: sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==}
+
+  ignore@5.3.2:
+    resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
+    engines: {node: '>= 4'}
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -2755,6 +2779,9 @@ packages:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
 
+  minimist@1.2.8:
+    resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -2782,6 +2809,13 @@ packages:
   negotiator@0.6.3:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
+
+  next-sitemap@4.2.3:
+    resolution: {integrity: sha512-vjdCxeDuWDzldhCnyFCQipw5bfpl4HmZA7uoo3GAaYGjGgfL4Cxb1CiztPuWGmS+auYs7/8OekRS8C2cjdAsjQ==}
+    engines: {node: '>=14.18'}
+    hasBin: true
+    peerDependencies:
+      next: '*'
 
   next@14.2.5:
     resolution: {integrity: sha512-0f8aRfBVL+mpzfBjYfQuLWh2WyAwtJXCRfkPF4UJ5qd2YwrHczsrSzXU4tRMV0OAxR8ZJZWPFn6uhSC56UTsLA==}
@@ -2884,6 +2918,10 @@ packages:
 
   path-to-regexp@6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
+
+  path-type@5.0.0:
+    resolution: {integrity: sha512-5HviZNaZcfqP95rwpv+1HDgUamezbqdSYTyzjTvwtJSnIH+3vnbmWsItli8OFEndS984VT55M3jduxZbX351gg==}
+    engines: {node: '>=12'}
 
   pdf-lib@1.17.1:
     resolution: {integrity: sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw==}
@@ -3271,6 +3309,10 @@ packages:
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
 
+  slash@5.1.0:
+    resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
+    engines: {node: '>=14.16'}
+
   snake-case@3.0.4:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
 
@@ -3476,6 +3518,10 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  unicorn-magic@0.1.0:
+    resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
+    engines: {node: '>=18'}
 
   update-browserslist-db@1.1.0:
     resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==}
@@ -3704,6 +3750,8 @@ snapshots:
     dependencies:
       csstype: 3.1.1
 
+  '@corex/deepmerge@4.0.43': {}
+
   '@emotion/is-prop-valid@1.2.2':
     dependencies:
       '@emotion/memoize': 0.8.1
@@ -3886,6 +3934,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   '@js-sdsl/ordered-map@4.4.2': {}
+
+  '@next/env@13.5.6': {}
 
   '@next/env@14.2.5': {}
 
@@ -6184,6 +6234,8 @@ snapshots:
       '@react-types/shared': 3.24.1(react@18.3.1)
       react: 18.3.1
 
+  '@sindresorhus/merge-streams@2.3.0': {}
+
   '@stripe/stripe-js@2.4.0': {}
 
   '@supabase/auth-js@2.64.4':
@@ -6873,6 +6925,15 @@ snapshots:
       package-json-from-dist: 1.0.0
       path-scurry: 1.11.1
 
+  globby@14.0.2:
+    dependencies:
+      '@sindresorhus/merge-streams': 2.3.0
+      fast-glob: 3.3.2
+      ignore: 5.3.2
+      path-type: 5.0.0
+      slash: 5.1.0
+      unicorn-magic: 0.1.0
+
   google-auth-library@9.14.0:
     dependencies:
       base64-js: 1.5.1
@@ -6979,6 +7040,8 @@ snapshots:
       ms: 2.1.3
 
   ieee754@1.1.13: {}
+
+  ignore@5.3.2: {}
 
   inherits@2.0.4: {}
 
@@ -7142,6 +7205,8 @@ snapshots:
     dependencies:
       brace-expansion: 2.0.1
 
+  minimist@1.2.8: {}
+
   minipass@7.1.2: {}
 
   modularscale@1.0.2:
@@ -7163,6 +7228,14 @@ snapshots:
   nanoid@3.3.7: {}
 
   negotiator@0.6.3: {}
+
+  next-sitemap@4.2.3(next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+    dependencies:
+      '@corex/deepmerge': 4.0.43
+      '@next/env': 13.5.6
+      fast-glob: 3.3.2
+      minimist: 1.2.8
+      next: 14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   next@14.2.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -7252,6 +7325,8 @@ snapshots:
       minipass: 7.1.2
 
   path-to-regexp@6.2.1: {}
+
+  path-type@5.0.0: {}
 
   pdf-lib@1.17.1:
     dependencies:
@@ -7643,6 +7718,8 @@ snapshots:
     dependencies:
       is-arrayish: 0.3.2
 
+  slash@5.1.0: {}
+
   snake-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
@@ -7874,6 +7951,8 @@ snapshots:
   undici-types@5.26.5: {}
 
   undici-types@6.19.8: {}
+
+  unicorn-magic@0.1.0: {}
 
   update-browserslist-db@1.1.0(browserslist@4.23.3):
     dependencies:
