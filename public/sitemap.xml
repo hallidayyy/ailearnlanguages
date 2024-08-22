@@ -1,47 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.languepod.fun/layout.tsx</loc>
+    <loc>https://www.languepod.fun/</loc>
     <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.languepod.fun/(default)/layout.tsx</loc>
+    <loc>https://www.languepod.fun/pricing/</loc>
     <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.languepod.fun/(default)/</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.languepod.fun/(default)/pricing/</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.languepod.fun/studyroom/viewcard/[id]/</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.languepod.fun/dashboard/</loc>
     <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.languepod.fun/(auth)/sign-up/[[...sign-up]]/</loc>
+    <loc>https://www.languepod.fun/sign-up/</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.languepod.fun/(auth)/pay-success/[session_id]/</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.languepod.fun/(auth)/sign-in/[[...sign-in]]/</loc>
+    <loc>https://www.languepod.fun/sign-in/</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
