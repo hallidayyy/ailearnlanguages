@@ -11,14 +11,14 @@ import { Analytics } from "@vercel/analytics/react"
 
 export default function ({ children }: { children: ReactNode }) {
   return (
-    <LanguageProvider> {/* 包裹 LanguageProvider */}
-      <AppContextProvider>
+
+      // <AppContextProvider>
         <div className="w-screen h-screen">
           <Header />
           <main>{children}</main>
           <Footer />
         </div>
-      </AppContextProvider>
-    </LanguageProvider>
+      // </AppContextProvider>
+
   );
 }

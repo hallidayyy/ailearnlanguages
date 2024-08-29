@@ -1,63 +1,63 @@
-// @/path-to-your-context-file.tsx
+"use client"; 
+
 import { ContextProviderProps, ContextProviderValue } from "@/types/context";
 import { createContext, useEffect, useState } from "react";
 import { User } from "@/types/user";
-
-
-
 
 export const AppContext = createContext({} as ContextProviderValue);
 
 export const AppContextProvider = ({ children }: ContextProviderProps) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
-  const [lang, setLang] = useState<string>(() => {
-    // 从本地存储读取语言设置，默认为 "en"
+  const [lang, setLang] = useState<string>('en');
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("lang") || "en";
+      // 检查 localStorage 中的用户信息
+      const cachedUser = localStorage.getItem("user");
+      if (cachedUser) {
+        setUser(JSON.parse(cachedUser));
+      } else {
+        fetchUserInfo(); // 仅在没有缓存用户信息时调用
+      }
+
+      // 设置语言信息
+      const savedLang = localStorage.getItem("lang") || "en";
+      setLang(savedLang);
     }
-    return "en";
-  });
+  }, []); // 只在组件挂载时运行一次
 
-  // 获取用户信息
-  const fetchUserInfo = async function () {
+  const fetchUserInfo = async () => {
+    console.log("call fetchUserInfo");
     try {
-      const uri = "/api/get-user-info";
-      const params = {};
-
-      const resp = await fetch(uri, {
+      const resp = await fetch("/api/get-user-info", {
         method: "POST",
-        body: JSON.stringify(params),
+        body: JSON.stringify({}),
       });
 
       if (resp.ok) {
         const res = await resp.json();
-        console.log("fetch res: " + res.data.email)
         if (res.data) {
           setUser(res.data);
+          localStorage.setItem("user", JSON.stringify(res.data));
           return;
         }
       }
       setUser(null);
+      localStorage.removeItem("user");
     } catch (e) {
       setUser(null);
-
+      localStorage.removeItem("user");
     }
   };
 
-  // 获取用户配额
   useEffect(() => {
-    fetchUserInfo();
-  }, []);
-
-  useEffect(() => {
-    // 将语言设置保存到本地存储
     if (typeof window !== "undefined") {
       localStorage.setItem("lang", lang);
     }
   }, [lang]);
 
   return (
-    <AppContext.Provider value={{ user, fetchUserInfo, lang, setLang }}>
+    <AppContext.Provider value={{ user, setUser, lang, setLang }}>
       {children}
     </AppContext.Provider>
   );

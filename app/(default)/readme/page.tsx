@@ -12,22 +12,24 @@ const AboutPage = () => {
       .catch(error => console.error('Error fetching README:', error));
   }, []);
 
+  const styles = {
+    container: {
+      width: '100%',
+      maxWidth: '800px',
+      margin: '0 auto',
+      padding: '20px',
+      fontFamily: 'Arial, sans-serif',
+      lineHeight: '1.6',
+      textAlign: 'left' as const, // Ensure textAlign is of the correct type
+    },
+  };
+
   return (
     <div style={styles.container}>
       {/* Render the content of readme.html here */}
       <div dangerouslySetInnerHTML={{ __html: readmeContent }} />
     </div>
   );
-};
-
-const styles = {
-  container: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-    lineHeight: '1.6',
-  },
-};
+}
 
 export default AboutPage;

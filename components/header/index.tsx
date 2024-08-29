@@ -17,7 +17,6 @@ export default function () {
       url: "https://blog.languepod.fun/",
       target: "_blank",
     },
-    // { name: "demo", title: "try for free", url: "/demo", target: "_self" },
   ];
 
   return (
@@ -31,9 +30,7 @@ export default function () {
                 className="w-8 h-8 rounded-full mr-2"
                 alt="logo"
               />
-              <span className="font-bold text-primary text-2xl">
-                languepod
-              </span>
+              <span className="font-bold text-primary text-2xl">languepod</span>
             </a>
 
             <div className="hidden md:flex ml-16">
@@ -52,8 +49,6 @@ export default function () {
             <div className="flex-1"></div>
 
             <div className="flex flex-row items-center lg:flex lg:flex-row lg:space-x-3 lg:space-y-0">
-
-
               {user === undefined ? (
                 <>loading...</>
               ) : (
