@@ -111,8 +111,13 @@ const Dictation: React.FC<DictationProps> = ({ original_text }) => {
                 return response.json();
             })
             .then(data => {
-                const json = JSON.parse(data);
-                handleJson(json);
+                try {
+                    const json = JSON.parse(data);  // 尝试解析 JSON 数据
+                    handleJson(json);
+                } catch (error) {
+                    console.error('JSON parse error:', error);  // 捕获并记录错误
+                    setContent('<p>Failed to analyze the content</p>');
+                }
                 setLoading(false);
                 setIsSplit(true); // 触发页面分割
             })

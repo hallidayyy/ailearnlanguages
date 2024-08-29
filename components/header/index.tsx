@@ -10,6 +10,7 @@ export default function () {
 
   const navigations: Nav[] = [
     { name: "pricing", title: "pricing", url: "/pricing", target: "_self" },
+    { name: "demo", title: "readme", url: "/readme", target: "_self" },
     {
       name: "blog",
       title: "blogs",

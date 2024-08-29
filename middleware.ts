@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { authMiddleware } from '@clerk/nextjs';
 
 export default authMiddleware({
-  publicRoutes: ["/", "/pricing", "/api/get-user-info"],
+  publicRoutes: ["/", "/pricing","/readme","/readme.html", "/api/get-user-info"],
 
   afterAuth(auth, req, evt) {
     // 检查请求是否为 Stripe Webhook 请求
