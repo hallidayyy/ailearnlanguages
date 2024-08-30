@@ -1,39 +1,37 @@
-import { findUserByEmail, findUserByID, insertUser } from "@/models/user";
+import { findUserByEmail } from "@/models/user";
 import { respData, respErr } from "@/lib/resp";
 import { User } from "@/types/user";
 import { currentUser } from "@clerk/nextjs";
 
-
-
 export async function POST(req: Request) {
   const user = await currentUser();
-  console.log("get-user-info:" + user?.emailAddresses[0].emailAddress)
-  if (!user || !user.emailAddresses[0].emailAddress || user.emailAddresses.length === 0) {
-    return respErr("not login");
+  
+  // 确保获取到了当前用户信息，并且用户有有效的邮箱地址
+  if (!user || user.emailAddresses.length === 0 || !user.emailAddresses[0].emailAddress) {
+    return respErr("User not logged in or invalid email address.");
   }
 
   try {
     const email = user.emailAddresses[0].emailAddress;
-    const nickname = user.username;
-    const avatarUrl = user.imageUrl;
+    const nickname = user.username || ""; // 使用空字符串作为默认值
+    const avatarUrl = user.imageUrl || ""; // 使用空字符串作为默认值
+    
+    // 查找数据库中是否已有该用户
     const existUser = await findUserByEmail(email);
-    const user_id = existUser?.id;
-
-    let userInfo: User = {
-      id: user_id as number,
-      email: email,
-      nickname: nickname || "",
-      avatar_url: avatarUrl,
-    };
-    console.log("existUser:" + existUser?.email)
 
     if (existUser) {
-      userInfo.id = existUser.id;
+      const userInfo: User = {
+        id: existUser.id,
+        email: email,
+        nickname: nickname,
+        avatar_url: avatarUrl,
+      };
+      return respData(userInfo);
     } else {
-      await insertUser(userInfo);
+      return respErr("User not found.");
     }
-    return respData(userInfo);
   } catch (e) {
-    return respErr("get user info failed");
+    console.error("Error while processing user information:", e);
+    return respErr("Failed to process user information.");
   }
 }

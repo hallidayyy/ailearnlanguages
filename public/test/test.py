@@ -1,5 +1,5 @@
 import os
-import openai
+import openai # type: ignore
 import json
 
 # 设置 API 密钥和 Base URL

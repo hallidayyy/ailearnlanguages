@@ -1,14 +1,14 @@
 import { getDb } from "@/models/db"; // 确保 getDb 返回的是 Supabase 客户端实例
 import { User } from "@/types/user"; // 确保 User 类型定义正确
 import { genOrderNo } from "@/lib/order";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export async function insertUser(user: User): Promise<User> {
   const createdAt: string = new Date().toISOString();
   const supabase = await getDb();
 
   // 验证supabase对象
-  if (!supabase || typeof supabase.from !== 'function') {
+  if (!supabase || typeof supabase.from !== "function") {
     throw new Error("Supabase client is not properly initialized.");
   }
   const newUuid = uuidv4();
@@ -21,7 +21,7 @@ export async function insertUser(user: User): Promise<User> {
         nickname: user.nickname,
         avatar_url: user.avatar_url,
         created_at: createdAt,
-        uuid: newUuid
+        uuid: newUuid,
       },
     ])
     .select()
@@ -43,15 +43,14 @@ export async function insertUser(user: User): Promise<User> {
 
   // 插入配额，默认为 free 用户
   try {
-    const { error: quotaError } = await supabase
-      .from("quota")
-      .insert([
-        {
-          user_id: userId,
-          access_content_quota: 4,
-          run_ai_quota: 0,
-        }
-      ]);
+    const { error: quotaError } = await supabase.from("quota").insert([
+      {
+        user_id: userId,
+        access_content_quota: 4,
+        run_ai_quota: 0,
+        updated_at: createdAt, // 设置当前时间
+      },
+    ]);
 
     if (quotaError) {
       throw quotaError;
@@ -66,14 +65,16 @@ export async function insertUser(user: User): Promise<User> {
   return userData as User;
 }
 
-export async function findUserByEmail(email: string): Promise<User | undefined> {
+export async function findUserByEmail(
+  email: string
+): Promise<User | undefined> {
   try {
     const supabase = await getDb();
 
-    if (!supabase || typeof supabase.from !== 'function') {
+    if (!supabase || typeof supabase.from !== "function") {
       throw new Error("Supabase client is not properly initialized.");
     }
-
+    console.log("user email when findusersbyemail:"+email)
     const { data, error } = await supabase
       .from("users")
       .select("*")
@@ -96,11 +97,10 @@ export async function findUserByEmail(email: string): Promise<User | undefined> 
   }
 }
 
-
 export async function findUserByID(user_id: number): Promise<User | undefined> {
   const supabase = await getDb();
 
-  if (!supabase || typeof supabase.from !== 'function') {
+  if (!supabase || typeof supabase.from !== "function") {
     throw new Error("Supabase client is not properly initialized.");
   }
 
@@ -121,10 +121,13 @@ export async function findUserByID(user_id: number): Promise<User | undefined> {
   return data as User;
 }
 
-export async function updateUserNicknameByEmail(email: string, newNickname: string): Promise<void> {
+export async function updateUserNicknameByEmail(
+  email: string,
+  newNickname: string
+): Promise<void> {
   const supabase = await getDb();
 
-  if (!supabase || typeof supabase.from !== 'function') {
+  if (!supabase || typeof supabase.from !== "function") {
     throw new Error("Supabase client is not properly initialized.");
   }
 
@@ -141,10 +144,12 @@ export async function updateUserNicknameByEmail(email: string, newNickname: stri
   console.log("User nickname updated successfully.");
 }
 
-export async function getUserByCustomerID(customerID: string): Promise<User | undefined> {
+export async function getUserByCustomerID(
+  customerID: string
+): Promise<User | undefined> {
   const supabase = await getDb();
 
-  if (!supabase || typeof supabase.from !== 'function') {
+  if (!supabase || typeof supabase.from !== "function") {
     throw new Error("Supabase client is not properly initialized.");
   }
 
@@ -179,7 +184,6 @@ export async function getUserByCustomerID(customerID: string): Promise<User | un
   if (!userData) {
     return undefined; // 如果找不到对应的用户，则返回 undefined
   }
-
 
   return userData as unknown as User;
 }

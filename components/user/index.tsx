@@ -49,11 +49,16 @@ export default function ({ currentUser }: Props) {
         <DropdownMenuSeparator className="md:hidden" />
 
         <DropdownMenuCheckboxItem>
-          <SignOutButton signOutCallback={() => {
-            location.reload()
-          }}>
-            log out
-          </SignOutButton>
+          <DropdownMenuCheckboxItem>
+            <SignOutButton signOutCallback={() => {
+              // 清除 localStorage 中的用户信息
+              localStorage.removeItem("user");
+              // 刷新页面
+              location.reload();
+            }}>
+              log out
+            </SignOutButton>
+          </DropdownMenuCheckboxItem>
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
