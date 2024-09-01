@@ -7,6 +7,7 @@ export default authMiddleware({
   afterAuth(auth, req, evt) {
     // 检查请求是否为 Stripe Webhook 请求
     if (req.nextUrl.pathname.startsWith('/api/webhook')) {
+      console.log("strip webhook")
       return NextResponse.next();
     }
 
