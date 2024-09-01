@@ -74,7 +74,7 @@ export async function findUserByEmail(
     if (!supabase || typeof supabase.from !== "function") {
       throw new Error("Supabase client is not properly initialized.");
     }
-    console.log("user email when findusersbyemail:"+email)
+    // console.log("user email when findusersbyemail:"+email)
     const { data, error } = await supabase
       .from("users")
       .select("*")
